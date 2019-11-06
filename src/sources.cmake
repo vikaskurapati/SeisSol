@@ -6,6 +6,10 @@ src/Initializer/InternalState.cpp
 src/Initializer/MemoryAllocator.cpp
 src/Initializer/CellLocalMatrices.cpp
 
+#DEBUGGING::RAVIL
+src/Initializer/binning/algorithm.cpp
+
+
 src/Initializer/time_stepping/LtsLayout.cpp
 src/Initializer/tree/Lut.cpp
 src/Initializer/MemoryManager.cpp

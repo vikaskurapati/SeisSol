@@ -46,6 +46,8 @@
 #include <limits>
 #include <cstring>
 
+#include "LayerContainer.h"  // DEBUGGING::RAVIL
+
 enum LayerType {
   Ghost    = (1 << 0),
   Copy     = (1 << 1),
@@ -92,6 +94,8 @@ private:
   void** m_vars;
   void** m_buckets;
   size_t* m_bucketSizes;
+
+  LayerContainer m_cotanier;   // DEBUGGING::RAVIL
 
 public:
   Layer() : m_numberOfCells(0), m_vars(NULL), m_buckets(NULL), m_bucketSizes(NULL) {}
@@ -187,6 +191,12 @@ public:
         }
       }
     }
+  }
+
+
+  // DEBUGGING::RAVIL
+  LayerContainer& getLayerContainer() {
+      return m_cotanier;
   }
 };
 

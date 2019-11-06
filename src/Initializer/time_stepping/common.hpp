@@ -129,6 +129,7 @@ static unsigned short getLtsSetup(      unsigned int   i_localClusterId,
         i_faceTypes[l_face] != dynamicRupture &&
         i_faceTypes[l_face] != periodic       &&
         i_faceTypes[l_face] != freeSurface ) {
+        // in short, if outflow
       continue;
     }
     // free surface fake neighbors are GTS
@@ -152,6 +153,8 @@ static unsigned short getLtsSetup(      unsigned int   i_localClusterId,
     }
     // derive the LTS setup based on the cluster ids
     else {
+      // in short, regular or periodic BCs
+
       // neighboring cluster has a larger time step than this cluster
       if( i_localClusterId < i_neighboringClusterIds[l_face] ) {
         // neighbor delivers time derivatives

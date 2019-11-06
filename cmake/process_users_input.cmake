@@ -66,6 +66,11 @@ set(ACCELERATOR_TYPE_OPTIONS NONE GPU)
 set_property(CACHE ACCELERATOR_TYPE PROPERTY STRINGS ${ACCELERATOR_TYPE_OPTIONS})
 
 
+# debugging: relevant for yateto
+set(GEMM_TOOLS_LIST "LIBXSMM,PSpaMM" CACHE STRING "choose a gemm tool(s) for the code generator")
+set(GEMM_TOOLS_OPTIONS "LIBXSMM,PSpaMM" "LIBXSMM" "MKL" "OpenBLAS" "BLIS" "DEVICE_BLAS")
+set_property(CACHE GEMM_TOOLS_LIST PROPERTY STRINGS ${GEMM_TOOLS_OPTIONS})
+
 
 #-------------------------------------------------------------------------------
 # ------------------------------- ERROR CHECKING -------------------------------
@@ -89,6 +94,7 @@ check_parameter("DYNAMIC_RUPTURE_METHOD" ${DYNAMIC_RUPTURE_METHOD} "${RUPTURE_OP
 check_parameter("PLASTICITY_METHOD" ${PLASTICITY_METHOD} "${PLASTICITY_OPTIONS}")
 check_parameter("ACCELERATOR_TYPE" ${ACCELERATOR_TYPE} "${ACCELERATOR_TYPE_OPTIONS}")
 check_parameter("LOG_LEVEL" ${LOG_LEVEL} "${LOG_LEVEL_OPTIONS}")
+check_parameter("GEMM_TOOLS_LIST" ${GEMM_TOOLS_LIST} "${GEMM_TOOLS_OPTIONS}")
 
 
 # check NUMBER_OF_MECHANISMS

@@ -269,6 +269,11 @@ class seissol::initializers::MemoryManager {
     inline DynamicRupture* getDynamicRupture() {
       return &m_dynRup;
     }
+
+    /** Inits offsets based on conditional statements within compute kernels for all variables, for all clusters.
+     *  NOTE: DEBUGGING::RAVIL
+     **/
+    void initConditionalOffsets();
 };
 
 #endif

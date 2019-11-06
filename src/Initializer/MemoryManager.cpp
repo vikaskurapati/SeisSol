@@ -566,3 +566,16 @@ void seissol::initializers::MemoryManager::getMemoryLayout( unsigned int        
   o_meshStructure           =  m_meshStructure + i_cluster;
   o_globalData              = &m_globalData;
 }
+
+
+
+#include <iostream>
+#include "binning/algorithm.h"
+void seissol::initializers::MemoryManager::initConditionalOffsets() {
+    for (unsigned tc = 0; tc < m_ltsTree.numChildren(); ++tc) {
+        TimeCluster& cluster = m_ltsTree.child(tc);
+        std::cout << "INFO::the current cluster: " << tc << std::endl;
+
+        seissol::initializers::binning::test(m_lts, cluster.child<Interior>());
+    }
+}

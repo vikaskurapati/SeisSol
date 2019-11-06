@@ -514,6 +514,11 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
 #endif
   for( unsigned int l_cell = 0; l_cell < i_layerData.getNumberOfCells(); l_cell++ ) {
     auto data = loader.entry(l_cell);
+
+    // RAVIL: assign an appropriate pointers to 'l_timeIntegrated'
+    // if a neighbour element provides buffers then we use the pointer of the neighbour integrated dofs
+    // if a neighbour element provides derivatives then we compute the taylor series expansion based on
+    // provided derivatives
     seissol::kernels::TimeCommon::computeIntegrals( m_timeKernel,
                                                     data.cellInformation.ltsSetup,
                                                     data.cellInformation.faceTypes,

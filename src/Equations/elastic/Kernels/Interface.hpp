@@ -43,6 +43,57 @@
 #include <Initializer/tree/InterfaceHelper.hpp>
 #include <Initializer/LTS.h>
 
+
+/*
+ * NOTE: LTSTREE_GENERATE_INTERFACE generates structure by means of C macroses
+ * EXAMPLE: LTSTREE_GENERATE_INTERFACE(LocalData, initializers::LTS, cellInformation, localIntegration, dofs)
+ *
+    struct LocalData {
+
+        seissol::extract_type<decltype(initializers::LTS::cellInformation)>::type& cellInformation;
+        seissol::extract_type<decltype(initializers::LTS::localIntegration)>::type& localIntegration;
+        seissol::extract_type<decltype(initializers::LTS::dofs)>::type& dofs;
+
+
+        LocalData(seissol::extract_type<decltype(initializers::LTS::cellInformation)>::type& cellInformation,
+                  seissol::extract_type<decltype(initializers::LTS::localIntegration)>::type& localIntegration,
+                  seissol::extract_type<decltype(initializers::LTS::dofs)>::type& dofs) : cellInformation(cellInformation),
+                                                                                          localIntegration(localIntegration),
+                                                                                          dofs(dofs) {
+
+        }
+
+        template<typename T> static LocalData lookup(initializers::LTS const& handleStruct,
+                                                     T const& lut,
+                                                     unsigned meshId)  {
+
+            return LocalData(lut.lookup(handleStruct.cellInformation, meshId),
+                             lut.lookup(handleStruct.localIntegration, meshId),
+                             lut.lookup(handleStruct.dofs,meshId));
+        }
+
+
+        struct Loader {
+            seissol::extract_type<decltype(initializers::LTS::cellInformation)>::type* cellInformation = nullptr;
+            seissol::extract_type<decltype(initializers::LTS::localIntegration)>::type* localIntegration = nullptr;
+            seissol::extract_type<decltype(initializers::LTS::dofs)>::type* dofs = nullptr;
+
+            template<typename T> void load(initializers::LTS const & handleStruct, T& tree) {
+                cellInformation = tree.var(handleStruct.cellInformation);
+                localIntegration = tree.var(handleStruct.localIntegration);
+                dofs = tree.var(handleStruct.dofs);
+            }
+
+            LocalData entry(unsigned index) {
+                return LocalData(cellInformation[index],
+                                 localIntegration[index],
+                                 dofs[index]);
+            }
+        };
+    };
+*/
+
+
 namespace seissol {
   namespace kernels {
     struct LocalTmp {

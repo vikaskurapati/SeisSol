@@ -12,7 +12,7 @@ message(WARNING "We do not provide support for CMake currently. Please use scons
 #                     ARCH, PRECISION, DYNAMIC_RUPTURE_METHOD,
 #                     PLASTICITY, NUMBER_OF_FUSED_SIMULATIONS,
 #                     MEMEORY_LAYOUT, COMMTHREAD, LOG_LEVEL,
-#                     ACCELERATOR_TYPE
+#                     ACCELERATOR_TYPE, GEMM_TOOLS_LIST
 #
 #       derived input: REAL_SIZE_IN_BYTES, ALIGNMENT, ARCH_STRING, NUMBER_OF_QUANTITIES
 #
@@ -65,6 +65,7 @@ add_custom_command(
      "--multipleSimulations" ${NUMBER_OF_FUSED_SIMULATIONS}
      "--dynamicRuptureMethod" ${DYNAMIC_RUPTURE_METHOD}
      "--PlasticityMethod" ${PLASTICITY_METHOD}
+     "--gemm_tools" ${GEMM_TOOLS_LIST}
      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/generated_code
      DEPENDS
        build-time-make-directory
@@ -148,6 +149,16 @@ endif()
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/submodules/ImpalaJIT)
 target_link_libraries(SeisSol-lib PUBLIC yaml-cpp impalajit-static)
 
+#load gemm tools appropriate gemm tools
+find_package(GemmTools REQUIRED COMPONENTS ${GEMM_TOOLS_LIST})
+
+if (GemmTools_FOUND)
+    target_link_libraries(SeisSol-lib PUBLIC ${GemmTools_LIBRARIES})
+    target_compile_definitions(SeisSol-lib PUBLIC ${GemmTools_DEFINITIONS})
+    target_include_directories(SeisSol-lib PUBLIC ${GemmTools_INCLUDE_DIR})
+else()
+    message(FATAL_ERROR "cofiguration is brocken, cannot find appropriate blas libs")
+endif()
 
 
 # todo: if parallelization == omp/hybrid
@@ -257,7 +268,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel C++
   # todo remove std?, is ffreestanding needed?
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -qopenmp")
 
   # only if openmp
   set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -qopenmp")

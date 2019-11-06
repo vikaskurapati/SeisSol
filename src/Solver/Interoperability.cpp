@@ -335,6 +335,7 @@ void seissol::Interoperability::setTimeStepWidth( int    i_meshId,
   seissol::SeisSol::main.getLtsLayout().setTimeStepWidth( (i_meshId)-1, i_timeStepWidth );
 }
 
+
 void seissol::Interoperability::initializeClusteredLts( int i_clustering, bool enableFreeSurfaceIntegration ) {
   // assert a valid clustering
   assert( i_clustering > 0 );
@@ -400,6 +401,11 @@ void seissol::Interoperability::initializeClusteredLts( int i_clustering, bool e
 
   // get backward coupling
   m_globalData = seissol::SeisSol::main.getMemoryManager().getGlobalData();
+
+  // DEBUGGIN:ravil:: init offsets based on conditional statements within compute kernels
+  // for all variables, for all clusters
+  seissol::SeisSol::main.getMemoryManager().initConditionalOffsets();
+
 }
 
 #if defined(USE_NETCDF) && !defined(NETCDF_PASSIVE)

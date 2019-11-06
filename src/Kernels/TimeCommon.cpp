@@ -72,10 +72,12 @@ void seissol::kernels::TimeCommon::computeIntegrals(  Time&                     
     if( i_faceTypes[l_dofeighbor] != outflow && i_faceTypes[l_dofeighbor] != dynamicRupture ) {
       // check if the time integration is already done (-> copy pointer)
       if( (i_ltsSetup >> l_dofeighbor ) % 2 == 0 ) {
+        // if neighbour provides buffers
         o_timeIntegrated[l_dofeighbor] = i_timeDofs[l_dofeighbor];
       }
       // integrate the DOFs in time via the derivatives and set pointer to local buffer
       else {
+        // if neighbour provides derivatives
         i_time.computeIntegral( i_currentTime[    l_dofeighbor+1],
                                 i_currentTime[    0           ],
                                 i_currentTime[    0           ] + i_timeStepWidth,

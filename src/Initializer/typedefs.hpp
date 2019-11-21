@@ -42,6 +42,8 @@
 #ifndef TYPEDEFS_HPP
 #define TYPEDEFS_HPP
 
+#include <vector>
+
 #ifdef USE_MPI
 #include <mpi.h>
 #endif
@@ -345,6 +347,12 @@ struct GlobalData {
   real* vandermondeMatrix;
   real* vandermondeMatrixInverse;
 };
+
+#ifdef ACL_DEVICE
+struct GlobalDataOnDevice : public GlobalData {
+    std::vector<real*> address_registry{};
+};
+#endif
 
 // data for the cell local integration
 struct LocalIntegrationData {

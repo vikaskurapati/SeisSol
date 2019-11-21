@@ -65,15 +65,16 @@ void seissol::initializers::initializeGlobalData(GlobalData& globalData, memory:
   real* globalMatrixMem = static_cast<real*>(memoryAllocator.allocateMemory( globalMatrixMemSize * sizeof(real), PAGESIZE_HEAP, memkind ));
 
   real* globalMatrixMemPtr = globalMatrixMem;
-  yateto::copyFamilyToMemAndSetPtr<init::kDivMT, real>(globalMatrixMemPtr, globalData.stiffnessMatricesTransposed, ALIGNMENT);
-  yateto::copyFamilyToMemAndSetPtr<init::kDivM,  real>(globalMatrixMemPtr, globalData.stiffnessMatrices, ALIGNMENT);
-  yateto::copyFamilyToMemAndSetPtr<init::rDivM,  real>(globalMatrixMemPtr, globalData.changeOfBasisMatrices, ALIGNMENT);
-  yateto::copyFamilyToMemAndSetPtr<init::rT,     real>(globalMatrixMemPtr, globalData.neighbourChangeOfBasisMatricesTransposed, ALIGNMENT);
-  yateto::copyFamilyToMemAndSetPtr<init::fMrT,   real>(globalMatrixMemPtr, globalData.localChangeOfBasisMatricesTransposed, ALIGNMENT);
-  yateto::copyFamilyToMemAndSetPtr<init::fP,     real>(globalMatrixMemPtr, globalData.neighbourFluxMatrices, ALIGNMENT);
-  yateto::copyTensorToMemAndSetPtr<init::evalAtQP,     real>(globalMatrixMemPtr, globalData.evalAtQPMatrix, ALIGNMENT);
-  yateto::copyTensorToMemAndSetPtr<init::projectQP,    real>(globalMatrixMemPtr, globalData.projectQPMatrix, ALIGNMENT);
-  
+  yateto::CopyManager<real> copy_manager;
+  copy_manager.copyFamilyToMemAndSetPtr<init::kDivMT>(globalMatrixMemPtr, globalData.stiffnessMatricesTransposed, ALIGNMENT);
+  copy_manager.copyFamilyToMemAndSetPtr<init::kDivM>(globalMatrixMemPtr, globalData.stiffnessMatrices, ALIGNMENT);
+  copy_manager.copyFamilyToMemAndSetPtr<init::rDivM>(globalMatrixMemPtr, globalData.changeOfBasisMatrices, ALIGNMENT);
+  copy_manager.copyFamilyToMemAndSetPtr<init::rT>(globalMatrixMemPtr, globalData.neighbourChangeOfBasisMatricesTransposed, ALIGNMENT);
+  copy_manager.copyFamilyToMemAndSetPtr<init::fMrT>(globalMatrixMemPtr, globalData.localChangeOfBasisMatricesTransposed, ALIGNMENT);
+  copy_manager.copyFamilyToMemAndSetPtr<init::fP>(globalMatrixMemPtr, globalData.neighbourFluxMatrices, ALIGNMENT);
+  copy_manager.copyTensorToMemAndSetPtr<init::evalAtQP>(globalMatrixMemPtr, globalData.evalAtQPMatrix, ALIGNMENT);
+  copy_manager.copyTensorToMemAndSetPtr<init::projectQP>(globalMatrixMemPtr, globalData.projectQPMatrix, ALIGNMENT);
+
   assert(globalMatrixMemPtr == globalMatrixMem + globalMatrixMemSize);
 
   // @TODO Integrate this step into the code generator
@@ -92,9 +93,9 @@ void seissol::initializers::initializeGlobalData(GlobalData& globalData, memory:
   real* drGlobalMatrixMem = static_cast<real*>(memoryAllocator.allocateMemory( drGlobalMatrixMemSize  * sizeof(real), PAGESIZE_HEAP, memkind ));
   
   real* drGlobalMatrixMemPtr = drGlobalMatrixMem;
-  yateto::copyFamilyToMemAndSetPtr<init::V3mTo2nTWDivM, real>(drGlobalMatrixMemPtr, globalData.nodalFluxMatrices, ALIGNMENT);
-  yateto::copyFamilyToMemAndSetPtr<init::V3mTo2n,       real>(drGlobalMatrixMemPtr, globalData.faceToNodalMatrices, ALIGNMENT);
-  
+  copy_manager.copyFamilyToMemAndSetPtr<init::V3mTo2nTWDivM>(drGlobalMatrixMemPtr, globalData.nodalFluxMatrices, ALIGNMENT);
+  copy_manager.copyFamilyToMemAndSetPtr<init::V3mTo2n>(drGlobalMatrixMemPtr, globalData.faceToNodalMatrices, ALIGNMENT);
+
   assert(drGlobalMatrixMemPtr == drGlobalMatrixMem + drGlobalMatrixMemSize);
 
   // Plasticity global matrices
@@ -105,9 +106,10 @@ void seissol::initializers::initializeGlobalData(GlobalData& globalData, memory:
   real* plasticityGlobalMatrixMem = static_cast<real*>(memoryAllocator.allocateMemory( plasticityGlobalMatrixMemSize * sizeof(real), PAGESIZE_HEAP, memkind ));
   
   real* plasticityGlobalMatrixMemPtr = plasticityGlobalMatrixMem;
-  yateto::copyTensorToMemAndSetPtr<init::v,    real>(plasticityGlobalMatrixMemPtr, globalData.vandermondeMatrix, ALIGNMENT);
-  yateto::copyTensorToMemAndSetPtr<init::vInv, real>(plasticityGlobalMatrixMemPtr, globalData.vandermondeMatrixInverse, ALIGNMENT);
-  
+  copy_manager.copyTensorToMemAndSetPtr<init::v>(plasticityGlobalMatrixMemPtr, globalData.vandermondeMatrix, ALIGNMENT);
+  copy_manager.copyTensorToMemAndSetPtr<init::vInv>(plasticityGlobalMatrixMemPtr, globalData.vandermondeMatrixInverse, ALIGNMENT);
+
+
   assert(plasticityGlobalMatrixMemPtr == plasticityGlobalMatrixMem + plasticityGlobalMatrixMemSize);
   
   // thread-local LTS integration buffers  
@@ -134,3 +136,180 @@ void seissol::initializers::initializeGlobalData(GlobalData& globalData, memory:
   
   globalData.integrationBufferLTS = integrationBufferLTS;
 }
+
+
+#ifdef ACL_DEVICE
+#include <device_utils.h>
+// Allocates and inits global data structures on a device (gpu)
+void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& globalData,
+                                                         memory::ManagedAllocator& memoryAllocator) {
+
+    seissol::memory::Memkind memkind = seissol::memory::Memkind::DeviceGlobalMemory;
+    // We ensure that global matrices always start at an aligned memory address,
+    // such that mixed cases with aligned and non-aligned global matrices do also work.
+
+    // compute a memory size needed to store global tensors and matrices
+    // NOTE: the memory size includes padding for efficient vectorization
+    unsigned globalMatrixMemSize = 0;
+    const unsigned DEVICE_ALIGNMENT_IN_BYTES = 256; // TODO: move it out of here (it must be known during compilation)
+    globalMatrixMemSize += yateto::computeFamilySize<init::kDivM>(yateto::alignedReals<real>(DEVICE_ALIGNMENT_IN_BYTES));
+    globalMatrixMemSize += yateto::computeFamilySize<init::kDivMT>(yateto::alignedReals<real>(DEVICE_ALIGNMENT_IN_BYTES));
+    globalMatrixMemSize += yateto::computeFamilySize<init::rDivM>(yateto::alignedReals<real>(DEVICE_ALIGNMENT_IN_BYTES));
+    globalMatrixMemSize += yateto::computeFamilySize<init::rT>(yateto::alignedReals<real>(DEVICE_ALIGNMENT_IN_BYTES));
+    globalMatrixMemSize += yateto::computeFamilySize<init::fMrT>(yateto::alignedReals<real>(DEVICE_ALIGNMENT_IN_BYTES));
+    globalMatrixMemSize += yateto::computeFamilySize<init::fP>(yateto::alignedReals<real>(DEVICE_ALIGNMENT_IN_BYTES));
+    globalMatrixMemSize += yateto::alignedUpper(tensor::evalAtQP::size(),  yateto::alignedReals<real>(DEVICE_ALIGNMENT_IN_BYTES));
+    globalMatrixMemSize += yateto::alignedUpper(tensor::projectQP::size(), yateto::alignedReals<real>(DEVICE_ALIGNMENT_IN_BYTES));
+
+    // allocate memory
+    const unsigned MATRIX_ALIGNMENT = 1;
+    real* globalMatrixMem = static_cast<real*>(memoryAllocator.allocateMemory(globalMatrixMemSize * sizeof(real),
+                                                                              MATRIX_ALIGNMENT,
+                                                                              memkind));
+    globalData.address_registry.push_back(globalMatrixMem);
+
+    // copy data defined in source files generated by yateto to the alligned memeory
+    real* globalMatrixMemPtr = globalMatrixMem;
+    yateto::DeviceCopyManager<real> copy_manager;
+
+    copy_manager.copyFamilyToMemAndSetPtr<init::kDivM>(globalMatrixMemPtr,
+                                                       globalData.stiffnessMatrices,
+                                                       DEVICE_ALIGNMENT_IN_BYTES);
+
+    copy_manager.copyFamilyToMemAndSetPtr<init::kDivMT>(globalMatrixMemPtr,
+                                                        globalData.stiffnessMatricesTransposed,
+                                                        DEVICE_ALIGNMENT_IN_BYTES);
+
+
+    copy_manager.copyFamilyToMemAndSetPtr<init::rDivM>(globalMatrixMemPtr,
+                                                       globalData.changeOfBasisMatrices,
+                                                       DEVICE_ALIGNMENT_IN_BYTES);
+
+    copy_manager.copyFamilyToMemAndSetPtr<init::rT>(globalMatrixMemPtr,
+                                                    globalData.neighbourChangeOfBasisMatricesTransposed,
+                                                    DEVICE_ALIGNMENT_IN_BYTES);
+
+    copy_manager.copyFamilyToMemAndSetPtr<init::fMrT>(globalMatrixMemPtr,
+                                                      globalData.localChangeOfBasisMatricesTransposed,
+                                                      DEVICE_ALIGNMENT_IN_BYTES);
+
+    copy_manager.copyFamilyToMemAndSetPtr<init::fP>(globalMatrixMemPtr,
+                                                    globalData.neighbourFluxMatrices,
+                                                    DEVICE_ALIGNMENT_IN_BYTES);
+
+    copy_manager.copyTensorToMemAndSetPtr<init::evalAtQP>(globalMatrixMemPtr,
+                                                          globalData.evalAtQPMatrix,
+                                                          DEVICE_ALIGNMENT_IN_BYTES);
+
+    copy_manager.copyTensorToMemAndSetPtr<init::projectQP>(globalMatrixMemPtr,
+                                                           globalData.projectQPMatrix,
+                                                           DEVICE_ALIGNMENT_IN_BYTES);
+
+    assert(globalMatrixMemPtr == globalMatrixMem + globalMatrixMemSize);
+
+
+    // TODO: implement it on gpu
+    // multiply all stifness matricess by -1
+    // @TODO Integrate this step into the code generator
+    for (unsigned transposedStiffness = 0; transposedStiffness < 3; ++transposedStiffness) {
+        device_scale_array(-1.0,
+                           init::kDivMT::size(transposedStiffness),
+                           const_cast<real*>(globalData.stiffnessMatricesTransposed(transposedStiffness)));
+    }
+}
+
+void seissol::initializers::compareGlobalData(const GlobalData &host, const GlobalDataOnDevice &device) {
+    for (unsigned i = 0; i < 3; ++i) {
+        std::string array_name = "kDivM(" + std::to_string(i)+ ")";
+        device_compare_with_host_array(host.stiffnessMatrices(i),
+                                       device.stiffnessMatrices(i),
+                                       seissol::init::kDivM::size(i),
+                                       array_name.c_str());
+    }
+
+
+    for (unsigned i = 0; i < 3; ++i) {
+        std::string array_name = "kDivMT(" + std::to_string(i)+ ")";
+        device_compare_with_host_array(host.stiffnessMatricesTransposed(i),
+                                       device.stiffnessMatricesTransposed(i),
+                                       seissol::init::kDivMT::size(i),
+                                       array_name.c_str());
+    }
+
+    for (unsigned i = 0; i < 4; ++i) {
+        std::string array_name = "rDivM(" + std::to_string(i)+ ")";
+        device_compare_with_host_array(host.changeOfBasisMatrices(i),
+                                       device.changeOfBasisMatrices(i),
+                                       seissol::init::rDivM::size(i),
+                                       array_name.c_str());
+    }
+
+    for (unsigned i = 0; i < 4; ++i) {
+        std::string array_name = "rT(" + std::to_string(i)+ ")";
+        device_compare_with_host_array(host.neighbourChangeOfBasisMatricesTransposed(i),
+                                       device.neighbourChangeOfBasisMatricesTransposed(i),
+                                       seissol::init::rT::size(i),
+                                       array_name.c_str());
+    }
+
+    for (unsigned i = 0; i < 4; ++i) {
+        std::string array_name = "fMrT(" + std::to_string(i)+ ")";
+        device_compare_with_host_array(host.localChangeOfBasisMatricesTransposed(i),
+                                       device.localChangeOfBasisMatricesTransposed(i),
+                                       seissol::init::fMrT::size(i),
+                                       array_name.c_str());
+    }
+
+    for (unsigned i = 0; i < 3; ++i) {
+        std::string array_name = "fP(" + std::to_string(i)+ ")";
+        device_compare_with_host_array(host.neighbourFluxMatrices(i),
+                                       device.neighbourFluxMatrices(i),
+                                       seissol::init::fP::size(i),
+                                       array_name.c_str());
+    }
+
+    device_compare_with_host_array(host.evalAtQPMatrix,
+                                   device.evalAtQPMatrix,
+                                   seissol::init::evalAtQP::size(),
+                                   "evalAtQP");
+
+    device_compare_with_host_array(host.projectQPMatrix,
+                                   device.projectQPMatrix,
+                                   seissol::init::projectQP::size(),
+                                   "projectQP");
+}
+
+/*
+
+// TODO: comment this function
+void seissol::initializers::prepareDeviceData(seissol::initializers::LTSTree &tree,
+                                              memory::ManagedAllocator& memoryAllocator) {
+
+    unsigned max_layer_cells = 0;
+    // iterate though all layer of a tree
+    for (LTSTree::leaf_iterator it = tree.beginLeaf(); it != tree.endLeaf(); ++it) {
+        // compute the number of elements in the biggest cluster
+        if (it->getNumberOfCells() > max_layer_cells)
+            max_layer_cells = it->getNumberOfCells();
+    }
+
+    // init a linspace on the device
+    // NOTE: the linspace is used by temporary variables within the generated code
+    seissol::tensor::device_linspace = (unsigned*)(memoryAllocator.allocateMemory(max_layer_cells * sizeof(unsigned),
+                                                                                  1,
+                                                                                  seissol::memory::Memkind::DeviceGlobalMemory));
+    device_init_linspace(max_layer_cells, seissol::tensor::device_linspace);
+
+    seissol::tensor::device_ones = (unsigned*)(memoryAllocator.allocateMemory(max_layer_cells * sizeof(unsigned),
+                                                                              1,
+                                                                              seissol::memory::Memkind::DeviceGlobalMemory));
+    device_init_array(1, max_layer_cells, seissol::tensor::device_ones);
+
+    seissol::tensor::device_zeros = (unsigned*)(memoryAllocator.allocateMemory(max_layer_cells * sizeof(unsigned),
+                                                                               1,
+                                                                               seissol::memory::Memkind::DeviceGlobalMemory));
+    device_init_array(0, max_layer_cells, seissol::tensor::device_zeros);
+
+}
+*/
+#endif

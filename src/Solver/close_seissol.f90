@@ -89,6 +89,10 @@ CONTAINS
     CALL destruct_mesh_level0_1(MESH)
     CALL destruct_mesh_level0_2(MESH)
 
+#ifdef ACL_DEVICE
+    call c_interoperability_freeDeviceData()
+#endif
+
     call c_interoperability_finalizeIO()
     !    
     CALL close_OptionalFields(                   &

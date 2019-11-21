@@ -62,6 +62,11 @@ class seissol::kernels::Local : public LocalBase {
                           LocalData& data,
                           LocalTmp&  tmp );
 
+    void computeIntegralWithinWorkItem(real* i_timeIntegratedScratchMem,
+                                       kernels::LocalData::Loader &loader,
+                                       conditional_table_t &table,
+                                       LocalTmp& tmp);
+
     void flopsIntegral( enum faceType const i_faceTypes[4],
                         unsigned int        &o_nonZeroFlops,
                         unsigned int        &o_hardwareFlops );

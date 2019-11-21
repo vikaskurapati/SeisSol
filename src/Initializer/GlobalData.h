@@ -49,6 +49,17 @@
 namespace seissol {
   namespace initializers {
     void initializeGlobalData(GlobalData& globalData, memory::ManagedAllocator& memoryAllocator, enum seissol::memory::Memkind memkind);
+
+#ifdef ACL_DEVICE
+    void initializeGlobalDataOnDevice(GlobalDataOnDevice& globalData,
+                                      memory::ManagedAllocator& memoryAllocator);
+    void compareGlobalData(const GlobalData &host, const GlobalDataOnDevice &device);
+        /*
+        void prepareDeviceData(seissol::initializers::LTSTree &tree,
+                               memory::ManagedAllocator& memoryAllocator);
+        */
+#endif
+
   }
 }
 

@@ -60,6 +60,15 @@ private:
   std::vector<MemoryInfo> bucketInfo;
   seissol::memory::ManagedAllocator m_allocator;
 
+  std::vector<size_t> m_variableSizes{};  /*!< sizes of variables within the entire tree in bytes */
+  std::vector<size_t> m_bucketSizes{};    /*!< sizes of buckets within the entire tree in bytes */
+
+#ifdef ACL_DEVICE
+  std::vector<MemoryInfo> scratchPadInfo{};
+  std::vector<size_t> scratchPadSizes{};  /*!< sizes of variables within the entire tree in bytes */
+  void** m_scratchPads;
+#endif
+
 public:
   LTSTree() : m_vars(NULL), m_buckets(NULL) {}
   
@@ -73,6 +82,10 @@ public:
     setPostOrderPointers();
     for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
       it->allocatePointerArrays(varInfo.size(), bucketInfo.size());
+
+#ifdef ACL_DEVICE
+      it->allocateScratchPadArrays(scratchPadInfo.size());
+#endif
     }
   }
   
@@ -118,50 +131,137 @@ public:
     m.memkind = memkind;
     bucketInfo.push_back(m);
   }
+
+#ifdef ACL_DEVICE
+  void addScratchPad(ScratchPadMemory& handle, size_t alignment, seissol::memory::Memkind memkind) {
+      handle.index = scratchPadInfo.size();
+      MemoryInfo m;
+      m.alignment = alignment;
+      m.memkind = memkind;
+      scratchPadInfo.push_back(m);
+  }
+#endif
   
   void allocateVariables() {
     m_vars = new void*[varInfo.size()];
-    std::vector<size_t> variableSizes(varInfo.size(), 0);
+    m_variableSizes.resize(varInfo.size(), 0);
 
     for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
-      it->addVariableSizes(varInfo, variableSizes);
+      it->addVariableSizes(varInfo, m_variableSizes);
     }
 
     for (unsigned var = 0; var < varInfo.size(); ++var) {
-      m_vars[var] = m_allocator.allocateMemory(variableSizes[var], varInfo[var].alignment, varInfo[var].memkind);
+      m_vars[var] = m_allocator.allocateMemory(m_variableSizes[var], varInfo[var].alignment, varInfo[var].memkind);
     }
-    
-    std::fill(variableSizes.begin(), variableSizes.end(), 0);
+
+    std::vector<size_t> offsets(varInfo.size(), 0);
     for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
-      it->setMemoryRegionsForVariables(varInfo, m_vars, variableSizes);
-      it->addVariableSizes(varInfo, variableSizes);
+      it->setMemoryRegionsForVariables(varInfo, m_vars, offsets);
+      it->addVariableSizes(varInfo, offsets);
     }
   }
-  
+
   void allocateBuckets() {
     m_buckets = new void*[bucketInfo.size()];
-    std::vector<size_t> bucketSizes(bucketInfo.size(), 0);
+    m_bucketSizes.resize(bucketInfo.size(), 0);
     
     for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
-      it->addBucketSizes(bucketSizes);
+      it->addBucketSizes(m_bucketSizes);
     }
     
     for (unsigned bucket = 0; bucket < bucketInfo.size(); ++bucket) {
-      m_buckets[bucket] = m_allocator.allocateMemory(bucketSizes[bucket], bucketInfo[bucket].alignment, bucketInfo[bucket].memkind);
+      m_buckets[bucket] = m_allocator.allocateMemory(m_bucketSizes[bucket], bucketInfo[bucket].alignment, bucketInfo[bucket].memkind);
     }
-    
-    std::fill(bucketSizes.begin(), bucketSizes.end(), 0);
-      for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
-      it->setMemoryRegionsForBuckets(m_buckets, bucketSizes);
-      it->addBucketSizes(bucketSizes);
+
+    std::vector<size_t> offsets(bucketInfo.size(), 0);
+    for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
+      it->setMemoryRegionsForBuckets(m_buckets, offsets);
+      it->addBucketSizes(offsets);
     }
   }
+
+#ifdef ACL_DEVICE
+  void allocateScratchPads() {
+    m_scratchPads = new void*[scratchPadInfo.size()];
+    scratchPadSizes.resize(scratchPadInfo.size(), 0);
+
+    for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
+      it->findMaxScratchPadSizes(scratchPadSizes);
+    }
+
+    for (unsigned id = 0; id < scratchPadSizes.size(); ++id) {
+      assert((scratchPadSizes[id] > 0) && "ERROR: scratch mem. size is equal to zero");
+      m_scratchPads[id] = m_allocator.allocateMemory(scratchPadSizes[id],
+                                                     scratchPadInfo[id].alignment,
+                                                     scratchPadInfo[id].memkind);
+    }
+
+    for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
+      it->setMemoryRegionsForScratchPads(m_scratchPads, scratchPadSizes.size());
+    }
+  }
+#endif
   
   void touchVariables() {
     for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
       it->touchVariables(varInfo);
     }
   }
+
+  const std::vector<size_t>& getVariableSizes() {
+    return m_variableSizes;
+  }
+
+  const std::vector<size_t>& getBucketSizes() {
+    return m_bucketSizes;
+  }
+
+#ifdef ACL_DEVICE
+    /** Frees variables allocated on a device(s).
+     *
+     * NOTE: a tree is initialized with a static object. Deallocation of resources is going to happen
+     * at the very end of the program. At that time, any device drive is going to be detached. Deallocation under this
+     * condition will lead to a segmentation fault. Thus, the user must explicitly deallocate all variables allocated
+     * on a device(s) in advance
+     * */
+    void freeDeviceVariablesExplicitly() {
+
+        // iterate through all variables and find those which were allocated on a device(s)
+        for (unsigned i = 0; i < varInfo.size(); ++i) {
+            if ((varInfo[i].memkind == seissol::memory::DeviceGlobalMemory)
+                || (varInfo[i].memkind == seissol::memory::DeviceUnifiedMemory)) {
+
+                m_allocator.deallocateMemory(m_vars[i], varInfo[i].memkind);
+                m_vars[i] = nullptr;
+            }
+        }
+
+        // iterate through all buckets and find those which were allocated on a device(s)
+        for (unsigned i = 0; i < bucketInfo.size(); ++i) {
+            if ((bucketInfo[i].memkind == seissol::memory::DeviceGlobalMemory)
+                || (bucketInfo[i].memkind == seissol::memory::DeviceUnifiedMemory)) {
+
+                m_allocator.deallocateMemory(m_buckets[i], bucketInfo[i].memkind);
+                m_buckets[i] = nullptr;
+            }
+        }
+
+      for (unsigned i = 0; i < scratchPadInfo.size(); ++i) {
+        if ((scratchPadInfo[i].memkind == seissol::memory::DeviceGlobalMemory)
+            || (scratchPadInfo[i].memkind == seissol::memory::DeviceUnifiedMemory)) {
+
+          m_allocator.deallocateMemory(m_scratchPads[i], scratchPadInfo[i].memkind);
+          m_scratchPads[i] = nullptr;
+        }
+      }
+    }
+
+    void freeLeavesContainersExplicitly() {
+        for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
+            it->getLayerContainer().free_conditional_table();
+        }
+    }
+#endif
 };
 
 #endif

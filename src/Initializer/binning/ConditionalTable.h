@@ -10,10 +10,10 @@ namespace seissol {
 
             struct ConditionalKey {
                 ConditionalKey(encode_t i_kernel, 
-                               encode_t i_type,
-                               encode_t i_relation) : kernel(i_kernel),
-                                                      type(i_type),
-                                                      face_relation(i_relation) {};
+                               encode_t i_type = 0,
+                               encode_t i_relation = 0) : kernel(i_kernel),
+                                                          type(i_type),
+                                                          face_relation(i_relation) {};
                 encode_t kernel;
                 encode_t type;
                 encode_t face_relation;

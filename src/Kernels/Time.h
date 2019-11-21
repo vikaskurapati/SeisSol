@@ -95,6 +95,14 @@ class seissol::kernels::Time : public TimeBase {
                       real                        o_timeIntegrated[tensor::I::size()],
                       real*                       o_timeDerivatives = NULL );
 
+    void computeAderWithinWorkItem(double i_timeStepWidth,
+                                   LocalTmp& tmp,
+                                   kernels::LocalData::Loader &loader,
+                                   conditional_table_t &table,
+                                   real *o_timeIntegratedScratchMem,
+                                   real *o_timeDerivativesScratchMem,
+                                   real **derivatives);
+
     void flopsAder( unsigned int &o_nonZeroFlops,
                     unsigned int &o_hardwareFlops );
 

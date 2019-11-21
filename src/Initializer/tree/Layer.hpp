@@ -46,7 +46,9 @@
 #include <limits>
 #include <cstring>
 
-#include "LayerContainer.h"  // DEBUGGING::RAVIL
+#ifdef ACL_DEVICE
+#include "LayerContainer.h"
+#endif
 
 enum LayerType {
   Ghost    = (1 << 0),
@@ -63,6 +65,10 @@ namespace seissol {
     class Bucket;
     struct MemoryInfo;
     class Layer;
+
+#ifdef ACL_DEVICE
+    class ScratchPadMemory;
+#endif
   }
 }
 
@@ -80,6 +86,11 @@ struct seissol::initializers::Bucket {
   Bucket() : index(std::numeric_limits<unsigned>::max()) {}
 };
 
+
+#ifdef ACL_DEVICE
+struct seissol::initializers::ScratchPadMemory: public seissol::initializers::Bucket{};
+#endif
+
 struct seissol::initializers::MemoryInfo {
   size_t bytes;
   size_t alignment;
@@ -95,11 +106,24 @@ private:
   void** m_buckets;
   size_t* m_bucketSizes;
 
-  LayerContainer m_cotanier;   // DEBUGGING::RAVIL
+#ifdef ACL_DEVICE
+  void** m_scratch_pards{};
+  size_t* m_ScratchPadSizes{};
+  LayerContainer m_cotanier;
+#endif
+
+
 
 public:
   Layer() : m_numberOfCells(0), m_vars(NULL), m_buckets(NULL), m_bucketSizes(NULL) {}
-  ~Layer() { delete[] m_vars; delete[] m_buckets; delete[] m_bucketSizes; }
+  ~Layer() { delete[] m_vars;
+             delete[] m_buckets;
+             delete[] m_bucketSizes;
+#ifdef ACL_DEVICE
+             delete[] m_scratch_pards;
+             delete[] m_ScratchPadSizes;
+#endif
+  }
   
   template<typename T>
   T* var(Variable<T> const& handle) {
@@ -113,6 +137,14 @@ public:
     assert(m_buckets != NULL && m_buckets[handle.index] != NULL);
     return m_buckets[handle.index];
   }
+
+#ifdef ACL_DEVICE
+  void* scratch_mem(ScratchPadMemory const& handle) {
+    assert(handle.index != std::numeric_limits<unsigned>::max());
+    assert(m_scratch_pards != NULL/* && m_vars[handle.index] != NULL*/);
+    return (m_scratch_pards[handle.index]);
+  }
+#endif
   
   /// i-th bit of layerMask shall be set if data is masked on the i-th layer
   inline bool isMasked(LayerMask layerMask) const {
@@ -130,7 +162,7 @@ public:
   inline unsigned getNumberOfCells() const {
     return m_numberOfCells;
   }
-  
+
   inline void setNumberOfCells(unsigned numberOfCells) {
     m_numberOfCells = numberOfCells;
   }
@@ -144,12 +176,31 @@ public:
     m_bucketSizes = new size_t[numBuckets];
     std::fill(m_bucketSizes, m_bucketSizes + numBuckets, 0);
   }
+
+#ifdef ACL_DEVICE
+  inline void allocateScratchPadArrays(unsigned numScratchPads) {
+    assert(m_scratch_pards == nullptr && m_ScratchPadSizes == nullptr);
+
+    m_scratch_pards = new void*[numScratchPads];
+    std::fill(m_scratch_pards, m_scratch_pards + numScratchPads, nullptr);
+
+    m_ScratchPadSizes = new size_t[numScratchPads];
+    std::fill(m_ScratchPadSizes, m_ScratchPadSizes + numScratchPads, 0);
+  }
+#endif
   
   inline void setBucketSize(Bucket const& handle, size_t size) {
     assert(m_bucketSizes != NULL);
     m_bucketSizes[handle.index] = size;
   }
-  
+
+#ifdef ACL_DEVICE
+  inline void setScratchPadSize(ScratchPadMemory const& handle, size_t size) {
+    assert(m_ScratchPadSizes != NULL);
+    m_ScratchPadSizes[handle.index] = size;
+  }
+#endif
+
   void addVariableSizes(std::vector<MemoryInfo> const& vars, std::vector<size_t>& bytes) {
     for (unsigned var = 0; var < vars.size(); ++var) {
       if (!isMasked(vars[var].mask)) {
@@ -163,6 +214,14 @@ public:
       bytes[bucket] += m_bucketSizes[bucket];
     }
   }
+
+#ifdef ACL_DEVICE
+  void findMaxScratchPadSizes(std::vector<size_t>& bytes) {
+    for (unsigned id = 0; id < bytes.size(); ++id) {
+      bytes[id] = std::max(bytes[id], m_ScratchPadSizes[id]);
+    }
+  }
+#endif
 
   void setMemoryRegionsForVariables(std::vector<MemoryInfo> const& vars, void** memory, std::vector<size_t>& offsets) {
     assert(m_vars != NULL);
@@ -179,10 +238,22 @@ public:
       m_buckets[bucket] = static_cast<char*>(memory[bucket]) + offsets[bucket];
     }
   }
-  
+
+#ifdef ACL_DEVICE
+  void setMemoryRegionsForScratchPads(void** memory, unsigned numScratchPads) {
+    assert(m_scratch_pards != NULL);
+    for (unsigned id = 0; id < numScratchPads; ++id) {
+      m_scratch_pards[id] = static_cast<char*>(memory[id]);
+    }
+  }
+#endif
+
   void touchVariables(std::vector<MemoryInfo> const& vars) {
     for (unsigned var = 0; var < vars.size(); ++var) {
-      if (!isMasked(vars[var].mask)) {
+
+      // NOTE: we don't init the device memory with zeros at this point
+      // we will do deep-copy from the host to a device later on
+      if ((!isMasked(vars[var].mask)) && (vars[var].memkind != seissol::memory::DeviceGlobalMemory)) {
 #ifdef _OPENMP
 #pragma omp parallel for schedule(static)
 #endif
@@ -193,11 +264,12 @@ public:
     }
   }
 
-
+#ifdef ACL_DEVICE
   // DEBUGGING::RAVIL
   LayerContainer& getLayerContainer() {
       return m_cotanier;
   }
+#endif
 };
 
 #endif

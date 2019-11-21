@@ -72,6 +72,8 @@ void seissol::kernels::Local::setGlobalData(GlobalData const* global) {
   m_localFluxKernelPrototype.fMrT = global->localChangeOfBasisMatricesTransposed;
 }
 
+
+
 void seissol::kernels::Local::computeIntegral(  real       i_timeIntegratedDegreesOfFreedom[tensor::I::size()],
                                                 LocalData& data,
                                                 LocalTmp& )
@@ -107,6 +109,47 @@ void seissol::kernels::Local::computeIntegral(  real       i_timeIntegratedDegre
       lfKrnl.execute(face);
     }
   }
+}
+
+void seissol::kernels::Local::computeIntegralWithinWorkItem(real* i_timeIntegratedScratchMem,
+                                                            kernels::LocalData::Loader &loader,
+                                                            conditional_table_t &table,
+                                                            LocalTmp& )
+{
+  std::cout << "MY LOCAL INTEGRAL" << std::endl;
+  /*
+  // assert alignments
+#ifndef NDEBUG
+  assert( ((uintptr_t)i_timeIntegratedDegreesOfFreedom) % ALIGNMENT == 0 );
+  assert( ((uintptr_t)data.dofs)              % ALIGNMENT == 0 );
+#endif
+
+  kernel::volume volKrnl = m_volumeKernelPrototype;
+  volKrnl.Q = data.dofs;
+  volKrnl.I = i_timeIntegratedDegreesOfFreedom;
+  for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
+    volKrnl.star(i) = data.localIntegration.starMatrices[i];
+  }
+
+  // Optional source term
+  set_ET(volKrnl, get_ptr_sourceMatrix<seissol::model::LocalData>(data.localIntegration.specific));
+
+  kernel::localFlux lfKrnl = m_localFluxKernelPrototype;
+  lfKrnl.Q = data.dofs;
+  lfKrnl.I = i_timeIntegratedDegreesOfFreedom;
+  lfKrnl._prefetch.I = i_timeIntegratedDegreesOfFreedom + tensor::I::size();
+  lfKrnl._prefetch.Q = data.dofs + tensor::Q::size();
+
+  volKrnl.execute();
+
+  for( unsigned int face = 0; face < 4; face++ ) {
+    // no element local contribution in the case of dynamic rupture boundary conditions
+    if( data.cellInformation.faceTypes[face] != dynamicRupture ) {
+      lfKrnl.AplusT = data.localIntegration.nApNm1[face];
+      lfKrnl.execute(face);
+    }
+  }
+  */
 }
 
 void seissol::kernels::Local::flopsIntegral(  enum faceType const i_faceTypes[4],

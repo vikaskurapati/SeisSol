@@ -34,3 +34,6 @@
 [submodule "submodules/pythonXdmfReader"]
 	path = submodules/pythonXdmfReader
 	url = ../../Thomas-Ulrich/pythonXdmfReader
+[submodule "submodules/Device"]
+	path = submodules/Device
+	url = https://github.com/SeisSol/Device.git

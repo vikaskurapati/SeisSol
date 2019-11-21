@@ -91,9 +91,12 @@ operator!(const T& condition) {
  * Refer to Condition Class if you need much more sophisticated behaviour
 */
 template<typename T>
+constexpr
 typename std::enable_if<std::is_same<FaceKinds, T>::value ||
                         std::is_same<KernelNames, T>::value ||
-                        std::is_same<FaceRelations, T>:: value ||
+                        std::is_same<FaceRelations, T>::value ||
+                        std::is_same<TimeComputationKind, T>:: value ||
+                        std::is_same<VariableID, T>::value ||
                         std::is_same<ExchangeInfo, T>::value, encode_t>::type
 operator*(const T& condition) {
     return static_cast<encode_t>(condition);

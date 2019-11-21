@@ -54,7 +54,12 @@ foreach(component ${component_list})
         set(component_found True)
 
 
-    elseif ("${component}" STREQUAL "DEVICE_BLAS")
+    elseif ("${component}" STREQUAL "ACL_DEVICE_BLAS")
+        add_subdirectory(submodules/Device/cuda)
+        set(GemmTools_LIBRARIES ${GemmTools_LIBRARIES} custom_blas)
+        set(GemmTools_INCLUDE_DIR ${GemmTools_INCLUDE_DIR} submodules/Device/cuda/src)
+        set(GemmTools_DEFINITIONS ${GemmTools_DEFINITIONS} ACL_DEVICE)
+
         set(component_found True)
 
 

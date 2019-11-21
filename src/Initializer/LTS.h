@@ -49,6 +49,7 @@
 #error Preprocessor flag CONVERGENCE_ORDER is not in {2, 3, 4, 5, 6, 7, 8}.
 #endif
 
+#ifndef ACL_DEVICE
 #   define MEMKIND_GLOBAL   seissol::memory::HighBandwidth
 #if CONVERGENCE_ORDER <= 7
 #   define MEMKIND_TIMEDOFS seissol::memory::HighBandwidth
@@ -65,6 +66,14 @@
 #else
 #   define MEMKIND_DOFS     seissol::memory::Standard
 #endif
+
+#else
+#	define MEMKIND_GLOBAL   seissol::memory::Standard
+#	define MEMKIND_CONSTANT seissol::memory::Standard
+#	define MEMKIND_DOFS     seissol::memory::DeviceUnifiedMemory
+#	define MEMKIND_TIMEDOFS seissol::memory::DeviceUnifiedMemory
+#endif
+
 
 namespace seissol {
   namespace initializers {
@@ -90,6 +99,21 @@ struct seissol::initializers::LTS {
   Variable<CellDRMapping[4]>              drMapping;
   Variable<real[7]>                       pstrain;
   Variable<real*>                         displacements;
+
+#ifdef ACL_DEVICE
+  // DEBUGGING::RAVIL
+  Variable<LocalIntegrationData>          localIntegrationDevice;
+  Variable<NeighboringIntegrationData>    neighboringIntegrationDevice;
+
+  //Variable<CellMaterialData>              materialDevice;
+  //Variable<PlasticityData>                plasticityDevice;
+  //Variable<CellDRMapping[4]>              drMappingDevice;
+  //Variable<real[7]>                       pstrainDevice;
+
+  ScratchPadMemory                       idofs_scratch;
+  ScratchPadMemory                       derivatives_scratch;
+#endif
+
   Bucket                                  buffersDerivatives;
   Bucket                                  displacementsBuffer;
   
@@ -107,7 +131,7 @@ struct seissol::initializers::LTS {
     tree.addVar(                 buffers,      LayerMask(),                 1,      MEMKIND_TIMEDOFS );
     tree.addVar(             derivatives,      LayerMask(),                 1,      MEMKIND_TIMEDOFS );
     tree.addVar(         cellInformation,      LayerMask(),                 1,      MEMKIND_CONSTANT );
-    tree.addVar(           faceNeighbors, LayerMask(Ghost),                 1,      MEMKIND_TIMEDOFS );
+    tree.addVar(           faceNeighbors, LayerMask(Ghost),                 1,      MEMKIND_GLOBAL  ); // DEBUGGING: used to be MEMKIND_TIMEDOFS
     tree.addVar(        localIntegration, LayerMask(Ghost),                 1,      MEMKIND_CONSTANT );
     tree.addVar(  neighboringIntegration, LayerMask(Ghost),                 1,      MEMKIND_CONSTANT );
     tree.addVar(                material, LayerMask(Ghost),                 1,      seissol::memory::Standard );
@@ -115,7 +139,19 @@ struct seissol::initializers::LTS {
     tree.addVar(               drMapping, LayerMask(Ghost),                 1,      MEMKIND_CONSTANT );
     tree.addVar(                 pstrain,   plasticityMask,     PAGESIZE_HEAP,      seissol::memory::Standard );
     tree.addVar(           displacements, LayerMask(Ghost),     PAGESIZE_HEAP,      seissol::memory::Standard );
-    
+
+#ifdef ACL_DEVICE
+    // DEBUGGING::RAVIL
+    tree.addVar(       localIntegrationDevice,   LayerMask(Ghost),  1,      seissol::memory::DeviceGlobalMemory );
+    tree.addVar( neighboringIntegrationDevice,   LayerMask(Ghost),  1,      seissol::memory::DeviceGlobalMemory );
+    //tree.addVar(               materialDevice, LayerMask(Ghost),    1,      seissol::memory::DeviceGlobalMemory );
+    //tree.addVar(             plasticityDevice,   plasticityMask,    1,      seissol::memory::DeviceGlobalMemory );
+    //tree.addVar(              drMappingDevice, LayerMask(Ghost),    1,      seissol::memory::DeviceGlobalMemory );
+    //tree.addVar(                pstrainDevice,   plasticityMask,    1,      seissol::memory::DeviceGlobalMemory );
+    tree.addScratchPad(         idofs_scratch,                      1,       seissol::memory::DeviceGlobalMemory);
+    tree.addScratchPad(   derivatives_scratch,                      1,       seissol::memory::DeviceGlobalMemory);
+#endif
+
     tree.addBucket(buffersDerivatives,                          PAGESIZE_HEAP,      MEMKIND_TIMEDOFS );
     tree.addBucket(displacementsBuffer,                         PAGESIZE_HEAP,      MEMKIND_TIMEDOFS );
   }

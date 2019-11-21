@@ -412,6 +412,9 @@ void seissol::time_stepping::TimeCluster::waitForInits() {
 
 #endif
 
+
+
+#ifndef ACL_DEVICE
 void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::initializers::Layer&  i_layerData ) {
   SCOREP_USER_REGION( "computeLocalIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
 
@@ -484,6 +487,48 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 
   m_loopStatistics->end(m_regionComputeLocalIntegration, i_layerData.getNumberOfCells());
 }
+
+#else // if defined(ACL_DEVICE)
+#include <iostream>
+#include <device_utils.h>
+void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::initializers::Layer&  i_layerData ) {
+  SCOREP_USER_REGION( "computeLocalIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
+
+  m_loopStatistics->begin(m_regionComputeLocalIntegration);
+
+  real**                buffers                       = i_layerData.var(m_lts->buffers);
+  real**                derivatives                   = i_layerData.var(m_lts->derivatives);
+  real**                displacements                 = i_layerData.var(m_lts->displacements);
+
+  real* idofs_scratch_mem = static_cast<real*>(i_layerData.scratch_mem(m_lts->idofs_scratch));
+  real* derivatives_scratch_mem = static_cast<real*>(i_layerData.scratch_mem(m_lts->derivatives_scratch));
+  seissol::initializers::LayerContainer &container = i_layerData.getLayerContainer();
+
+  // TODO: table must be a constance reference in order to protect any writes
+  conditional_table_t &table = container.get_conditional_table();
+
+
+  kernels::LocalData::Loader loader;
+  loader.load(*m_lts, i_layerData);
+  kernels::LocalTmp tmp;
+
+  m_timeKernel.computeAderWithinWorkItem(m_timeStepWidth,
+                                         tmp,
+                                         loader,
+                                         table,
+                                         idofs_scratch_mem,
+                                         derivatives_scratch_mem,
+                                         derivatives);
+
+
+  m_localKernel.computeIntegralWithinWorkItem(idofs_scratch_mem,
+                                              loader,
+                                              table,
+                                              tmp);
+
+  m_loopStatistics->end(m_regionComputeLocalIntegration, i_layerData.getNumberOfCells());
+}
+#endif
 
 void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol::initializers::Layer&  i_layerData ) {
   SCOREP_USER_REGION( "computeNeighboringIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )

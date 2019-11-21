@@ -148,6 +148,13 @@ class seissol::initializers::MemoryManager {
     //! global data
     struct GlobalData     m_globalData;
 
+#ifdef ACL_DEVICE
+    /*
+     * Cross-cluster
+     */
+    //! global data allocated on device(s) address space
+    struct GlobalDataOnDevice m_deviceGlobalData;
+#endif
     //! Memory organisation tree
     LTSTree               m_ltsTree;
     LTS                   m_lts;
@@ -180,6 +187,14 @@ class seissol::initializers::MemoryManager {
      * Derives the size of the displacement accumulation buffer.
      */
     void deriveDisplacementsBucket();
+
+
+#ifdef ACL_DEVICE
+    /**
+     * Derives the sizes of scratch memory required during the computations
+     */
+    void deriveScratchPadMemoryRequired();
+#endif
     
     /**
      * Initializes the displacement accumulation buffer.
@@ -274,6 +289,11 @@ class seissol::initializers::MemoryManager {
      *  NOTE: DEBUGGING::RAVIL
      **/
     void initConditionalOffsets();
+
+#ifdef ACL_DEVICE
+    void allocateDeviceComputeBuffer();
+    void freeVariablesOnDevice();
+#endif
 };
 
 #endif

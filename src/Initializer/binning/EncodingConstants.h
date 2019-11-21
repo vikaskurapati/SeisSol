@@ -8,12 +8,14 @@ namespace seissol {
     namespace initializers {
         namespace binning {
 
-            enum struct MatrixID: encode_t{dofs = 0,
-                                           integrated_dofs,
-                                           start,
-                                           AplusT,
-                                           AminusT,
-                                           Count};
+            enum struct VariableID: encode_t{dofs = 0,
+                                             idofs,
+                                             start,
+                                             buffers,
+                                             derivatives,
+                                             AplusT,
+                                             AminusT,
+                                             Count};
 
 
             const encode_t ALL_BITS = ~static_cast<encode_t>(0);
@@ -21,11 +23,20 @@ namespace seissol {
                 return ~(ALL_BITS << Count);
             }
 
-            enum struct KernelNames: encode_t{time = 1 << 0, 
-                                              local = 1 << 1,
-                                              neighbor = 1 << 2,
-                                              Count = 3,
+            enum struct KernelNames: encode_t{time = 1 << 0,
+                                              volume = 1 << 1,
+                                              local_flux = 1 << 2,
+                                              neighbor_flux = 1 << 3,
+                                              Count = 5,
                                               any = encode_any(Count)};
+
+
+            enum struct TimeComputationKind: encode_t{with_derivatives = 1 << 0,
+                                                      without_derivatives = 1 << 1,
+                                                      with_gts_buffers = 1 << 2,
+                                                      with_lts_buffers = 1 << 3,
+                                                      Count = 5,
+                                                      any = encode_any(Count)};
 
 
             enum struct FaceKinds: encode_t{regular = 1 << 0, 

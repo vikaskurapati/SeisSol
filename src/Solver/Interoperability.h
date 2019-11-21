@@ -422,6 +422,13 @@ class seissol::Interoperability {
     * Finalizes I/O
     */
    void finalizeIO();
+
+#ifdef ACL_DEVICE
+   /**
+    * Finalizes Device, i.e. free all allocated data on devices
+    * */
+   void freeDeviceData();
+#endif
 };
 
 #endif

@@ -246,6 +246,11 @@ extern "C" {
 	  e_interoperability.finalizeIO();
   }
 
+#ifdef ACL_DEVICE
+  void c_interoperability_freeDeviceData() {
+      e_interoperability.freeDeviceData();
+  }
+#endif
   // c to fortran
   extern void f_interoperability_computeSource(  void   *i_domain,
                                                  int    *i_meshId,
@@ -402,10 +407,11 @@ void seissol::Interoperability::initializeClusteredLts( int i_clustering, bool e
   // get backward coupling
   m_globalData = seissol::SeisSol::main.getMemoryManager().getGlobalData();
 
+#ifdef ACL_DEVICE
   // DEBUGGIN:ravil:: init offsets based on conditional statements within compute kernels
   // for all variables, for all clusters
   seissol::SeisSol::main.getMemoryManager().initConditionalOffsets();
-
+#endif
 }
 
 #if defined(USE_NETCDF) && !defined(NETCDF_PASSIVE)
@@ -890,3 +896,9 @@ void seissol::Interoperability::computeMInvJInvPhisAtSources(double x, double y,
     mInvJInvPhisAtSources[bf] = f_mInvJInvPhisAtSources[bf];
   }
 }
+
+#ifdef ACL_DEVICE
+void seissol::Interoperability::freeDeviceData() {
+    seissol::SeisSol::main.getMemoryManager().freeVariablesOnDevice();
+}
+#endif

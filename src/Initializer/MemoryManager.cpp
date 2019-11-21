@@ -80,10 +80,20 @@
 #include <omp.h>
 #endif
 
+#ifdef ACL_DEVICE
+#include <device_utils.h>
+#endif
+
 void seissol::initializers::MemoryManager::initialize()
 {
   // initialize global matrices
   initializeGlobalData( m_globalData, m_memoryAllocator, MEMKIND_GLOBAL );
+
+#ifdef ACL_DEVICE
+  // initialize global matrices on a Device
+  initializeGlobalDataOnDevice(m_deviceGlobalData, m_memoryAllocator);
+  compareGlobalData(m_globalData, m_deviceGlobalData);
+#endif
 }
 
 void seissol::initializers::MemoryManager::correctGhostRegionSetups()
@@ -474,6 +484,28 @@ void seissol::initializers::MemoryManager::deriveDisplacementsBucket()
   }
 }
 
+#ifdef ACL_DEVICE
+void seissol::initializers::MemoryManager::deriveScratchPadMemoryRequired() {
+  size_t totalDerivativesSize = yateto::computeFamilySize<tensor::dQ>();
+
+  for ( seissol::initializers::LTSTree::leaf_iterator layer = m_ltsTree.beginLeaf(m_lts.displacements.mask); layer != m_ltsTree.endLeaf(); ++layer) {
+    CellLocalInformation* cellInformation = layer->var(m_lts.cellInformation);
+
+    unsigned numberOfDerivatives = 0;
+    for (unsigned cell = 0; cell < layer->getNumberOfCells(); ++cell) {
+      bool needsDerivatives = (cellInformation[cell].ltsSetup >> 9) % 2 == 1;
+      if (needsDerivatives) {
+        ++numberOfDerivatives;
+      }
+    }
+
+    layer->setScratchPadSize(m_lts.idofs_scratch, layer->getNumberOfCells() * tensor::I::size() * sizeof(real));
+    layer->setScratchPadSize(m_lts.derivatives_scratch, numberOfDerivatives * totalDerivativesSize * sizeof(real));
+
+  }
+}
+#endif
+
 void seissol::initializers::MemoryManager::initializeDisplacements()
 {
   for ( seissol::initializers::LTSTree::leaf_iterator layer = m_ltsTree.beginLeaf(m_lts.displacements.mask); layer != m_ltsTree.endLeaf(); ++layer) {
@@ -530,6 +562,10 @@ void seissol::initializers::MemoryManager::initializeMemoryLayout(bool enableFre
     deriveDisplacementsBucket();
   }
 
+#ifdef ACL_DEVICE
+  deriveScratchPadMemoryRequired();
+  m_ltsTree.allocateScratchPads();
+#endif
 
   m_ltsTree.allocateBuckets();
 
@@ -569,13 +605,29 @@ void seissol::initializers::MemoryManager::getMemoryLayout( unsigned int        
 
 
 
-#include <iostream>
+#ifdef ACL_DEVICE
 #include "binning/algorithm.h"
 void seissol::initializers::MemoryManager::initConditionalOffsets() {
-    for (unsigned tc = 0; tc < m_ltsTree.numChildren(); ++tc) {
-        TimeCluster& cluster = m_ltsTree.child(tc);
-        std::cout << "INFO::the current cluster: " << tc << std::endl;
+  for (LTSTree::leaf_iterator it = m_ltsTree.beginLeaf(Ghost); it != m_ltsTree.endLeaf(); ++it) {
+    seissol::initializers::binning::test(m_lts, *it);
+  }
+}
+#endif
 
-        seissol::initializers::binning::test(m_lts, cluster.child<Interior>());
+#ifdef ACL_DEVICE
+/** Deallocates all data allocated on a device(s)
+ *
+ * NOTE: a tree is initialized with a static object. Deallocation of resources is going to happen
+ * at the very end of the program. At that time, any device drive is going to be detached. Deallocation under this
+ * condition will lead to a segmentation fault. Thus, the user must explicitly deallocate all variables allocated
+ * on a device(s) in advance
+ * */
+void seissol::initializers::MemoryManager::freeVariablesOnDevice() {
+    m_ltsTree.freeDeviceVariablesExplicitly();
+    m_ltsTree.freeLeavesContainersExplicitly();
+
+    for (auto address: m_deviceGlobalData.address_registry) {
+        m_memoryAllocator.deallocateMemory((void*)address, seissol::memory::DeviceGlobalMemory);
     }
 }
+#endif

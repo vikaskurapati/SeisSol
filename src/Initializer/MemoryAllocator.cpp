@@ -68,7 +68,13 @@
  * @section DESCRIPTION
  * Aligned memory allocation.
  **/
+
+#include <algorithm>
 #include "MemoryAllocator.h"
+
+#ifdef ACL_DEVICE
+    #include "device_utils.h"
+#endif
 
 #include <utils/logger.h>
 
@@ -84,7 +90,7 @@ void* seissol::memory::allocate(size_t i_size, size_t i_alignment, enum Memkind 
       return l_ptrBuffer;
     }
 
-#ifdef USE_MEMKIND
+#if defined(USE_MEMKIND) || defined(ACL_DEVICE)
     if( i_memkind == 0 ) {
 #endif
       if (i_alignment % (sizeof(void*)) != 0) {
@@ -94,32 +100,69 @@ void* seissol::memory::allocate(size_t i_size, size_t i_alignment, enum Memkind 
         error = (posix_memalign( &l_ptrBuffer, i_alignment, i_size ) != 0);
       }
 #ifdef USE_MEMKIND
-    } else {
+    }
+    else if (i_memkind == HighBandwidth) {
       if (i_alignment % (sizeof(void*)) != 0) {
         l_ptrBuffer = hbw_malloc( i_size );
         error = (l_ptrBuffer == NULL);
+
       } else {
         error = (hbw_posix_memalign( &l_ptrBuffer, i_alignment, i_size ) != 0);
-      } 
+      }
     }
 #endif
-    
+
+#ifdef ACL_DEVICE
+    }
+    else if (i_memkind == DeviceGlobalMemory){
+      l_ptrBuffer = device_malloc(i_size);
+    }
+    else if (i_memkind == DeviceUnifiedMemory){
+      l_ptrBuffer = device_malloc_unified(i_size);
+    }
+    else if (i_memkind == PinnedMemory) {
+      l_ptrBuffer = device_malloc_pinned(i_size);
+    }
+#endif
+
+#if defined(USE_MEMKIND) || defined(ACL_DEVICE)
+    else {
+        logError() << "unknown memkind type used (" << i_memkind << "). Please, refer to the documentation";
+    }
+#endif
+
     if (error) {
-      logError() << "The malloc failed (bytes: " << i_size << ", alignment: " << i_alignment << ", memkind: " << i_memkind << ").";
+        logError() << "The malloc failed (bytes: " << i_size << ", alignment: " << i_alignment << ", memkind: " << i_memkind << ").";
     }
 
     return l_ptrBuffer;
 }
 
-void seissol::memory::free(void* i_pointer, enum Memkind i_memkind)
-{
-#ifdef USE_MEMKIND
+void seissol::memory::free(void* i_pointer, enum Memkind i_memkind) {
+#if defined(USE_MEMKIND) || defined(ACL_DEVICE)
     if (i_memkind == Standard) {
 #endif
-      ::free( i_pointer );
+        ::free(i_pointer);
 #ifdef USE_MEMKIND
-    } else {
-      hbw_free( i_pointer );
+        }
+        else if (i_memkind == HighBandwidth) {
+          hbw_free(i_pointer);
+        }
+#endif
+
+#ifdef ACL_DEVICE
+    }
+    else if ((i_memkind == DeviceGlobalMemory) || (i_memkind == DeviceUnifiedMemory)) {
+        device_free(i_pointer);
+    }
+    else if (i_memkind == PinnedMemory) {
+        device_free_pinned(i_pointer);
+    }
+#endif
+
+#if defined(USE_MEMKIND) || defined(ACL_DEVICE)
+    else {
+        logError() << "unknown memkind type used (" << i_memkind << "). Please, refer to the documentation";
     }
 #endif
 }
@@ -131,10 +174,22 @@ void seissol::memory::printMemoryAlignment( std::vector< std::vector<unsigned lo
   }
 }
 
+
 seissol::memory::ManagedAllocator::~ManagedAllocator()
 {
   for (AddressVector::const_iterator it = m_dataMemoryAddresses.begin(); it != m_dataMemoryAddresses.end(); ++it) {
-    seissol::memory::free(it->second, it->first);
+      if (it->first == seissol::memory::DeviceGlobalMemory) {
+          std::cout << "ERROR::device global mem. in a destructor" << std::endl;
+          throw;
+      }
+
+
+      if (it->first == seissol::memory::DeviceUnifiedMemory) {
+          std::cout << "ERROR::uniformed mem. in a destructor" << std::endl;
+          throw;
+      }
+
+      seissol::memory::free(it->second, it->first);
   }
 
   // reset memory vectors
@@ -146,4 +201,14 @@ void* seissol::memory::ManagedAllocator::allocateMemory( size_t i_size, size_t i
   void* l_ptrBuffer = seissol::memory::allocate(i_size, i_alignment, i_memkind);
   m_dataMemoryAddresses.push_back( Address(i_memkind, l_ptrBuffer) );
   return l_ptrBuffer;
+}
+
+
+void seissol::memory::ManagedAllocator::deallocateMemory(void *i_ptr, enum Memkind i_memkind) {
+    auto address = std::make_pair(i_memkind, i_ptr);
+    auto it = std::find(m_dataMemoryAddresses.begin(), m_dataMemoryAddresses.end(), address);
+    if (it != std::end(m_dataMemoryAddresses)) {
+        seissol::memory::free(it->second, it->first);
+        m_dataMemoryAddresses.erase(it);
+    }
 }

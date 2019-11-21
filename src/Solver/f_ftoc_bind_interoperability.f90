@@ -313,4 +313,10 @@ module f_ftoc_bind_interoperability
     subroutine c_interoperability_finalizeIO() bind( C, name='c_interoperability_finalizeIO' )
     end subroutine
   end interface
+
+  interface c_interoperability_freeDeviceData
+    subroutine c_interoperability_freeDeviceData() bind( C, name='c_interoperability_freeDeviceData' )
+    end subroutine
+  end interface
+
 end module

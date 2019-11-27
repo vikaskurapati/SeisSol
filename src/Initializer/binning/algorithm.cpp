@@ -66,7 +66,6 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
     // if we pass the check above, it means that we prepare all cells for puting into appropriate bins
     // --------------------------------------- primary analysis::end ---------------------------------------
 
-
     // bin cells without their own derivatives buffers
     if (!cells_without_derivatives.empty()) {
         std::vector<index_t> dofs_indices{};
@@ -173,8 +172,8 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
 
     // *************************************** volume integral ***************************************
     // bin cells for the volume integral
-
-    {
+    // NOTE: some clusters can have no elements inside
+    if (layer.getNumberOfCells()) {
         std::vector<index_t> idofs_indices{};
         std::vector<index_t> dofs_indices{};
         std::vector<index_t> start_indices{};
@@ -439,8 +438,6 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
         table[key].element_face_pairs = regular_periodic_bins[relation];
     }
 
-    layer.getLayerContainer().set_conditional_table(table);
-    layer.getLayerContainer().get_conditional_table();
     */
     /*
     // DEBUGGING

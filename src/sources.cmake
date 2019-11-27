@@ -9,7 +9,6 @@ src/Initializer/CellLocalMatrices.cpp
 #DEBUGGING::RAVIL
 src/Initializer/binning/algorithm.cpp
 
-
 src/Initializer/time_stepping/LtsLayout.cpp
 src/Initializer/tree/Lut.cpp
 src/Initializer/MemoryManager.cpp
@@ -29,6 +28,11 @@ src/generated_code/init.cpp
 src/generated_code/init.h
 src/generated_code/kernel.h
 src/generated_code/kernel.cpp
+
+
+# RAVIL DEBUGGIN
+src/generated_code/device_kernel.cpp
+src/generated_code/device_subroutine.cpp
 
 src/Solver/Simulator.cpp
 src/Solver/FreeSurfaceIntegrator.cpp

@@ -43,6 +43,10 @@
 
 #include <generated_code/kernel.h>
 
+#ifdef ACL_DEVICE
+#include <generated_code/device_kernel.h>
+#endif
+
 namespace seissol {
   namespace kernels {
     class LocalBase;
@@ -53,6 +57,11 @@ class seissol::kernels::LocalBase {
   protected:
     kernel::volume m_volumeKernelPrototype;
     kernel::localFlux m_localFluxKernelPrototype;
+
+#ifdef ACL_DEVICE
+  device_gen_code::kernel::volume m_deviceVolumeKernelPrototype;
+  device_gen_code::kernel::localFlux m_deviceLocalFluxKernelPrototype;
+#endif
 };
 
 #endif

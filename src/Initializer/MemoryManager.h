@@ -268,7 +268,14 @@ class seissol::initializers::MemoryManager {
                           struct MeshStructure          *&o_meshStructure,
                           struct GlobalData             *&o_globalData
                         );
-                          
+
+#ifdef ACL_DEVICE
+    void getMemoryLayoutExtended(unsigned int              i_cluster,
+                                 struct MeshStructure      *&o_meshStructure,
+                                 struct GlobalData         *&o_globalData,
+                                 struct GlobalDataOnDevice *&o_deviceGlobalData);
+#endif
+
     inline LTSTree* getLtsTree() {
       return &m_ltsTree;
     }
@@ -292,6 +299,7 @@ class seissol::initializers::MemoryManager {
 
 #ifdef ACL_DEVICE
     void allocateDeviceComputeBuffer();
+    void freeDeviceComputeBuffer();
     void freeVariablesOnDevice();
 #endif
 };

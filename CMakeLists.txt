@@ -90,8 +90,16 @@ add_custom_command(
        src/generated_code/kernel.h
        src/generated_code/kernel.cpp
        COMMENT "Codegen for tensor stuff."
-       )
+)
 
+
+# TODO: add a switch
+#NOTE: copy statically generated code for a device(s)
+configure_file(generated_code/staticly_gen_code/device_kernel.cpp src/generated_code/device_kernel.cpp COPYONLY)
+configure_file(generated_code/staticly_gen_code/device_kernel.h src/generated_code/device_kernel.h COPYONLY)
+
+configure_file(generated_code/staticly_gen_code/device_subroutine.cpp src/generated_code/device_subroutine.cpp COPYONLY)
+configure_file(generated_code/staticly_gen_code/device_subroutine.h src/generated_code/device_subroutine.h COPYONLY)
 
 if (PLASTICITY)
   target_compile_definitions(SeisSol-lib PUBLIC USE_PLASTICITY)
@@ -132,6 +140,7 @@ endif()
 #    flags.extend(['-ip'])
 
 # Libs
+
 find_package(yaml-cpp REQUIRED)
 
 find_package(Eigen3) # maybe enfore 3.3?
@@ -231,6 +240,7 @@ target_include_directories(SeisSol-lib PUBLIC
 				   ${CMAKE_CURRENT_SOURCE_DIR}/submodules/yateto/include
 				   ${CMAKE_CURRENT_SOURCE_DIR}/submodules/glm
 				   ${CMAKE_CURRENT_BINARY_DIR}/src/
+                   ${CMAKE_CURRENT_BINARY_DIR}/generated_code/staticly_gen_code/
 )
 
 target_compile_definitions(SeisSol-lib PUBLIC

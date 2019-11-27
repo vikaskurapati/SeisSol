@@ -85,16 +85,27 @@ void seissol::time_stepping::TimeManager::addClusters( struct TimeStepping&     
     struct GlobalData             *l_globalData              = NULL;
 
     // get memory layout of this cluster
+#ifndef ACL_DEVICE
     i_memoryManager.getMemoryLayout( l_cluster,
                                      l_meshStructure,
                                      l_globalData
                                      );
+#else
+    struct GlobalDataOnDevice *l_deviceGlobalData = nullptr;
+    i_memoryManager.getMemoryLayoutExtended(l_cluster,
+                                            l_meshStructure,
+                                            l_globalData,
+                                            l_deviceGlobalData);
+#endif
 
     // add this time cluster
     m_clusters.push_back( new TimeCluster( l_cluster,
                                            m_timeStepping.clusterIds[l_cluster],
                                            l_meshStructure,
                                            l_globalData,
+#ifdef ACL_DEVICE
+                                           l_deviceGlobalData,
+#endif
                                            &i_memoryManager.getLtsTree()->child(l_cluster),
                                            &i_memoryManager.getDynamicRuptureTree()->child(l_cluster),
                                            i_memoryManager.getLts(),

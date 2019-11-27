@@ -99,6 +99,9 @@ seissol::time_stepping::TimeCluster::TimeCluster( unsigned int                  
                                                   unsigned int                   i_globalClusterId,
                                                   struct MeshStructure          *i_meshStructure,
                                                   struct GlobalData             *i_globalData,
+#ifdef ACL_DEVICE
+                                                  struct GlobalDataOnDevice     *i_deviceGlobalData,
+#endif
                                                   seissol::initializers::TimeCluster* i_clusterData,
                                                   seissol::initializers::TimeCluster* i_dynRupClusterData,
                                                   seissol::initializers::LTS*         i_lts,
@@ -111,6 +114,9 @@ seissol::time_stepping::TimeCluster::TimeCluster( unsigned int                  
  m_meshStructure(           i_meshStructure            ),
  // global data
  m_globalData(              i_globalData               ),
+#ifdef ACL_DEVICE
+ m_deviceGlobalData(        i_deviceGlobalData         ),
+#endif
  m_clusterData(             i_clusterData              ),
  m_dynRupClusterData(       i_dynRupClusterData        ),
  m_lts(                     i_lts                      ),
@@ -154,6 +160,12 @@ seissol::time_stepping::TimeCluster::TimeCluster( unsigned int                  
   m_localKernel.setGlobalData(m_globalData);
   m_neighborKernel.setGlobalData(m_globalData);
   m_dynamicRuptureKernel.setGlobalData(m_globalData);
+
+#ifdef ACL_DEVICE
+  m_timeKernel.setGlobalDataOnDevice(m_deviceGlobalData);
+  m_localKernel.setGlobalDataOnDevice(m_deviceGlobalData);
+#endif
+
 
   computeFlops();
 
@@ -490,7 +502,6 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 
 #else // if defined(ACL_DEVICE)
 #include <iostream>
-#include <device_utils.h>
 void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::initializers::Layer&  i_layerData ) {
   SCOREP_USER_REGION( "computeLocalIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
 
@@ -525,6 +536,59 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
                                               loader,
                                               table,
                                               tmp);
+  
+
+  // steam idofs into gts cells which have their buffers
+  {
+    ConditionalKey key(*KernelNames::time, *TimeComputationKind::with_gts_buffers);
+    if (table.find(key) != table.end()) {
+      IndexTable &index_table = table[key];
+
+      unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::buffers])->cell_id;
+      unsigned num_cells = index_table.variable_indices[*VariableID::buffers]->m_indices.size();
+
+      auto data = loader.entry(base_cell_id);
+
+      device_stream_data(idofs_scratch_mem,
+                         index_table.variable_indices[*VariableID::idofs]->m_device_ptr,
+                         buffers[base_cell_id],
+                         index_table.variable_indices[*VariableID::buffers]->m_device_ptr,
+                         tensor::I::size(),
+                         num_cells);
+    }
+  }
+
+
+  // stream/update idofs into lts cells which have buffers
+  {
+    ConditionalKey key(*KernelNames::time, *TimeComputationKind::with_lts_buffers);
+    if (table.find(key) != table.end()) {
+      IndexTable &index_table = table[key];
+
+      unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::buffers])->cell_id;
+      unsigned num_cells = index_table.variable_indices[*VariableID::buffers]->m_indices.size();
+
+      auto data = loader.entry(base_cell_id);
+
+      if (m_resetLtsBuffers) {
+        device_stream_data(idofs_scratch_mem,
+                           index_table.variable_indices[*VariableID::idofs]->m_device_ptr,
+                           buffers[base_cell_id],
+                           index_table.variable_indices[*VariableID::buffers]->m_device_ptr,
+                           tensor::I::size(),
+                           num_cells);
+      }
+      else {
+        device_accumulate_data(idofs_scratch_mem,
+                               index_table.variable_indices[*VariableID::idofs]->m_device_ptr,
+                               buffers[base_cell_id],
+                               index_table.variable_indices[*VariableID::buffers]->m_device_ptr,
+                               tensor::I::size(),
+                               num_cells);
+      }
+    }
+  }
+  device_synch();
 
   m_loopStatistics->end(m_regionComputeLocalIntegration, i_layerData.getNumberOfCells());
 }

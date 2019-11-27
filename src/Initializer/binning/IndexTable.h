@@ -23,6 +23,7 @@ namespace seissol {
                     }
                 }
 
+                explicit
                 BasicIndices(const BasicIndices& other) : m_indices(other.m_indices), m_device_ptr(nullptr) {
                     if (!m_indices.empty()) {
                         if (other.m_device_ptr != nullptr) {
@@ -42,6 +43,8 @@ namespace seissol {
                     m_indices.clear();
                 }
 
+
+            // private:
                 std::vector<index_t> m_indices{};
                 index_t *m_device_ptr{};
 
@@ -49,8 +52,12 @@ namespace seissol {
 
             class RelativeIndices : public BasicIndices {
             public:
+
+                explicit
                 RelativeIndices(std::vector<index_t> i_indices,
                                 index_t i_cell_id) : cell_id(i_cell_id), BasicIndices(i_indices) {}
+
+                explicit
                 RelativeIndices(const RelativeIndices& other) : BasicIndices(other), cell_id(other.cell_id) {}
 
                 RelativeIndices& operator=(const RelativeIndices& other) = delete;
@@ -58,7 +65,9 @@ namespace seissol {
                 virtual ~RelativeIndices() {}
 
                 /** Defines an index of the element relatively which the indices were recorded.
-                 * */
+                * */
+
+            // private:
                 index_t cell_id{};
             };
 
@@ -71,6 +80,7 @@ namespace seissol {
     namespace initializers {
         namespace binning {
             struct IndexTable {
+
                 IndexTable() : m_is_empty(true) {
                     for (auto& container_ptr: variable_indices)
                         container_ptr = nullptr;

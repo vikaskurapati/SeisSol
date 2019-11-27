@@ -56,6 +56,7 @@
 GENERATE_HAS_MEMBER(ET)
 GENERATE_HAS_MEMBER(sourceMatrix)
 
+
 void seissol::kernels::Local::setGlobalData(GlobalData const* global) {
 #ifndef NDEBUG
   for (unsigned stiffness = 0; stiffness < 3; ++stiffness) {
@@ -72,6 +73,15 @@ void seissol::kernels::Local::setGlobalData(GlobalData const* global) {
   m_localFluxKernelPrototype.fMrT = global->localChangeOfBasisMatricesTransposed;
 }
 
+
+#ifdef ACL_DEVICE
+void seissol::kernels::Local::setGlobalDataOnDevice(GlobalData const* global) {
+
+  m_deviceVolumeKernelPrototype.kDivM = global->stiffnessMatrices;
+  m_deviceLocalFluxKernelPrototype.rDivM = global->changeOfBasisMatrices;
+  m_deviceLocalFluxKernelPrototype.fMrT = global->localChangeOfBasisMatricesTransposed;
+}
+#endif
 
 
 void seissol::kernels::Local::computeIntegral(  real       i_timeIntegratedDegreesOfFreedom[tensor::I::size()],
@@ -110,47 +120,67 @@ void seissol::kernels::Local::computeIntegral(  real       i_timeIntegratedDegre
     }
   }
 }
-
+#ifdef ACL_DEVICE
 void seissol::kernels::Local::computeIntegralWithinWorkItem(real* i_timeIntegratedScratchMem,
                                                             kernels::LocalData::Loader &loader,
                                                             conditional_table_t &table,
-                                                            LocalTmp& )
-{
-  std::cout << "MY LOCAL INTEGRAL" << std::endl;
-  /*
-  // assert alignments
-#ifndef NDEBUG
-  assert( ((uintptr_t)i_timeIntegratedDegreesOfFreedom) % ALIGNMENT == 0 );
-  assert( ((uintptr_t)data.dofs)              % ALIGNMENT == 0 );
-#endif
+                                                            LocalTmp& ) {
+  // Volume integral
+  ConditionalKey key(*KernelNames::volume);
+  device_gen_code::kernel::volume volKrnl = m_deviceVolumeKernelPrototype;
 
-  kernel::volume volKrnl = m_volumeKernelPrototype;
-  volKrnl.Q = data.dofs;
-  volKrnl.I = i_timeIntegratedDegreesOfFreedom;
-  for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-    volKrnl.star(i) = data.localIntegration.starMatrices[i];
+  if (table.find(key) != table.end()) {
+    IndexTable &index_table = table[key];
+    unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::dofs])->cell_id;
+    unsigned num_cells = index_table.variable_indices[*VariableID::idofs]->m_indices.size();
+
+    volKrnl.num_elements = num_cells;
+
+    auto data = loader.entry(base_cell_id);
+
+    volKrnl.Q = data.dofs;
+    volKrnl.Q_indices = index_table.variable_indices[*VariableID::dofs]->m_device_ptr;
+
+    volKrnl.I = i_timeIntegratedScratchMem;
+    volKrnl.I_indices = index_table.variable_indices[*VariableID::idofs]->m_device_ptr;
+
+    for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
+      volKrnl.star(i) = data.localIntegrationDevice.starMatrices[i];
+      volKrnl.star_indices(i) = index_table.variable_indices[*VariableID::start]->m_device_ptr;
+    }
+
+    volKrnl.execute();
   }
 
-  // Optional source term
-  set_ET(volKrnl, get_ptr_sourceMatrix<seissol::model::LocalData>(data.localIntegration.specific));
+  // Local Flux Integral
+  device_gen_code::kernel::localFlux lfKrnl = m_deviceLocalFluxKernelPrototype;
+  for (unsigned face = 0; face < 4; ++face) {
+    ConditionalKey key(*KernelNames::local_flux, !FaceKinds::dynamicRupture, face);
 
-  kernel::localFlux lfKrnl = m_localFluxKernelPrototype;
-  lfKrnl.Q = data.dofs;
-  lfKrnl.I = i_timeIntegratedDegreesOfFreedom;
-  lfKrnl._prefetch.I = i_timeIntegratedDegreesOfFreedom + tensor::I::size();
-  lfKrnl._prefetch.Q = data.dofs + tensor::Q::size();
+    if (table.find(key) != table.end()) {
+      IndexTable &index_table = table[key];
 
-  volKrnl.execute();
+      unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::dofs])->cell_id;
+      unsigned num_cells = index_table.variable_indices[*VariableID::idofs]->m_indices.size();
 
-  for( unsigned int face = 0; face < 4; face++ ) {
-    // no element local contribution in the case of dynamic rupture boundary conditions
-    if( data.cellInformation.faceTypes[face] != dynamicRupture ) {
-      lfKrnl.AplusT = data.localIntegration.nApNm1[face];
+      auto data = loader.entry(base_cell_id);
+
+      lfKrnl.num_elements = num_cells;
+
+      lfKrnl.Q = data.dofs;
+      lfKrnl.Q_indices = index_table.variable_indices[*VariableID::dofs]->m_device_ptr;
+
+      lfKrnl.I = i_timeIntegratedScratchMem;
+      lfKrnl.I_indices = index_table.variable_indices[*VariableID::idofs]->m_device_ptr;
+
+      lfKrnl.AplusT = data.localIntegrationDevice.nApNm1[face];
+      lfKrnl.AplusT_indices = index_table.variable_indices[*VariableID::AplusT]->m_device_ptr;
+
       lfKrnl.execute(face);
     }
   }
-  */
 }
+#endif
 
 void seissol::kernels::Local::flopsIntegral(  enum faceType const i_faceTypes[4],
                                               unsigned int        &o_nonZeroFlops,

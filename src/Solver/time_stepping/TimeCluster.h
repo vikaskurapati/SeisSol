@@ -141,6 +141,13 @@ private:
      //! global data structures
     struct GlobalData *m_globalData;
 
+#ifdef ACL_DEVICE
+  /*
+   * global data allocated on a device memory
+   */
+  struct GlobalDataOnDevice *m_deviceGlobalData;
+#endif
+
     /*
      * element data and mpi queues
      */     
@@ -386,6 +393,9 @@ private:
                  unsigned int                   i_globalClusterId,
                  struct MeshStructure          *i_meshStructure,
                  struct GlobalData             *i_globalData,
+#ifdef ACL_DEVICE
+                 struct GlobalDataOnDevice             *i_deviceGlobalData,
+#endif
                  seissol::initializers::TimeCluster* i_clusterData,
                  seissol::initializers::TimeCluster* i_dynRupClusterData,
                  seissol::initializers::LTS*         i_lts,

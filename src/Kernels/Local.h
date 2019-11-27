@@ -58,14 +58,19 @@ class seissol::kernels::Local : public LocalBase {
   public:
     void setGlobalData(GlobalData const* global);
 
+#ifdef ACL_DEVICE
+  void setGlobalDataOnDevice(GlobalData const* global);
+#endif
+
     void computeIntegral( real       i_timeIntegratedDegreesOfFreedom[tensor::I::size()],
                           LocalData& data,
                           LocalTmp&  tmp );
-
+#ifdef ACL_DEVICE
     void computeIntegralWithinWorkItem(real* i_timeIntegratedScratchMem,
                                        kernels::LocalData::Loader &loader,
                                        conditional_table_t &table,
                                        LocalTmp& tmp);
+#endif
 
     void flopsIntegral( enum faceType const i_faceTypes[4],
                         unsigned int        &o_nonZeroFlops,

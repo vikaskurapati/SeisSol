@@ -98,7 +98,11 @@ namespace seissol {
   namespace kernels {
     struct LocalTmp {
     };
+#ifndef ACL_DEVICE
     LTSTREE_GENERATE_INTERFACE(LocalData, initializers::LTS, cellInformation, localIntegration, dofs)
+#else
+    LTSTREE_GENERATE_INTERFACE(LocalData, initializers::LTS, cellInformation, localIntegration, dofs, localIntegrationDevice)
+#endif
     LTSTREE_GENERATE_INTERFACE(NeighborData, initializers::LTS, cellInformation, neighboringIntegration, dofs)
   }
 }

@@ -488,19 +488,19 @@ void seissol::initializers::MemoryManager::deriveDisplacementsBucket()
 void seissol::initializers::MemoryManager::deriveScratchPadMemoryRequired() {
   size_t totalDerivativesSize = yateto::computeFamilySize<tensor::dQ>();
 
-  for ( seissol::initializers::LTSTree::leaf_iterator layer = m_ltsTree.beginLeaf(m_lts.displacements.mask); layer != m_ltsTree.endLeaf(); ++layer) {
+  for ( seissol::initializers::LTSTree::leaf_iterator layer = m_ltsTree.beginLeaf(); layer != m_ltsTree.endLeaf(); ++layer) {
     CellLocalInformation* cellInformation = layer->var(m_lts.cellInformation);
 
-    unsigned numberOfDerivatives = 0;
+    unsigned numberOfDerivativesInScratchMem = 0;
     for (unsigned cell = 0; cell < layer->getNumberOfCells(); ++cell) {
-      bool needsDerivatives = (cellInformation[cell].ltsSetup >> 9) % 2 == 1;
-      if (needsDerivatives) {
-        ++numberOfDerivatives;
+      bool needsScratchMemForDerivatives = (cellInformation[cell].ltsSetup >> 9) % 2 == 0;
+      if (needsScratchMemForDerivatives) {
+        ++numberOfDerivativesInScratchMem;
       }
     }
 
     layer->setScratchPadSize(m_lts.idofs_scratch, layer->getNumberOfCells() * tensor::I::size() * sizeof(real));
-    layer->setScratchPadSize(m_lts.derivatives_scratch, numberOfDerivatives * totalDerivativesSize * sizeof(real));
+    layer->setScratchPadSize(m_lts.derivatives_scratch, numberOfDerivativesInScratchMem * totalDerivativesSize * sizeof(real));
 
   }
 }
@@ -602,6 +602,19 @@ void seissol::initializers::MemoryManager::getMemoryLayout( unsigned int        
   o_meshStructure           =  m_meshStructure + i_cluster;
   o_globalData              = &m_globalData;
 }
+
+#ifdef ACL_DEVICE
+void seissol::initializers::MemoryManager::getMemoryLayoutExtended(unsigned int               i_cluster,
+                                                                   struct MeshStructure       *&o_meshStructure,
+                                                                   struct GlobalData          *&o_globalData,
+                                                                   struct GlobalDataOnDevice  *&o_deviceGlobalData)
+{
+  o_meshStructure           =  m_meshStructure + i_cluster;
+  o_globalData              = &m_globalData;
+  o_deviceGlobalData        = &m_deviceGlobalData;
+}
+
+#endif
 
 
 

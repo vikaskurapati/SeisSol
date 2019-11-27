@@ -216,6 +216,9 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
                            init::kDivMT::size(transposedStiffness),
                            const_cast<real*>(globalData.stiffnessMatricesTransposed(transposedStiffness)));
     }
+
+
+    // TODO: allocate a common mem. space for idofs and derivatives
 }
 
 void seissol::initializers::compareGlobalData(const GlobalData &host, const GlobalDataOnDevice &device) {

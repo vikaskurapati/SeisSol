@@ -27,7 +27,7 @@ namespace seissol {
                                               volume = 1 << 1,
                                               local_flux = 1 << 2,
                                               neighbor_flux = 1 << 3,
-                                              Count = 5,
+                                              Count = 4,
                                               any = encode_any(Count)};
 
 
@@ -35,7 +35,7 @@ namespace seissol {
                                                       without_derivatives = 1 << 1,
                                                       with_gts_buffers = 1 << 2,
                                                       with_lts_buffers = 1 << 3,
-                                                      Count = 5,
+                                                      Count = 4,
                                                       any = encode_any(Count)};
 
 

@@ -89,12 +89,17 @@ class seissol::kernels::Time : public TimeBase {
   public:
     void setGlobalData(GlobalData const* global);
 
+#ifdef ACL_DEVICE
+    void setGlobalDataOnDevice(GlobalData const* global);
+#endif
+
     void computeAder( double                      i_timeStepWidth,
                       LocalData&                  data,
                       LocalTmp&                   tmp,
                       real                        o_timeIntegrated[tensor::I::size()],
                       real*                       o_timeDerivatives = NULL );
 
+#ifdef ACL_DEVICE
     void computeAderWithinWorkItem(double i_timeStepWidth,
                                    LocalTmp& tmp,
                                    kernels::LocalData::Loader &loader,
@@ -102,6 +107,8 @@ class seissol::kernels::Time : public TimeBase {
                                    real *o_timeIntegratedScratchMem,
                                    real *o_timeDerivativesScratchMem,
                                    real **derivatives);
+
+#endif
 
     void flopsAder( unsigned int &o_nonZeroFlops,
                     unsigned int &o_hardwareFlops );

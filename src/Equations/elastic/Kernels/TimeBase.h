@@ -72,6 +72,9 @@
 #define KERNELS_TIMEBASE_H_
 
 #include <generated_code/kernel.h>
+#ifdef ACL_DEVICE
+#include <generated_code/device_kernel.h>
+#endif
 
 namespace seissol {
   namespace kernels {
@@ -93,6 +96,10 @@ class seissol::kernels::TimeBase {
     unsigned int m_derivativesOffsets[CONVERGENCE_ORDER];
     
     kernel::derivative m_krnlPrototype;
+
+#ifdef ACL_DEVICE
+    device_gen_code::kernel::derivative m_DeviceKrnlPrototype;
+#endif
 
   public:
     /**

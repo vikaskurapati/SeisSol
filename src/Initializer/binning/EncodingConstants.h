@@ -15,6 +15,7 @@ namespace seissol {
                                              derivatives,
                                              AplusT,
                                              AminusT,
+                                             elements_ids,
                                              Count};
 
 

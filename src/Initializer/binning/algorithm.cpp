@@ -73,6 +73,9 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
         std::vector<index_t> idofs_indices{};  // relative to the tmp buffer, namely: idof part
         std::vector<index_t> dQ_indices{}; //relative to the tmp buffer, namely: derivative part
 
+      // debugging
+      std::vector<index_t> elements_ids{};
+
         index_t base_cell_id = cells_without_derivatives[0];
         auto base_data = local_data_loader.entry(base_cell_id);
 
@@ -101,6 +104,9 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
 
             // NOTE: the size is bigger than needed, namely: we take into account the first derivative
             derivatives_address_counter += yateto::computeFamilySize<tensor::dQ>();
+
+            // debugging
+            elements_ids.push_back(cell);
         }
 
 
@@ -113,6 +119,10 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
         table[key].variable_indices[*VariableID::start] = new RelativeIndices(start_indices, base_cell_id);
         table[key].variable_indices[*VariableID::idofs] = new BasicIndices(idofs_indices);
         table[key].variable_indices[*VariableID::derivatives] = new BasicIndices(dQ_indices);
+
+        //debugging
+        table[key].variable_indices[*VariableID::elements_ids] = new BasicIndices(elements_ids);
+
         table[key].set_not_empty_flag();
     }
 
@@ -125,6 +135,9 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
         std::vector<index_t> start_indices{};
         std::vector<index_t> idofs_indices{};  // relative to the tmp buffer, namely: idof part
         std::vector<index_t> dQ_indices{};
+
+        // debugging
+        std::vector<index_t> elements_ids{};
 
         index_t base_cell_id = cells_with_derivatives[0];
         auto base_data = local_data_loader.entry(base_cell_id);
@@ -156,6 +169,9 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
             distance = std::distance(base_derivative_address, derivatives[cell]);
             assert((distance >= 0) && "ERROR::BINNING::TIME_INTEGRATION:: negative distance between elements detected");
             dQ_indices.push_back(distance);
+
+            // debugging
+            elements_ids.push_back(cell);
         }
 
         ConditionalKey key(*KernelNames::time, *TimeComputationKind::with_derivatives);
@@ -165,6 +181,9 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
         table[key].variable_indices[*VariableID::start] = new RelativeIndices(start_indices, base_cell_id);
         table[key].variable_indices[*VariableID::idofs] = new BasicIndices(idofs_indices);
         table[key].variable_indices[*VariableID::derivatives] = new RelativeIndices(dQ_indices, base_cell_id);
+
+        //debugging
+        table[key].variable_indices[*VariableID::elements_ids] = new BasicIndices(elements_ids);
 
         table[key].set_not_empty_flag();
     }
@@ -177,6 +196,10 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
         std::vector<index_t> idofs_indices{};
         std::vector<index_t> dofs_indices{};
         std::vector<index_t> start_indices{};
+
+
+      // debugging
+        std::vector<index_t> elements_ids{};
 
         index_t base_cell_id = 0;
         auto base_data = local_data_loader.entry(base_cell_id);
@@ -200,6 +223,8 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
             assert((distance >= 0) && "ERROR::BINNING::VOLUME_INTEGRATION:: negative distance between elements detected");
             start_indices.push_back(distance);
 
+            // debugging
+            elements_ids.push_back(cell);
         }
 
         ConditionalKey key(*KernelNames::volume);
@@ -207,6 +232,10 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
         table[key].variable_indices[*VariableID::dofs] = new RelativeIndices(dofs_indices, base_cell_id);
         table[key].variable_indices[*VariableID::start] = new RelativeIndices(start_indices, base_cell_id);
         table[key].variable_indices[*VariableID::idofs] = new BasicIndices(idofs_indices);
+
+        //debugging
+        table[key].variable_indices[*VariableID::elements_ids] = new BasicIndices(elements_ids);
+
         table[key].set_not_empty_flag();
     }
 
@@ -218,6 +247,9 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
             std::vector<index_t> idofs_indices{};
             std::vector<index_t> dofs_indices{};
             std::vector<index_t> AplusT_indices{};
+
+            // debugging
+            std::vector<index_t> elements_ids{};
 
             index_t base_cell_id = 0;
             auto base_data = local_data_loader.entry(base_cell_id);
@@ -241,9 +273,10 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
                     // AplusT
                     distance = std::distance(static_cast<real *>(base_data.localIntegration.nApNm1[face]),
                                              static_cast<real *>(current_data.localIntegration.nApNm1[face]));
-
                     assert((distance >= 0) && "ERROR::BINNING::LOCAL_FLUX:: negative distance between elements detected");
                     AplusT_indices.push_back(distance);
+
+                    elements_ids.push_back(cell);
                 }
             }
 
@@ -253,7 +286,11 @@ void seissol::initializers::binning::test(seissol::initializers::LTS &handler, s
               check_key(table, key);
               table[key].variable_indices[*VariableID::idofs] = new BasicIndices(idofs_indices);
               table[key].variable_indices[*VariableID::dofs] = new RelativeIndices(dofs_indices, base_cell_id);
-              table[key].variable_indices[*VariableID::AplusT] = new RelativeIndices(idofs_indices, base_cell_id);
+              table[key].variable_indices[*VariableID::AplusT] = new RelativeIndices(AplusT_indices, base_cell_id);
+
+              //debugging
+              table[key].variable_indices[*VariableID::elements_ids] = new BasicIndices(elements_ids);
+
               table[key].set_not_empty_flag();
             }
         }

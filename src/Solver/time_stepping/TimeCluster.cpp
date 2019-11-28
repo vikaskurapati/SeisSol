@@ -468,14 +468,17 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
       l_bufferPointer = l_integrationBuffer;
     }
 
+
     m_timeKernel.computeAder( m_timeStepWidth,
                               data,
                               tmp,
                               l_bufferPointer,
                               derivatives[l_cell] );
+
     m_localKernel.computeIntegral( l_bufferPointer,
                                    data,
                                    tmp );
+
 
     if (displacements[l_cell] != NULL) {
       kernel::addVelocity krnl;
@@ -502,6 +505,9 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 
 #else // if defined(ACL_DEVICE)
 #include <iostream>
+#include <string>
+#include <algorithm>
+
 void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::initializers::Layer&  i_layerData ) {
   SCOREP_USER_REGION( "computeLocalIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
 
@@ -531,12 +537,10 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
                                          derivatives_scratch_mem,
                                          derivatives);
 
-
-  m_localKernel.computeIntegralWithinWorkItem(idofs_scratch_mem,
+   m_localKernel.computeIntegralWithinWorkItem(idofs_scratch_mem,
                                               loader,
                                               table,
                                               tmp);
-  
 
   // steam idofs into gts cells which have their buffers
   {
@@ -588,6 +592,7 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
       }
     }
   }
+
   device_synch();
 
   m_loopStatistics->end(m_regionComputeLocalIntegration, i_layerData.getNumberOfCells());
@@ -595,6 +600,7 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 #endif
 
 void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol::initializers::Layer&  i_layerData ) {
+
   SCOREP_USER_REGION( "computeNeighboringIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
 
   m_loopStatistics->begin(m_regionComputeNeighboringIntegration);
@@ -686,6 +692,7 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
   #endif
 
   m_loopStatistics->end(m_regionComputeNeighboringIntegration, i_layerData.getNumberOfCells());
+
 }
 
 #ifdef USE_MPI

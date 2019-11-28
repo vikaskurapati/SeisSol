@@ -111,7 +111,7 @@ void seissol::kernels::Local::computeIntegral(  real       i_timeIntegratedDegre
   lfKrnl._prefetch.Q = data.dofs + tensor::Q::size();
   
   volKrnl.execute();
-  
+
   for( unsigned int face = 0; face < 4; face++ ) {
     // no element local contribution in the case of dynamic rupture boundary conditions
     if( data.cellInformation.faceTypes[face] != dynamicRupture ) {
@@ -132,13 +132,14 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(real* i_timeIntegrat
   if (table.find(key) != table.end()) {
     IndexTable &index_table = table[key];
     unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::dofs])->cell_id;
-    unsigned num_cells = index_table.variable_indices[*VariableID::idofs]->m_indices.size();
+    unsigned num_cells = index_table.variable_indices[*VariableID::dofs]->m_indices.size();
 
     volKrnl.num_elements = num_cells;
 
     auto data = loader.entry(base_cell_id);
 
     volKrnl.Q = data.dofs;
+    //volKrnl.Q = data.debugging_dofs;
     volKrnl.Q_indices = index_table.variable_indices[*VariableID::dofs]->m_device_ptr;
 
     volKrnl.I = i_timeIntegratedScratchMem;
@@ -152,22 +153,24 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(real* i_timeIntegrat
     volKrnl.execute();
   }
 
+
   // Local Flux Integral
   device_gen_code::kernel::localFlux lfKrnl = m_deviceLocalFluxKernelPrototype;
   for (unsigned face = 0; face < 4; ++face) {
-    ConditionalKey key(*KernelNames::local_flux, !FaceKinds::dynamicRupture, face);
+    key = ConditionalKey(*KernelNames::local_flux, !FaceKinds::dynamicRupture, face);
 
     if (table.find(key) != table.end()) {
       IndexTable &index_table = table[key];
 
       unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::dofs])->cell_id;
-      unsigned num_cells = index_table.variable_indices[*VariableID::idofs]->m_indices.size();
+      unsigned num_cells = index_table.variable_indices[*VariableID::dofs]->m_indices.size();
 
       auto data = loader.entry(base_cell_id);
 
       lfKrnl.num_elements = num_cells;
 
       lfKrnl.Q = data.dofs;
+      //lfKrnl.Q = data.debugging_dofs;
       lfKrnl.Q_indices = index_table.variable_indices[*VariableID::dofs]->m_device_ptr;
 
       lfKrnl.I = i_timeIntegratedScratchMem;
@@ -179,6 +182,7 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(real* i_timeIntegrat
       lfKrnl.execute(face);
     }
   }
+
 }
 #endif
 

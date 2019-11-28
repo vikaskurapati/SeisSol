@@ -200,12 +200,11 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
 
   // compute cells which do NOT require to have their derivatives
   ConditionalKey key(*KernelNames::time, *TimeComputationKind::without_derivatives);
-  // TODO: error is here!!!
   if(table.find(key) != table.end()) {
 
     IndexTable &index_table = table[key];
     unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::dofs])->cell_id;
-    unsigned num_cells = index_table.variable_indices[*VariableID::idofs]->m_indices.size();
+    unsigned num_cells = index_table.variable_indices[*VariableID::dofs]->m_indices.size();
 
     derivativesKrnl.num_elements = num_cells;
     intKrnl.num_elements = num_cells;
@@ -266,7 +265,7 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
   if(table.find(key) != table.end()) {
     IndexTable &index_table = table[key];
     unsigned base_cell_id = dynamic_cast<RelativeIndices *>(index_table.variable_indices[*VariableID::dofs])->cell_id;
-    unsigned num_cells = index_table.variable_indices[*VariableID::idofs]->m_indices.size();
+    unsigned num_cells = index_table.variable_indices[*VariableID::dofs]->m_indices.size();
 
     derivativesKrnl.num_elements = num_cells;
     intKrnl.num_elements = num_cells;

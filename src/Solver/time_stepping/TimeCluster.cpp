@@ -504,9 +504,9 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 }
 
 #else // if defined(ACL_DEVICE)
-#include <iostream>
-#include <string>
-#include <algorithm>
+//#include <iostream>
+//#include <string>
+//#include <algorithm>
 
 void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::initializers::Layer&  i_layerData ) {
   SCOREP_USER_REGION( "computeLocalIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
@@ -538,13 +538,13 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
                                          derivatives);
 
    m_localKernel.computeIntegralWithinWorkItem(idofs_scratch_mem,
-                                              loader,
-                                              table,
-                                              tmp);
+                                               loader,
+                                               table,
+                                               tmp);
 
   // steam idofs into gts cells which have their buffers
   {
-    ConditionalKey key(*KernelNames::time, *TimeComputationKind::with_gts_buffers);
+    ConditionalKey key(*KernelNames::time, *ComputationKind::with_gts_buffers);
     if (table.find(key) != table.end()) {
       IndexTable &index_table = table[key];
 
@@ -565,7 +565,7 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 
   // stream/update idofs into lts cells which have buffers
   {
-    ConditionalKey key(*KernelNames::time, *TimeComputationKind::with_lts_buffers);
+    ConditionalKey key(*KernelNames::time, *ComputationKind::with_lts_buffers);
     if (table.find(key) != table.end()) {
       IndexTable &index_table = table[key];
 

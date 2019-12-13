@@ -68,6 +68,7 @@ private:
 template<typename T>
 typename std::enable_if<std::is_same<FaceKinds, T>::value ||
                         std::is_same<KernelNames, T>::value ||
+                        std::is_same<ComputationKind, T>:: value ||
                         std::is_same<ExchangeInfo, T>::value, encode_t>::type
 operator||(const T& lhs, const T& rhs) {
     return (static_cast<encode_t>(lhs) | static_cast<encode_t>(rhs));
@@ -77,6 +78,7 @@ operator||(const T& lhs, const T& rhs) {
 template<typename T>
 typename std::enable_if<std::is_same<FaceKinds, T>::value ||
                         std::is_same<KernelNames, T>::value ||
+                        std::is_same<ComputationKind, T>:: value ||
                         std::is_same<ExchangeInfo, T>::value, encode_t>::type
 operator!(const T& condition) {
     encode_t high_bits_mask = ~((~encode_t(0)) << static_cast<encode_t>(T::Count));
@@ -94,8 +96,10 @@ template<typename T>
 constexpr
 typename std::enable_if<std::is_same<FaceKinds, T>::value ||
                         std::is_same<KernelNames, T>::value ||
+                        std::is_same<FaceId, T>::value ||
                         std::is_same<FaceRelations, T>::value ||
-                        std::is_same<TimeComputationKind, T>:: value ||
+                        std::is_same<DrFaceRelations, T>::value ||
+                        std::is_same<ComputationKind, T>:: value ||
                         std::is_same<VariableID, T>::value ||
                         std::is_same<ExchangeInfo, T>::value, encode_t>::type
 operator*(const T& condition) {

@@ -637,6 +637,8 @@ void seissol::initializers::MemoryManager::initConditionalOffsets() {
  * */
 void seissol::initializers::MemoryManager::freeVariablesOnDevice() {
     m_ltsTree.freeDeviceVariablesExplicitly();
+    m_dynRupTree.freeDeviceVariablesExplicitly();
+
     m_ltsTree.freeLeavesContainersExplicitly();
 
     for (auto address: m_deviceGlobalData.address_registry) {

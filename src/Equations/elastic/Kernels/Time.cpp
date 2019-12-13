@@ -199,7 +199,7 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
   DeviceTemporaryMemoryMenager &tmp_mem_manager = DeviceTemporaryMemoryMenager::get_instance();
 
   // compute cells which do NOT require to have their derivatives
-  ConditionalKey key(*KernelNames::time, *TimeComputationKind::without_derivatives);
+  ConditionalKey key(*KernelNames::time, *ComputationKind::without_derivatives);
   if(table.find(key) != table.end()) {
 
     IndexTable &index_table = table[key];
@@ -261,7 +261,7 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
 
 
   // compute cells which HAVE their own derivatives
-  key = ConditionalKey(*KernelNames::time, *TimeComputationKind::with_derivatives);
+  key = ConditionalKey(*KernelNames::time, *ComputationKind::with_derivatives);
   if(table.find(key) != table.end()) {
     IndexTable &index_table = table[key];
     unsigned base_cell_id = dynamic_cast<RelativeIndices *>(index_table.variable_indices[*VariableID::dofs])->cell_id;

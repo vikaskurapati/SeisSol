@@ -180,130 +180,46 @@ void seissol::kernels::Time::computeAder( double                      i_timeStep
 #include <device_utils.h>
 void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
                                                        LocalTmp& tmp,
-                                                       kernels::LocalData::Loader &loader,
-                                                       conditional_table_t &table,
-                                                       real *o_timeIntegratedScratchMem,
-                                                       real *o_timeDerivativesScratchMem,
-                                                       real **derivatives) {
+                                                       conditional_table_t &table) {
 
-  // NOTE: wod - without derivatives; wd - with derivatives
-  // NOTE: base prefix stands for the first instance of a sequence
-  //       Example 1: base_cell_id - the first cell in a sequence from which indices were recorded
-  //       Example 2: base_star_indices - the fist star matrix, start(0), for which the indices matrices were recorded
-  //                                      indices for start(1) and start(2) are computed in run-time
-
-  //kernel::derivative derivativesKrnl = m_krnlPrototype;
   device_gen_code::kernel::derivative derivativesKrnl = m_DeviceKrnlPrototype;
   device_gen_code::kernel::derivativeTaylorExpansion intKrnl;
 
-  DeviceTemporaryMemoryMenager &tmp_mem_manager = DeviceTemporaryMemoryMenager::get_instance();
-
-  // compute cells which do NOT require to have their derivatives
-  ConditionalKey key(*KernelNames::time, *ComputationKind::without_derivatives);
+  ConditionalKey key(KernelNames::time || KernelNames::volume);
   if(table.find(key) != table.end()) {
 
-    IndexTable &index_table = table[key];
-    unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::dofs])->cell_id;
-    unsigned num_cells = index_table.variable_indices[*VariableID::dofs]->m_indices.size();
+    PointersTable &entry = table[key];
 
-    derivativesKrnl.num_elements = num_cells;
-    intKrnl.num_elements = num_cells;
+    derivativesKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
+    intKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
 
-    auto data = loader.entry(base_cell_id);
+    intKrnl.I = (entry.container[*VariableID::idofs])->get_pointers();
+    intKrnl.I_indices = 0;
 
-    // attach idofs
-    intKrnl.I = o_timeIntegratedScratchMem;
-    intKrnl.I_indices = index_table.variable_indices[*VariableID::idofs]->m_device_ptr;
-
-    // attach start matrices
-    // NOTE: all start matrices are equally shifted, i.e. the indices can be reused for all tree star matrices
-    //       only the base data pointer must be shifted
-    //unsigned *start_indices = index_table.variable_indices[*VariableID::start]->m_device_ptr;
+    unsigned star_offset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-      derivativesKrnl.star(i) = data.localIntegrationDevice.starMatrices[i];
-      derivativesKrnl.star_indices(i) = index_table.variable_indices[*VariableID::start]->m_device_ptr;
+      derivativesKrnl.star(i) = const_cast<const real **>((entry.container[*VariableID::start])->get_pointers());
+      derivativesKrnl.star_indices(i) = star_offset;
+      star_offset += tensor::star::size(i);
     }
 
+    unsigned derivatives_offset = 0;
+    for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
+      derivativesKrnl.dQ(i) = (entry.container[*VariableID::derivatives])->get_pointers();
+      intKrnl.dQ(i) = const_cast<const real **>((entry.container[*VariableID::derivatives])->get_pointers());
 
-    // attach derivatives
-    // NOTE: the very first derivative is going to come from dofs themselves
+      derivativesKrnl.dQ_indices(i) = derivatives_offset;
+      intKrnl.dQ_indices(i) = derivatives_offset;
 
-    // zero derivative
-    derivativesKrnl.dQ(0) = data.dofs;
-    intKrnl.dQ(0) = data.dofs;
-
-    derivativesKrnl.dQ_indices(0) = index_table.variable_indices[*VariableID::dofs]->m_device_ptr;
-    intKrnl.dQ_indices(0) = index_table.variable_indices[*VariableID::dofs]->m_device_ptr;
-
-    // other derivatives: from 1 to #order
-    unsigned offset = 0;
-    for (unsigned i = 1; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
-      derivativesKrnl.dQ(i) = &o_timeDerivativesScratchMem[offset];
-      intKrnl.dQ(i) = &o_timeDerivativesScratchMem[offset];
-
-      derivativesKrnl.dQ_indices(i) = index_table.variable_indices[*VariableID::derivatives]->m_device_ptr;
-      intKrnl.dQ_indices(i) = index_table.variable_indices[*VariableID::derivatives]->m_device_ptr;
-
-      offset += tensor::dQ::size(i);
-    }
-
-    intKrnl.power = i_timeStepWidth;
-    intKrnl.execute0();
-
-    for (unsigned der = 1; der < CONVERGENCE_ORDER; ++der) {
-      derivativesKrnl.execute(der);
-
-      // update scalar for this derivative
-      intKrnl.power *= i_timeStepWidth / real(der+1);
-      intKrnl.execute(der);
-    }
-  }
-
-
-  // compute cells which HAVE their own derivatives
-  key = ConditionalKey(*KernelNames::time, *ComputationKind::with_derivatives);
-  if(table.find(key) != table.end()) {
-    IndexTable &index_table = table[key];
-    unsigned base_cell_id = dynamic_cast<RelativeIndices *>(index_table.variable_indices[*VariableID::dofs])->cell_id;
-    unsigned num_cells = index_table.variable_indices[*VariableID::dofs]->m_indices.size();
-
-    derivativesKrnl.num_elements = num_cells;
-    intKrnl.num_elements = num_cells;
-
-    auto data = loader.entry(base_cell_id);
-
-    // attach idofs
-    intKrnl.I = o_timeIntegratedScratchMem;
-    intKrnl.I_indices = index_table.variable_indices[*VariableID::idofs]->m_device_ptr;
-
-    // attach start matrices
-    // NOTE: all start matrices are equally shifted, i.e. the indices can be reused for all tree star matrices
-    //       only the base data pointer must be shifted
-    //unsigned *start_indices = index_table.variable_indices[*VariableID::start]->m_device_ptr;
-    for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-      derivativesKrnl.star(i) = data.localIntegrationDevice.starMatrices[i];
-      derivativesKrnl.star_indices(i) = index_table.variable_indices[*VariableID::start]->m_device_ptr;
+      derivatives_offset += tensor::dQ::size(i);
     }
 
     // stream dofs to the zero derivative
-    device_stream_data(data.dofs,
-                       index_table.variable_indices[*VariableID::dofs]->m_device_ptr,
-                       derivatives[base_cell_id],
-                       index_table.variable_indices[*VariableID::derivatives]->m_device_ptr,
-                       tensor::Q::size(),
-                       num_cells);
+    device_stream_data((entry.container[*VariableID::dofs])->get_pointers(),
+                       (entry.container[*VariableID::derivatives])->get_pointers(),
+                       tensor::Q::Size,
+                       derivativesKrnl.num_elements);
 
-    unsigned offset = 0;
-    for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
-
-      derivativesKrnl.dQ(i) = &derivatives[base_cell_id][offset];
-      derivativesKrnl.dQ_indices(i) = index_table.variable_indices[*VariableID::derivatives]->m_device_ptr;
-
-      intKrnl.dQ(i) = &derivatives[base_cell_id][offset];
-      intKrnl.dQ_indices(i) = index_table.variable_indices[*VariableID::derivatives]->m_device_ptr;
-
-      offset += tensor::dQ::size(i);
-    }
 
     intKrnl.power = i_timeStepWidth;
     intKrnl.execute0();

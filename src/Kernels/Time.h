@@ -102,11 +102,7 @@ class seissol::kernels::Time : public TimeBase {
 #ifdef ACL_DEVICE
     void computeAderWithinWorkItem(double i_timeStepWidth,
                                    LocalTmp& tmp,
-                                   kernels::LocalData::Loader &loader,
-                                   conditional_table_t &table,
-                                   real *o_timeIntegratedScratchMem,
-                                   real *o_timeDerivativesScratchMem,
-                                   real **derivatives);
+                                   conditional_table_t &table);
 
 #endif
 

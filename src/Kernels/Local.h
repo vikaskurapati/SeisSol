@@ -66,9 +66,7 @@ class seissol::kernels::Local : public LocalBase {
                           LocalData& data,
                           LocalTmp&  tmp );
 #ifdef ACL_DEVICE
-    void computeIntegralWithinWorkItem(real* i_timeIntegratedScratchMem,
-                                       kernels::LocalData::Loader &loader,
-                                       conditional_table_t &table,
+    void computeIntegralWithinWorkItem(conditional_table_t &table,
                                        LocalTmp& tmp);
 #endif
 

@@ -11,15 +11,15 @@ namespace device_gen_code {
       constexpr static unsigned long const NonZeroFlops = 34839;
       constexpr static unsigned long const HardwareFlops = 123336;
 
-      double const* I{};
-      double* Q{};
+      double const** I{};
+      double** Q{};
       tensor::kDivM::Container<double const*> kDivM;
-      tensor::star::Container<double const*> star;
+      tensor::star::Container<double const**> star;
 
-      unsigned* I_indices{};
-      unsigned* Q_indices{};
-      tensor::kDivM::Container<unsigned*> kDivM_indices;
-      tensor::star::Container<unsigned*> star_indices;
+      unsigned I_indices{};
+      unsigned Q_indices{};
+      tensor::kDivM::Container<unsigned> kDivM_indices;
+      tensor::star::Container<unsigned> star_indices;
 
       size_t num_elements{};
 
@@ -31,17 +31,17 @@ namespace device_gen_code {
       constexpr static unsigned long const NonZeroFlops[] = {9936, 10080, 31968, 27216};
       constexpr static unsigned long const HardwareFlops[] = {49248, 49248, 49248, 49248};
 
-      double const* AplusT{};
-      double const* I{};
-      double* Q{};
+      double const** AplusT{};
+      double const** I{};
+      double** Q{};
       tensor::fMrT::Container<double const*> fMrT;
       tensor::rDivM::Container<double const*> rDivM;
 
-      unsigned* AplusT_indices{};
-      unsigned* I_indices{};
-      unsigned* Q_indices{};
-      tensor::fMrT::Container<unsigned*> fMrT_indices;
-      tensor::rDivM::Container<unsigned*> rDivM_indices;
+      unsigned AplusT_indices{};
+      unsigned I_indices{};
+      unsigned Q_indices{};
+      tensor::fMrT::Container<unsigned> fMrT_indices;
+      tensor::rDivM::Container<unsigned> rDivM_indices;
 
       size_t num_elements{};
 
@@ -77,11 +77,11 @@ namespace device_gen_code {
       constexpr static unsigned long const HardwareFlops[] = {0, 0, 0, 0, 0, 0};
 
       double power = std::numeric_limits<double>::signaling_NaN();
-      double* I{};
-      tensor::dQ::Container<double const*> dQ;
+      double** I{};
+      tensor::dQ::Container<double const**> dQ;
 
-      unsigned* I_indices{};
-      tensor::dQ::Container<unsigned*> dQ_indices;
+      unsigned I_indices{};
+      tensor::dQ::Container<unsigned> dQ_indices;
 
       size_t num_elements{};
 
@@ -112,13 +112,13 @@ namespace device_gen_code {
       constexpr static unsigned long const NonZeroFlops[] = {0, 34524, 13806, 4716, 1260, 216};
       constexpr static unsigned long const HardwareFlops[] = {0, 122472, 45360, 17496, 3672, 2376};
 
-      tensor::dQ::Container<double*> dQ;
+      tensor::dQ::Container<double**> dQ;
       tensor::kDivMT::Container<double const*> kDivMT;
-      tensor::star::Container<double const*> star;
+      tensor::star::Container<double const**> star;
 
-      tensor::dQ::Container<unsigned*> dQ_indices;
-      tensor::kDivMT::Container<unsigned*> kDivMT_indices;
-      tensor::star::Container<unsigned*> star_indices;
+      tensor::dQ::Container<unsigned> dQ_indices;
+      tensor::kDivMT::Container<unsigned> kDivMT_indices;
+      tensor::star::Container<unsigned> star_indices;
 
       size_t num_elements{};
 

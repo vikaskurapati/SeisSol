@@ -121,38 +121,33 @@ void seissol::kernels::Local::computeIntegral(  real       i_timeIntegratedDegre
   }
 }
 #ifdef ACL_DEVICE
-void seissol::kernels::Local::computeIntegralWithinWorkItem(real* i_timeIntegratedScratchMem,
-                                                            kernels::LocalData::Loader &loader,
-                                                            conditional_table_t &table,
+void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t &table,
                                                             LocalTmp& ) {
+
   // Volume integral
-  ConditionalKey key(*KernelNames::volume);
+  ConditionalKey key(KernelNames::time || KernelNames::volume);
   device_gen_code::kernel::volume volKrnl = m_deviceVolumeKernelPrototype;
 
   if (table.find(key) != table.end()) {
-    IndexTable &index_table = table[key];
-    unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::dofs])->cell_id;
-    unsigned num_cells = index_table.variable_indices[*VariableID::dofs]->m_indices.size();
+    PointersTable &entry = table[key];
 
-    volKrnl.num_elements = num_cells;
+    volKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
 
-    auto data = loader.entry(base_cell_id);
+    volKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
+    volKrnl.Q_indices = 0;
 
-    volKrnl.Q = data.dofs;
-    //volKrnl.Q = data.debugging_dofs;
-    volKrnl.Q_indices = index_table.variable_indices[*VariableID::dofs]->m_device_ptr;
+    volKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
+    volKrnl.I_indices = 0;
 
-    volKrnl.I = i_timeIntegratedScratchMem;
-    volKrnl.I_indices = index_table.variable_indices[*VariableID::idofs]->m_device_ptr;
-
+    unsigned star_offset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-      volKrnl.star(i) = data.localIntegrationDevice.starMatrices[i];
-      volKrnl.star_indices(i) = index_table.variable_indices[*VariableID::start]->m_device_ptr;
+      volKrnl.star(i) = const_cast<const real **>((entry.container[*VariableID::start])->get_pointers());
+      volKrnl.star_indices(i) = star_offset;
+      star_offset += tensor::star::size(i);
     }
 
     volKrnl.execute();
   }
-
 
   // Local Flux Integral
   device_gen_code::kernel::localFlux lfKrnl = m_deviceLocalFluxKernelPrototype;
@@ -160,29 +155,22 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(real* i_timeIntegrat
     key = ConditionalKey(*KernelNames::local_flux, !FaceKinds::dynamicRupture, face);
 
     if (table.find(key) != table.end()) {
-      IndexTable &index_table = table[key];
+      PointersTable &entry = table[key];
 
-      unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::dofs])->cell_id;
-      unsigned num_cells = index_table.variable_indices[*VariableID::dofs]->m_indices.size();
+      lfKrnl.num_elements = entry.container[*VariableID::dofs]->get_size();
 
-      auto data = loader.entry(base_cell_id);
+      lfKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
+      lfKrnl.Q_indices = 0;
 
-      lfKrnl.num_elements = num_cells;
+      lfKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
+      lfKrnl.I_indices = 0;
 
-      lfKrnl.Q = data.dofs;
-      //lfKrnl.Q = data.debugging_dofs;
-      lfKrnl.Q_indices = index_table.variable_indices[*VariableID::dofs]->m_device_ptr;
-
-      lfKrnl.I = i_timeIntegratedScratchMem;
-      lfKrnl.I_indices = index_table.variable_indices[*VariableID::idofs]->m_device_ptr;
-
-      lfKrnl.AplusT = data.localIntegrationDevice.nApNm1[face];
-      lfKrnl.AplusT_indices = index_table.variable_indices[*VariableID::AplusT]->m_device_ptr;
+      lfKrnl.AplusT = const_cast<const real **>(entry.container[*VariableID::AplusT]->get_pointers());
+      lfKrnl.AplusT_indices = 0;
 
       lfKrnl.execute(face);
     }
   }
-
 }
 #endif
 

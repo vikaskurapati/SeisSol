@@ -13,10 +13,10 @@
 #include "Initializer/binning/EncodingConstants.h"
 #include "Initializer/binning/Condition.h"
 #include "Initializer/binning/ConditionalTable.h"
-#include "Initializer/binning/IndexTable.h"
+#include "Initializer/binning/PointersTable.h"
 #include "Initializer/binning/specific_types.h"
 
-using conditional_table_t = std::unordered_map< ConditionalKey, IndexTable, ConditionalHash<ConditionalKey> >;
+using conditional_table_t = std::unordered_map< ConditionalKey, PointersTable, ConditionalHash<ConditionalKey> >;
 
 namespace seissol {
     namespace initializers {
@@ -34,9 +34,9 @@ namespace seissol {
 
             void free_conditional_table() {
                 for (auto& index_table: m_cond_table) {
-                    for (auto ptr_to_basic_indices_obj: index_table.second.variable_indices) {
-                        if (ptr_to_basic_indices_obj != nullptr) {
-                            delete ptr_to_basic_indices_obj;
+                    for (auto pointers: index_table.second.container) {
+                        if (pointers != nullptr) {
+                            delete pointers;
                         }
                     }
                 }

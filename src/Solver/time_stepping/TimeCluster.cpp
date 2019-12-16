@@ -517,84 +517,37 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
   real**                derivatives                   = i_layerData.var(m_lts->derivatives);
   real**                displacements                 = i_layerData.var(m_lts->displacements);
 
-  real* idofs_scratch_mem = static_cast<real*>(i_layerData.scratch_mem(m_lts->idofs_scratch));
-  real* derivatives_scratch_mem = static_cast<real*>(i_layerData.scratch_mem(m_lts->derivatives_scratch));
+
   seissol::initializers::LayerContainer &container = i_layerData.getLayerContainer();
-
-  // TODO: table must be a constance reference in order to protect any writes
   conditional_table_t &table = container.get_conditional_table();
-
 
   kernels::LocalData::Loader loader;
   loader.load(*m_lts, i_layerData);
   kernels::LocalTmp tmp;
 
-  m_timeKernel.computeAderWithinWorkItem(m_timeStepWidth,
-                                         tmp,
-                                         loader,
-                                         table,
-                                         idofs_scratch_mem,
-                                         derivatives_scratch_mem,
-                                         derivatives);
+  m_timeKernel.computeAderWithinWorkItem(m_timeStepWidth, tmp, table);
+  m_localKernel.computeIntegralWithinWorkItem(table, tmp);
 
-   m_localKernel.computeIntegralWithinWorkItem(idofs_scratch_mem,
-                                               loader,
-                                               table,
-                                               tmp);
 
-  // steam idofs into gts cells which have their buffers
-  {
-    ConditionalKey key(*KernelNames::time, *ComputationKind::with_gts_buffers);
-    if (table.find(key) != table.end()) {
-      IndexTable &index_table = table[key];
+  ConditionalKey key(*KernelNames::time, *ComputationKind::with_lts_buffers);
+  if (table.find(key) != table.end()) {
+    PointersTable &entry = table[key];
 
-      unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::buffers])->cell_id;
-      unsigned num_cells = index_table.variable_indices[*VariableID::buffers]->m_indices.size();
-
-      auto data = loader.entry(base_cell_id);
-
-      device_stream_data(idofs_scratch_mem,
-                         index_table.variable_indices[*VariableID::idofs]->m_device_ptr,
-                         buffers[base_cell_id],
-                         index_table.variable_indices[*VariableID::buffers]->m_device_ptr,
-                         tensor::I::size(),
-                         num_cells);
+    if (m_resetLtsBuffers) {
+      device_stream_data((entry.container[*VariableID::idofs])->get_pointers(),
+                         (entry.container[*VariableID::buffers])->get_pointers(),
+                         tensor::I::Size,
+                         (entry.container[*VariableID::idofs])->get_size());
     }
-  }
-
-
-  // stream/update idofs into lts cells which have buffers
-  {
-    ConditionalKey key(*KernelNames::time, *ComputationKind::with_lts_buffers);
-    if (table.find(key) != table.end()) {
-      IndexTable &index_table = table[key];
-
-      unsigned base_cell_id = dynamic_cast<RelativeIndices*>(index_table.variable_indices[*VariableID::buffers])->cell_id;
-      unsigned num_cells = index_table.variable_indices[*VariableID::buffers]->m_indices.size();
-
-      auto data = loader.entry(base_cell_id);
-
-      if (m_resetLtsBuffers) {
-        device_stream_data(idofs_scratch_mem,
-                           index_table.variable_indices[*VariableID::idofs]->m_device_ptr,
-                           buffers[base_cell_id],
-                           index_table.variable_indices[*VariableID::buffers]->m_device_ptr,
-                           tensor::I::size(),
-                           num_cells);
-      }
-      else {
-        device_accumulate_data(idofs_scratch_mem,
-                               index_table.variable_indices[*VariableID::idofs]->m_device_ptr,
-                               buffers[base_cell_id],
-                               index_table.variable_indices[*VariableID::buffers]->m_device_ptr,
-                               tensor::I::size(),
-                               num_cells);
-      }
+    else {
+      device_accumulate_data((entry.container[*VariableID::idofs])->get_pointers(),
+                             (entry.container[*VariableID::buffers])->get_pointers(),
+                             tensor::I::Size,
+                             (entry.container[*VariableID::idofs])->get_size());
     }
   }
 
   device_synch();
-
   m_loopStatistics->end(m_regionComputeLocalIntegration, i_layerData.getNumberOfCells());
 }
 #endif

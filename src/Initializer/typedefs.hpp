@@ -172,7 +172,7 @@ struct MeshStructure {
   unsigned int *numberOfGhostRegionDerivatives;
 
   /*
-   * Pointers to the memory chunks of the ghost regions.
+   * DevicePointers to the memory chunks of the ghost regions.
    */
   real** ghostRegions;
 
@@ -197,7 +197,7 @@ struct MeshStructure {
   unsigned int *numberOfCommunicatedCopyRegionDerivatives;
 
   /*
-   * Pointers to the memory chunks of the copy regions.
+   * DevicePointers to the memory chunks of the copy regions.
    *   Remark: For the cells in the copy layer more information will be stored (in general).
    *           The pointers only point to communcation related chunks.
    */

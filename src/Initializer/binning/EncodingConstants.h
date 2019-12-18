@@ -9,7 +9,7 @@ namespace seissol {
 
       enum struct VariableID: encode_t{dofs = 0,
                                        idofs,
-                                       start,
+                                       star,
                                        buffers,
                                        derivatives,
                                        AplusT,

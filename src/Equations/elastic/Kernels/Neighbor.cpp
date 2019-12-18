@@ -108,6 +108,18 @@ void seissol::kernels::Neighbor::setGlobalData(GlobalData const* global) {
   m_drKrnlPrototype.V3mTo2nTWDivM = global->nodalFluxMatrices;
 }
 
+#ifdef ACL_DEVICE
+void seissol::kernels::Neighbor::setGlobalDataOnDevice(GlobalData const* global) {
+  m_deviceLfKrnlPrototype.rDivM = global->changeOfBasisMatrices;
+  m_deviceLfKrnlPrototype.fMrT = global->localChangeOfBasisMatricesTransposed;
+  m_deviceNfKrnlPrototype.rDivM = global->changeOfBasisMatrices;
+  m_deviceNfKrnlPrototype.rT = global->neighbourChangeOfBasisMatricesTransposed;
+  m_deviceNfKrnlPrototype.fP = global->neighbourFluxMatrices;
+  m_deviceDrKrnlPrototype.V3mTo2nTWDivM = global->nodalFluxMatrices;
+}
+#endif
+
+
 void seissol::kernels::Neighbor::computeNeighborsIntegral(  NeighborData&                     data,
                                                             CellDRMapping const             (&cellDrMapping)[4],
                                                             real*                             i_timeIntegrated[4],
@@ -160,6 +172,81 @@ void seissol::kernels::Neighbor::computeNeighborsIntegral(  NeighborData&       
     }
   }
 }
+
+
+#ifdef ACL_DEVICE
+void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditional_table_t &table) {
+
+  device_gen_code::kernel::neighboringFlux nfKrnl = m_deviceNfKrnlPrototype;
+  device_gen_code::kernel::nodalFlux drKrnl = m_deviceDrKrnlPrototype;
+  device_gen_code::kernel::localFlux lfKrnl = m_deviceLfKrnlPrototype;
+
+  for(unsigned int face = 0; face < 4; face++) {
+    // regular and periodic
+    for (unsigned face_relation = 0; face_relation < (*FaceRelations::Count); ++face_relation) {
+
+      ConditionalKey key(*KernelNames::neighbor_flux,
+                         (FaceKinds::regular || FaceKinds::periodic),
+                         face,
+                         face_relation);
+
+      if(table.find(key) != table.end()) {
+        PointersTable &entry = table[key];
+
+        nfKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
+
+        nfKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
+        nfKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
+        nfKrnl.AminusT = const_cast<const real **>((entry.container[*VariableID::AminusT])->get_pointers());
+
+        int k = (face_relation / 12);
+        int j = (face_relation - 12 * k) / 4;
+        int i = face_relation - 3 * j - 12 * k;
+        nfKrnl.execute(i, j, k);
+        //(*(nfKrnl.ExecutePtrs[face_relation]))();
+      }
+    }
+
+    // free surface
+    ConditionalKey key(*KernelNames::neighbor_flux,
+                       *FaceKinds::freeSurface,
+                       face);
+
+    if(table.find(key) != table.end()) {
+      PointersTable &entry = table[key];
+
+      lfKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
+      lfKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
+      lfKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
+      lfKrnl.AplusT = const_cast<const real **>((entry.container[*VariableID::AminusT])->get_pointers());
+      lfKrnl.execute(face);
+    }
+
+    // dynamic rupture
+    for (unsigned face_relation = 0; face_relation < (*DrFaceRelations::Count); ++face_relation) {
+
+      ConditionalKey key(*KernelNames::neighbor_flux,
+                         *FaceKinds::dynamicRupture,
+                         face,
+                         face_relation);
+
+      if(table.find(key) != table.end()) {
+        PointersTable &entry = table[key];
+
+        drKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
+        drKrnl.fluxSolver = const_cast<const real **>((entry.container[*VariableID::fluxSolver])->get_pointers());
+        drKrnl.godunovState = const_cast<const real **>((entry.container[*VariableID::godunov])->get_pointers());
+        drKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
+
+        int j = (face_relation / 4);
+        int i = face_relation - 4 * j;
+        drKrnl.execute(i, j);
+        //drKrnl.ExecutePtrs[face_relation];
+      }
+    }
+  }
+}
+#endif
 
 void seissol::kernels::Neighbor::flopsNeighborsIntegral( const enum faceType  i_faceTypes[4],
                                                          const int            i_neighboringIndices[4][2],

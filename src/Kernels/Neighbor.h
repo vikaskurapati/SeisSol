@@ -90,6 +90,11 @@ class seissol::kernels::Neighbor : public NeighborBase {
                                     real*                             i_timeIntegrated[4],
                                     real*                             faceNeighbors_prefetch[4] );
 
+#ifdef ACL_DEVICE
+  void setGlobalDataOnDevice(GlobalData const* global);
+  void computeNeighborsIntegralWithinWorkItem(conditional_table_t &table);
+#endif
+
     void flopsNeighborsIntegral( const enum faceType  i_faceTypes[4],
                                  const int            i_neighboringIndices[4][2],
                                  CellDRMapping const (&cellDrMapping)[4],

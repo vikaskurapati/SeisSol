@@ -407,11 +407,9 @@ void seissol::Interoperability::initializeClusteredLts( int i_clustering, bool e
   // get backward coupling
   m_globalData = seissol::SeisSol::main.getMemoryManager().getGlobalData();
 
-#ifdef ACL_DEVICE
-  // DEBUGGIN:ravil:: init offsets based on conditional statements within compute kernels
-  // for all variables, for all clusters
-  seissol::SeisSol::main.getMemoryManager().initConditionalOffsets();
-#endif
+//#ifdef ACL_DEVICE
+//  seissol::SeisSol::main.getMemoryManager().initConditionalOffsets();
+//#endif
 }
 
 #if defined(USE_NETCDF) && !defined(NETCDF_PASSIVE)
@@ -596,6 +594,10 @@ void seissol::Interoperability::initializeCellLocalMatrices()
                                                            m_ltsFaceToMeshFace,
                                                            *seissol::SeisSol::main.getMemoryManager().getGlobalData(),
                                                            m_timeStepping );
+
+#ifdef ACL_DEVICE
+  seissol::SeisSol::main.getMemoryManager().initConditionalOffsets();
+#endif
 }
 
 template<typename T>

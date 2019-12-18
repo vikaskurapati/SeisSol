@@ -69,7 +69,7 @@ void seissol::initializers::binning::local_integral(seissol::initializers::LTS &
     if (layer.getNumberOfCells()) {
 
         std::vector<real*> dofs_ptrs{};
-        std::vector<real*> start_ptrs{};
+        std::vector<real*> star_ptrs{};
         std::vector<real*> idofs_ptrs{};
         std::vector<real*> dQ_ptrs{};
 
@@ -114,7 +114,7 @@ void seissol::initializers::binning::local_integral(seissol::initializers::LTS &
           }
 
           // stars
-          start_ptrs.push_back(static_cast<real *>(data.localIntegrationDevice.starMatrices[0]));
+          star_ptrs.push_back(static_cast<real *>(data.localIntegrationDevice.starMatrices[0]));
 
           // derivatives
           bool l_DerivativesProvided = ((data.cellInformation.ltsSetup >> 9) % 2) == 1;
@@ -131,7 +131,7 @@ void seissol::initializers::binning::local_integral(seissol::initializers::LTS &
       check_key(table, key);
 
       table[key].container[*VariableID::dofs] = new DevicePointers(dofs_ptrs);
-      table[key].container[*VariableID::start] = new DevicePointers(start_ptrs);
+      table[key].container[*VariableID::star] = new DevicePointers(star_ptrs);
       table[key].container[*VariableID::idofs] = new DevicePointers(idofs_ptrs);
       table[key].container[*VariableID::derivatives] = new DevicePointers(dQ_ptrs);
 
@@ -218,26 +218,29 @@ void seissol::initializers::binning::neighbour_integral(seissol::initializers::L
             // maybe, because of BCs, a pointer can be a nullptr, i.e. skip it
             if (neighbour_buffer != nullptr) {
 
-              bool l_NeighbProvidesDerivatives = ((data.cellInformation.ltsSetup >> face) % 2) == 1;
+              if(data.cellInformation.faceTypes[face] != outflow && data.cellInformation.faceTypes[face] != dynamicRupture) {
 
-              if (l_NeighbProvidesDerivatives) {
-                real *next_temp_idofs_ptr = &idofs_scratch_mem[idofs_address_counter];
+                bool l_NeighbProvidesDerivatives = ((data.cellInformation.ltsSetup >> face) % 2) == 1;
 
-                bool l_isGtsNeigbour = ((data.cellInformation.ltsSetup >> (face + 4)) % 2) == 1;
-                if (l_isGtsNeigbour) {
+                if (l_NeighbProvidesDerivatives) {
+                  real *next_temp_idofs_ptr = &idofs_scratch_mem[idofs_address_counter];
 
-                  idofs_address_registery[neighbour_buffer] = next_temp_idofs_ptr;
-                  gts_idofs_ptrs.push_back(next_temp_idofs_ptr);
-                  gts_derivatives_ptrs.push_back(neighbour_buffer);
+                  bool l_isGtsNeigbour = ((data.cellInformation.ltsSetup >> (face + 4)) % 2) == 1;
+                  if (l_isGtsNeigbour) {
 
+                    idofs_address_registery[neighbour_buffer] = next_temp_idofs_ptr;
+                    gts_idofs_ptrs.push_back(next_temp_idofs_ptr);
+                    gts_derivatives_ptrs.push_back(neighbour_buffer);
+
+                  } else {
+                    idofs_address_registery[neighbour_buffer] = next_temp_idofs_ptr;
+                    lts_idofs_ptrs.push_back(next_temp_idofs_ptr);
+                    lts_derivatives_ptrs.push_back(neighbour_buffer);
+                  }
+                  idofs_address_counter += tensor::I::size();
                 } else {
-                  idofs_address_registery[neighbour_buffer] = next_temp_idofs_ptr;
-                  lts_idofs_ptrs.push_back(next_temp_idofs_ptr);
-                  lts_derivatives_ptrs.push_back(neighbour_buffer);
+                  idofs_address_registery[neighbour_buffer] = neighbour_buffer;
                 }
-                idofs_address_counter += tensor::I::size();
-              } else {
-                idofs_address_registery[neighbour_buffer] = neighbour_buffer;
               }
             }
           }
@@ -252,7 +255,6 @@ void seissol::initializers::binning::neighbour_integral(seissol::initializers::L
         table[key].container[*VariableID::derivatives] = new DevicePointers(gts_derivatives_ptrs);
         table[key].container[*VariableID::idofs] = new DevicePointers(gts_idofs_ptrs);
         table[key].set_not_empty_flag();
-
       }
 
       if (!lts_idofs_ptrs.empty()) {
@@ -305,13 +307,13 @@ void seissol::initializers::binning::neighbour_integral(seissol::initializers::L
 
             regular_periodic_dofs[face][face_relation].push_back(static_cast<real*>(data.dofs));
             regular_periodic_idofs[face][face_relation].push_back(idofs_address_registery[neighbour_buffer_ptr]);
-            regular_periodic_AminusT[face][face_relation].push_back(static_cast<real*>(data.neighboringIntegration.nAmNm1[face]));
+            regular_periodic_AminusT[face][face_relation].push_back(static_cast<real*>(data.neighboringIntegrationDevice.nAmNm1[face]));
             break;
           }
           case freeSurface: {
             freeSurface_dofs[face].push_back(static_cast<real*>(data.dofs));
             freeSurface_idofs[face].push_back(idofs_address_registery[neighbour_buffer_ptr]);
-            freeSurface_AminusT[face].push_back(static_cast<real*>(data.neighboringIntegration.nAmNm1[face]));
+            freeSurface_AminusT[face].push_back(static_cast<real*>(data.neighboringIntegrationDevice.nAmNm1[face]));
             break;
           }
           case dynamicRupture: {

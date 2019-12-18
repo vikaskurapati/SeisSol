@@ -77,6 +77,7 @@ void seissol::kernels::TimeCommon::computeIntegrals(  Time&                     
       }
       // integrate the DOFs in time via the derivatives and set pointer to local buffer
       else {
+
         // if neighbour provides derivatives
         i_time.computeIntegral( i_currentTime[    l_dofeighbor+1],
                                 i_currentTime[    0           ],
@@ -120,3 +121,38 @@ void seissol::kernels::TimeCommon::computeIntegrals(  Time&                     
                     o_integrationBuffer,
                     o_timeIntegrated );
 }
+
+
+
+#ifdef ACL_DEVICE
+void seissol::kernels::TimeCommon::computeIntegralsForWorkItem(Time& i_time,
+                                                               const double i_timeStepStart,
+                                                               const double i_timeStepWidth,
+                                                               conditional_table_t &table) {
+  // Compute time integrated dofs using neighbours derivatives using the GTS relation,
+  // i.e. the expansion point is around 'i_timeStepStart'
+  ConditionalKey key(*KernelNames::neighbor_flux, *ComputationKind::with_gts_derivatives);
+  if(table.find(key) != table.end()) {
+    PointersTable &entry = table[key];
+    i_time.computeIntegralWithinWorkItem(i_timeStepStart,
+                                         i_timeStepStart,
+                                         i_timeStepStart + i_timeStepWidth,
+                                         const_cast<const real **>((entry.container[*VariableID::derivatives])->get_pointers()),
+                                         (entry.container[*VariableID::idofs])->get_pointers(),
+                                         (entry.container[*VariableID::idofs])->get_size());
+  }
+
+  // Compute time integrated dofs using neighbours derivatives using the LTS relation,
+  // i.e. the expansion point is around '0'
+  key = ConditionalKey(*KernelNames::neighbor_flux, *ComputationKind::with_lts_derivatives);
+  if(table.find(key) != table.end()) {
+    PointersTable &entry = table[key];
+    i_time.computeIntegralWithinWorkItem(0.0,
+                                         i_timeStepStart,
+                                         i_timeStepStart + i_timeStepWidth,
+                                         const_cast<const real **>((entry.container[*VariableID::derivatives])->get_pointers()),
+                                         (entry.container[*VariableID::idofs])->get_pointers(),
+                                         (entry.container[*VariableID::idofs])->get_size());
+  }
+}
+#endif

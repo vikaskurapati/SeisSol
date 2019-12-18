@@ -100,10 +100,12 @@ namespace seissol {
     };
 #ifndef ACL_DEVICE
     LTSTREE_GENERATE_INTERFACE(LocalData, initializers::LTS, cellInformation, localIntegration, dofs)
+    LTSTREE_GENERATE_INTERFACE(NeighborData, initializers::LTS, cellInformation, neighboringIntegration, dofs)
 #else
     LTSTREE_GENERATE_INTERFACE(LocalData, initializers::LTS, cellInformation, localIntegration, dofs, localIntegrationDevice)
+    LTSTREE_GENERATE_INTERFACE(NeighborData, initializers::LTS, cellInformation, neighboringIntegration, dofs, neighboringIntegrationDevice)
 #endif
-    LTSTREE_GENERATE_INTERFACE(NeighborData, initializers::LTS, cellInformation, neighboringIntegration, dofs)
+
   }
 }
 

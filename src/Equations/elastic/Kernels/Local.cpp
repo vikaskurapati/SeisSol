@@ -132,17 +132,13 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t 
     PointersTable &entry = table[key];
 
     volKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
-
     volKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
-    volKrnl.Q_indices = 0;
-
     volKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
-    volKrnl.I_indices = 0;
 
     unsigned star_offset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-      volKrnl.star(i) = const_cast<const real **>((entry.container[*VariableID::start])->get_pointers());
-      volKrnl.star_indices(i) = star_offset;
+      volKrnl.star(i) = const_cast<const real **>((entry.container[*VariableID::star])->get_pointers());
+      volKrnl.star_offset(i) = star_offset;
       star_offset += tensor::star::size(i);
     }
 
@@ -156,18 +152,10 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t 
 
     if (table.find(key) != table.end()) {
       PointersTable &entry = table[key];
-
       lfKrnl.num_elements = entry.container[*VariableID::dofs]->get_size();
-
       lfKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
-      lfKrnl.Q_indices = 0;
-
       lfKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
-      lfKrnl.I_indices = 0;
-
       lfKrnl.AplusT = const_cast<const real **>(entry.container[*VariableID::AplusT]->get_pointers());
-      lfKrnl.AplusT_indices = 0;
-
       lfKrnl.execute(face);
     }
   }

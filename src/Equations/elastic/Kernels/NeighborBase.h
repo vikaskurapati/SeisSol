@@ -72,6 +72,7 @@
 #define KERNELS_NEIGHBORBASE_H_
 
 #include <generated_code/kernel.h>
+#include <generated_code/device_kernel.h>
 
 namespace seissol {
   namespace kernels {
@@ -84,6 +85,12 @@ class seissol::kernels::NeighborBase {
     kernel::localFlux m_lfKrnlPrototype;
     kernel::neighboringFlux m_nfKrnlPrototype;
     kernel::nodalFlux m_drKrnlPrototype;
+
+#ifdef ACL_DEVICE
+    device_gen_code::kernel::localFlux m_deviceLfKrnlPrototype;
+    device_gen_code::kernel::neighboringFlux m_deviceNfKrnlPrototype;
+    device_gen_code::kernel::nodalFlux m_deviceDrKrnlPrototype;
+#endif
 };
 
 #endif

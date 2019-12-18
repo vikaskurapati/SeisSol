@@ -194,12 +194,11 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
     intKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
 
     intKrnl.I = (entry.container[*VariableID::idofs])->get_pointers();
-    intKrnl.I_indices = 0;
 
     unsigned star_offset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-      derivativesKrnl.star(i) = const_cast<const real **>((entry.container[*VariableID::start])->get_pointers());
-      derivativesKrnl.star_indices(i) = star_offset;
+      derivativesKrnl.star(i) = const_cast<const real **>((entry.container[*VariableID::star])->get_pointers());
+      derivativesKrnl.star_offset(i) = star_offset;
       star_offset += tensor::star::size(i);
     }
 
@@ -208,8 +207,8 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
       derivativesKrnl.dQ(i) = (entry.container[*VariableID::derivatives])->get_pointers();
       intKrnl.dQ(i) = const_cast<const real **>((entry.container[*VariableID::derivatives])->get_pointers());
 
-      derivativesKrnl.dQ_indices(i) = derivatives_offset;
-      intKrnl.dQ_indices(i) = derivatives_offset;
+      derivativesKrnl.dQ_offset(i) = derivatives_offset;
+      intKrnl.dQ_offset(i) = derivatives_offset;
 
       derivatives_offset += tensor::dQ::size(i);
     }
@@ -233,6 +232,57 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
     }
   }
 }
+
+
+void seissol::kernels::Time::computeIntegralWithinWorkItem(double i_expansionPoint,
+                                                           double i_integrationStart,
+                                                           double i_integrationEnd,
+                                                           const real** i_timeDerivatives,
+                                                           real ** o_timeIntegratedDofs,
+                                                           unsigned num_elements) {
+
+  // assert that this is a forwared integration in time
+  assert( i_integrationStart + (real) 1.E-10 > i_expansionPoint   );
+  assert( i_integrationEnd                   > i_integrationStart );
+
+
+  /*
+  * compute time integral.
+  */
+  // compute lengths of integration intervals
+  real l_deltaTLower = i_integrationStart - i_expansionPoint;
+  real l_deltaTUpper = i_integrationEnd   - i_expansionPoint;
+
+  // initialization of scalars in the taylor series expansion (0th term)
+  real l_firstTerm  = (real) 1;
+  real l_secondTerm = (real) 1;
+  real l_factorial  = (real) 1;
+
+  device_gen_code::kernel::derivativeTaylorExpansion intKrnl;
+  intKrnl.num_elements = num_elements;
+
+  intKrnl.I = o_timeIntegratedDofs;
+
+  unsigned derivatives_offset = 0;
+  for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
+    intKrnl.dQ(i) = i_timeDerivatives;
+    intKrnl.dQ_offset(i) = derivatives_offset;
+    derivatives_offset += tensor::dQ::size(i);
+  }
+
+  // iterate over time derivatives
+  for(int der = 0; der < CONVERGENCE_ORDER; ++der ) {
+    l_firstTerm *= l_deltaTUpper;
+    l_secondTerm *= l_deltaTLower;
+    l_factorial *= (real) (der + 1);
+
+    intKrnl.power = l_firstTerm - l_secondTerm;
+    intKrnl.power /= l_factorial;
+
+    intKrnl.execute(der);
+  }
+}
+
 #endif
 
 void seissol::kernels::Time::flopsAder( unsigned int        &o_nonZeroFlops,

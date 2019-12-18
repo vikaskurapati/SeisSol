@@ -100,6 +100,15 @@ namespace seissol {
                               real * const                      i_timeDofs[4],
                               real                              o_integrationBuffer[4][tensor::I::size()],
                               real *                            o_timeIntegrated[4] );
+
+
+#ifdef ACL_DEVICE
+
+      void computeIntegralsForWorkItem(Time& i_time,
+                                       const double i_timeStepStart,
+                                       const double i_timeStepWidth,
+                                       conditional_table_t &table);
+#endif
     }
   }
 }

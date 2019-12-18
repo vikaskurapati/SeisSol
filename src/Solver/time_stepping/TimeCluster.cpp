@@ -164,6 +164,7 @@ seissol::time_stepping::TimeCluster::TimeCluster( unsigned int                  
 #ifdef ACL_DEVICE
   m_timeKernel.setGlobalDataOnDevice(m_deviceGlobalData);
   m_localKernel.setGlobalDataOnDevice(m_deviceGlobalData);
+  m_neighborKernel.setGlobalDataOnDevice(m_deviceGlobalData);
 #endif
 
 
@@ -504,30 +505,21 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 }
 
 #else // if defined(ACL_DEVICE)
-//#include <iostream>
-//#include <string>
-//#include <algorithm>
 
 void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::initializers::Layer&  i_layerData ) {
   SCOREP_USER_REGION( "computeLocalIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
 
   m_loopStatistics->begin(m_regionComputeLocalIntegration);
 
-  real**                buffers                       = i_layerData.var(m_lts->buffers);
-  real**                derivatives                   = i_layerData.var(m_lts->derivatives);
-  real**                displacements                 = i_layerData.var(m_lts->displacements);
-
-
   seissol::initializers::LayerContainer &container = i_layerData.getLayerContainer();
   conditional_table_t &table = container.get_conditional_table();
 
-  kernels::LocalData::Loader loader;
-  loader.load(*m_lts, i_layerData);
   kernels::LocalTmp tmp;
 
   m_timeKernel.computeAderWithinWorkItem(m_timeStepWidth, tmp, table);
   m_localKernel.computeIntegralWithinWorkItem(table, tmp);
 
+  // TODO: displacements
 
   ConditionalKey key(*KernelNames::time, *ComputationKind::with_lts_buffers);
   if (table.find(key) != table.end()) {
@@ -552,6 +544,8 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 }
 #endif
 
+
+#ifndef ACL_DEVICE
 void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol::initializers::Layer&  i_layerData ) {
 
   SCOREP_USER_REGION( "computeNeighboringIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
@@ -647,6 +641,30 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
   m_loopStatistics->end(m_regionComputeNeighboringIntegration, i_layerData.getNumberOfCells());
 
 }
+
+#else   // if defined(ACL_DEVICE)
+void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol::initializers::Layer&  i_layerData ) {
+
+  SCOREP_USER_REGION( "computeNeighboringIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
+
+  m_loopStatistics->begin(m_regionComputeNeighboringIntegration);
+
+  seissol::initializers::LayerContainer &container = i_layerData.getLayerContainer();
+  conditional_table_t &table = container.get_conditional_table();
+
+
+  seissol::kernels::TimeCommon::computeIntegralsForWorkItem(m_timeKernel,
+                                                            m_subTimeStart,
+                                                            m_timeStepWidth,
+                                                            table);
+
+  m_neighborKernel.computeNeighborsIntegralWithinWorkItem(table);
+  device_synch();
+
+  m_loopStatistics->end(m_regionComputeNeighboringIntegration, i_layerData.getNumberOfCells());
+
+}
+#endif
 
 #ifdef USE_MPI
 bool seissol::time_stepping::TimeCluster::computeLocalCopy(){

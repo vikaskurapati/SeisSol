@@ -117,6 +117,16 @@ class seissol::kernels::Time : public TimeBase {
                           real const*                                 i_timeDerivatives,
                           real                                        o_timeIntegrated[tensor::I::size()] );
 
+
+#ifdef ACL_DEVICE
+  void computeIntegralWithinWorkItem(double i_expansionPoint,
+                                     double i_integrationStart,
+                                     double i_integrationEnd,
+                                     const real** i_timeDerivatives,
+                                     real ** o_timeIntegratedDofs,
+                                     unsigned num_elements);
+#endif
+
     void computeTaylorExpansion( real         time,
                                  real         expansionPoint,
                                  real const*  timeDerivatives,

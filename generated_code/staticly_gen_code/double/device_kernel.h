@@ -31,9 +31,9 @@ namespace device_gen_code {
       constexpr static unsigned long const NonZeroFlops = 1377;
       constexpr static unsigned long const HardwareFlops = 1458;
 
-      double const* QgodLocal{};
-      double const* Tinv{};
-      double* godunovMatrix{};
+      double const** QgodLocal{};
+      double const** Tinv{};
+      double** godunovMatrix{};
 
       unsigned QgodLocal_offset{};
       unsigned Tinv_offset{};
@@ -49,9 +49,9 @@ namespace device_gen_code {
       constexpr static unsigned long const NonZeroFlops = 1377;
       constexpr static unsigned long const HardwareFlops = 1458;
 
-      double const* QgodNeighbor{};
-      double const* Tinv{};
-      double* godunovMatrix{};
+      double const** QgodNeighbor{};
+      double const** Tinv{};
+      double** godunovMatrix{};
 
       unsigned QgodNeighbor_offset{};
       unsigned Tinv_offset{};
@@ -68,9 +68,9 @@ namespace device_gen_code {
       constexpr static unsigned long const HardwareFlops = 1458;
 
       double fluxScale = std::numeric_limits<double>::signaling_NaN();
-      double const* T{};
-      double* fluxSolver{};
-      tensor::star::Container<double const*> star;
+      double const** T{};
+      double** fluxSolver{};
+      tensor::star::Container<double const**> star;
 
       unsigned T_offset{};
       unsigned fluxSolver_offset{};
@@ -101,8 +101,8 @@ namespace device_gen_code {
       size_t num_elements{};
 
       struct Prefetch {
-        double const* I{};
-        double const* Q{};
+        double const** I{};
+        double const** Q{};
       };
       Prefetch _prefetch;
 
@@ -148,7 +148,7 @@ namespace device_gen_code {
       size_t num_elements{};
 
       struct Prefetch {
-        double const* I{};
+        double const** I{};
       };
       Prefetch _prefetch;
 
@@ -293,10 +293,10 @@ namespace device_gen_code {
       constexpr static unsigned long const NonZeroFlops[] = {53676, 56448, 56448, 56448, 56889, 54117, 56889, 56889, 56889, 56889, 56889, 56889, 54117, 56889, 56889, 56889};
       constexpr static unsigned long const HardwareFlops[] = {60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840, 60840};
 
-      double const* Q{};
+      double const** Q{};
       tensor::V3mTo2n::Container<double const*> V3mTo2n;
-      double const* godunovMatrix{};
-      double* godunovState{};
+      double const** godunovMatrix{};
+      double** godunovState{};
 
       unsigned Q_offset{};
       tensor::V3mTo2n::Container<unsigned> V3mTo2n_offset;
@@ -306,7 +306,7 @@ namespace device_gen_code {
       size_t num_elements{};
 
       struct Prefetch {
-        double const* godunovState{};
+        double const** godunovState{};
       };
       Prefetch _prefetch;
 
@@ -360,7 +360,7 @@ namespace device_gen_code {
       size_t num_elements{};
 
       struct Prefetch {
-        double const* I{};
+        double const** I{};
       };
       Prefetch _prefetch;
 

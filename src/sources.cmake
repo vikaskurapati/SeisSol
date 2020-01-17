@@ -6,9 +6,6 @@ src/Initializer/InternalState.cpp
 src/Initializer/MemoryAllocator.cpp
 src/Initializer/CellLocalMatrices.cpp
 
-#DEBUGGING::RAVIL
-src/Initializer/binning/algorithm.cpp
-
 src/Initializer/time_stepping/LtsLayout.cpp
 src/Initializer/tree/Lut.cpp
 src/Initializer/MemoryManager.cpp
@@ -28,11 +25,6 @@ src/generated_code/init.cpp
 src/generated_code/init.h
 src/generated_code/kernel.h
 src/generated_code/kernel.cpp
-
-
-# RAVIL DEBUGGIN
-src/generated_code/device_kernel.cpp
-src/generated_code/device_subroutine.cpp
 
 src/Solver/Simulator.cpp
 src/Solver/FreeSurfaceIntegrator.cpp
@@ -187,4 +179,33 @@ elseif ("${EQUATIONS}" STREQUAL "viscoelastic2")
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Equations/viscoelastic2/Physics/InitialField.cpp
   )
   target_include_directories(SeisSol-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/Equations/viscoelastic2)
+endif()
+
+
+
+if ("${ACCELERATOR_TYPE}" STREQUAL "GPU")
+
+  if (${REAL_SIZE_IN_BYTES} EQUAL 8)
+    configure_file(generated_code/staticly_gen_code/double/device_kernel.cpp src/generated_code/device_kernel.cpp COPYONLY)
+    configure_file(generated_code/staticly_gen_code/double/device_kernel.h src/generated_code/device_kernel.h COPYONLY)
+
+    configure_file(generated_code/staticly_gen_code/double/device_subroutine.cpp src/generated_code/device_subroutine.cpp COPYONLY)
+    configure_file(generated_code/staticly_gen_code/double/device_subroutine.h src/generated_code/device_subroutine.h COPYONLY)
+  elseif (${REAL_SIZE_IN_BYTES} STREQUAL 4)
+    configure_file(generated_code/staticly_gen_code/float/device_kernel.cpp src/generated_code/device_kernel.cpp COPYONLY)
+    configure_file(generated_code/staticly_gen_code/float/device_kernel.h src/generated_code/device_kernel.h COPYONLY)
+
+    configure_file(generated_code/staticly_gen_code/float/device_subroutine.cpp src/generated_code/device_subroutine.cpp COPYONLY)
+    configure_file(generated_code/staticly_gen_code/float/device_subroutine.h src/generated_code/device_subroutine.h COPYONLY)
+  endif()
+
+  target_sources(SeisSol-lib PUBLIC
+          ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/binning/algorithm.cpp
+          ${CMAKE_BINARY_DIR}/src/generated_code/device_kernel.cpp
+          ${CMAKE_BINARY_DIR}/src/generated_code/device_subroutine.cpp
+          )
+  target_include_directories(SeisSol-lib PUBLIC
+          ${CMAKE_BINARY_DIR}/src/generated_code/device_kernel.h
+          ${CMAKE_BINARY_DIR}/src/generated_code/device_subroutine.h
+          )
 endif()

@@ -93,14 +93,6 @@ add_custom_command(
 )
 
 
-# TODO: add a switch
-#NOTE: copy statically generated code for a device(s)
-configure_file(generated_code/staticly_gen_code/device_kernel.cpp src/generated_code/device_kernel.cpp COPYONLY)
-configure_file(generated_code/staticly_gen_code/device_kernel.h src/generated_code/device_kernel.h COPYONLY)
-
-configure_file(generated_code/staticly_gen_code/device_subroutine.cpp src/generated_code/device_subroutine.cpp COPYONLY)
-configure_file(generated_code/staticly_gen_code/device_subroutine.h src/generated_code/device_subroutine.h COPYONLY)
-
 if (PLASTICITY)
   target_compile_definitions(SeisSol-lib PUBLIC USE_PLASTICITY)
 endif()

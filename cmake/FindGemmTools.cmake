@@ -1,82 +1,70 @@
+#  GemmTools - BLAS-like Library Instantiation Software Framework
+#  email: ravil.dorozhinskii@tum.de 
+#
+#  Input:
+#  GEMM_TOOLS_LIST                - a list of targeted BLAS implementations
+#                                   which support GEneral Matrix Matrix multiplications
+#
+#  Output:
+#  GemmTools_FOUND                - system has found GemmTools
+#  GemmTools_INCLUDE_DIRS         - include directories for GemmTools
+#  GemmTools_LIBRARIES            - libraries for GemmTools
+#  GemmTools_COMPILER_DEFINITIONS - compiler definitions for GemmTools 
+#
+#  Example usage:
+#
+#  set(GEMM_TOOLS_LIST "LIBXSMM,PSpaMM")
+#
+#  find_package(GEMM_TOOLS_LIST)
+#  if(GEMM_TOOLS_FOUND)
+#    if(GEMM_TOOLS_INCLUDE_DIRS)
+#      target_include_directories(TARGET PUBLIC ${GEMM_TOOLS_INCLUDE_DIRS})
+#    endif()
+#    if(GEMM_TOOLS_LIBRARIES)
+#      target_link_libraries(TARGET PUBLIC ${GEMM_TOOLS_LIBRARIES})
+#    endif()
+#    if(GEMM_TOOLS_COMPILER_DEFINITIONS)  
+#      target_compile_definitions(TARGET PUBLIC ${GEMM_TOOLS_COMPILER_DEFINITIONS})
+#    endif()
+#  endif()
 
-string(REPLACE ":" ";" default_bin_search_paths $ENV{PATH})
-string(REPLACE ":" ";" default_lib_search_paths $ENV{LIBRARY_PATH})
-string(REPLACE ":" ";" default_includes_search_paths $ENV{C_INCLUDE_PATH} ":" $ENV{CPLUS_INCLUDE_PATH} ":" $ENV{CPATH})
+string(REPLACE "," ";" _GEMM_TOOLS_LIST ${GEMM_TOOLS_LIST})
 
-
-string(REPLACE "," ";" component_list ${GemmTools_FIND_COMPONENTS})
-set(GemmTools_FOUND True)
-foreach(component ${component_list})
-
+foreach(component ${_GEMM_TOOLS_LIST})
     if ("${component}" STREQUAL "LIBXSMM")
-        set(component_found True)
-
+        find_package(Libxsmm_executable REQUIRED)
 
     elseif ("${component}" STREQUAL "PSpaMM")
-        set(component_found True)
-
+        find_package(PSpaMM REQUIRED)
 
     elseif ("${component}" STREQUAL "MKL")
-        set(GemmTools_LIBRARIES ${GemmTools_LIBRARIES} -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl)
-        set(GemmTools_DEFINITIONS ${GemmTools_DEFINITIONS} -DMKL_ILP64)
-
-        if (DEFINED ENV{MKLROOT})
-            set(GemmTools_INCLUDE_DIR $ENV{MKLROOT}/include)
-        endif()
-
-        set(component_found True)
-
+        find_package(MKL REQUIRED)
 
     elseif ("${component}" STREQUAL "OpenBLAS")
-        # check wether we can find the openblas lib within user's environment
-        find_file(OpenBLAS_lib
-                  NAMES libopenblas.so
-                  HINTS ${default_lib_search_paths})
-
-
-        # check wether we can find an openblas header within user's environment
-        find_file(OpenBLAS_include
-                NAMES cblas.h
-                HINTS ${default_includes_search_paths})
-
-        if (OpenBLAS_lib STREQUAL OpenBLAS_lib-NOTFOUND  OR  OpenBLAS_include EQUAL OpenBLAS_include-NOTFOUND)
-            message(STATUS "OpenBLAS INFO:")
-            message(STATUS "\tlib: ${OpenBLAS_lib}")
-            message(STATUS "\tincl.: ${OpenBLAS_include}")
-            set(component_found False)
-        else()
-            set(GemmTools_LIBRARIES ${GemmTools_LIBRARIES} -lopenblas)
-            set(component_found True)
-        endif()
-
+        find_package(OpenBLAS REQUIRED)
 
     elseif ("${component}" STREQUAL "BLIS")
-        set(component_found True)
-
+        find_package(BLIS REQUIRED)
 
     elseif ("${component}" STREQUAL "ACL_DEVICE_BLAS")
-        add_subdirectory(submodules/Device/cuda)
-        set(GemmTools_LIBRARIES ${GemmTools_LIBRARIES} custom_blas)
-        set(GemmTools_INCLUDE_DIR ${GemmTools_INCLUDE_DIR} submodules/Device/cuda/src)
-        set(GemmTools_DEFINITIONS ${GemmTools_DEFINITIONS} ACL_DEVICE)
-
-        set(component_found True)
+        if ("${ACCELERATOR_TYPE}" STREQUAL "GPU-CUDA")
+            add_subdirectory(submodules/Device/cuda)
+            set(GemmTools_INCLUDE_DIRS ${GemmTools_INCLUDE_DIR} submodules/Device/cuda/src)
+            set(GemmTools_LIBRARIES ${GemmTools_LIBRARIES} custom_blas)
+            set(GemmTools_COMPILER_DEFINITIONS ${GemmTools_DEFINITIONS} ACL_DEVICE)
+        else()
+            message(FATAL_ERROR "ACL_DEVICE_BLAS option was chosen but ACCELERATOR_TYPE was incorrect. \
+                    Please, refer to the documentation")
+        endif()
 
 
     else()
         message(FATAL_ERROR "Gemm Tools do not have a requested component, i.e. ${component}. \
-                Please, see the documentation")
-    endif()
-
-
-    # GemmTools is not found if at least one requested component is missing
-    if (NOT component_found)
-        set(GemmTools_FOUND False)
+                Please, refer to the documentation")
     endif()
 
 endforeach()
 
-
-if (NOT GemmTools_FOUND)
-    message(STATUS "\tNOTE: clean cmake-cache after changing your enviroment variables")
-endif()
+list(APPEND GemmTools_INCLUDE_DIRS ${MKL_INCLUDE_DIRS} ${OpenBLAS_INCLUDE_DIRS} ${BLIS_INCLUDE_DIRS})
+list(APPEND GemmTools_LIBRARIES ${MKL_LIBRARIES} ${OpenBLAS_LIBRARIES} ${BLIS_LIBRARIES})
+list(APPEND GemmTools_COMPILER_DEFINITIONS ${MKL_COMPILER_DEFINITIONS})

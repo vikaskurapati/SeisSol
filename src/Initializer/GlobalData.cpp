@@ -38,6 +38,11 @@
  **/
 
 #include "GlobalData.h"
+
+#ifdef ACL_DEVICE
+#include "device_utils.h"
+#endif
+
 #include <generated_code/init.h>
 #include <yateto.h>
 

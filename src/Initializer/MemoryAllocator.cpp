@@ -69,12 +69,12 @@
  * Aligned memory allocation.
  **/
 
+#ifdef ACL_DEVICE
+#include "device_utils.h"
+#endif
+
 #include <algorithm>
 #include "MemoryAllocator.h"
-
-#ifdef ACL_DEVICE
-    #include "device_utils.h"
-#endif
 
 #include <utils/logger.h>
 

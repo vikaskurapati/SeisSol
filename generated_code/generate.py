@@ -119,7 +119,7 @@ generators = []
 for tool in gemm_tool_list:
   # a patch for acl_device_blas
   if tool == "ACL_DEVICE_BLAS":
-      tool = "MKL"
+      continue
 
   if hasattr(gemm_configuration, tool):
     specific_gemm_class = getattr(gemm_configuration, tool)

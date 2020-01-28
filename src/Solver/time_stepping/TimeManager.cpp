@@ -418,6 +418,11 @@ void seissol::time_stepping::TimeManager::pollForCommunication() {
 
   parallel::pinToFreeCPUs();
 
+#ifdef ACL_DEVICE
+  // pthread should also get pinned to a dedicated device
+  device::query::setDevice(MPI::mpi.getDeviceID());
+#endif  // ACL_DEVICE
+
   //logInfo(0) << "Launching communication thread on OS core id:" << l_numberOfHWThreads;
 
   // now let's enter the polling loop

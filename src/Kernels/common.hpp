@@ -60,7 +60,7 @@
  */
 #define GENERATE_HAS_MEMBER(NAME) namespace seissol { namespace kernels { \
   template<typename T> \
-  #struct has_ # NAME { \
+  struct has_ ## NAME { \
     template<typename U> static constexpr decltype(std::declval<U>().NAME, bool()) test(int) { return true; } \
     template<typename U> static constexpr bool test(...) { return false; } \
     static constexpr bool value = test<T>(int()); \

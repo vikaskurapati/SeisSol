@@ -62,3 +62,5 @@ _build
 *.dblite
 config.log
 .sconf_temp
+
+again.sh

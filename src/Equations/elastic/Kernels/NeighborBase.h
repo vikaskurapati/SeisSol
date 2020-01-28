@@ -72,7 +72,10 @@
 #define KERNELS_NEIGHBORBASE_H_
 
 #include <generated_code/kernel.h>
+
+#ifdef ACL_DEVICE
 #include <generated_code/device_kernel.h>
+#endif
 
 namespace seissol {
   namespace kernels {

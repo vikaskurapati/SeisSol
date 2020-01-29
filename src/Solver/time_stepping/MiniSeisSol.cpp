@@ -141,11 +141,11 @@ double seissol::miniSeisSol(initializers::MemoryManager& memoryManager) {
 
   initializers::LTSTree ltsTree;
   initializers::LTS     lts;
-  
+
   lts.addTo(ltsTree);
   ltsTree.setNumberOfTimeClusters(1);
   ltsTree.fixate();
-  
+
   initializers::TimeCluster& cluster = ltsTree.child(0);
   cluster.child<Ghost>().setNumberOfCells(0);
   cluster.child<Copy>().setNumberOfCells(0);
@@ -153,20 +153,30 @@ double seissol::miniSeisSol(initializers::MemoryManager& memoryManager) {
 
   ltsTree.allocateVariables();
   ltsTree.touchVariables();
-  
+
   initializers::Layer& layer = cluster.child<Interior>();
   
   layer.setBucketSize(lts.buffersDerivatives, sizeof(real) * tensor::I::size() * layer.getNumberOfCells());
   ltsTree.allocateBuckets();
-  
+
   fakeData(lts, layer);
-  
+
+  // TODO (RAVIL): run localIntegration on devices
   localIntegration(globalData, lts, layer);
-  
+
   Stopwatch stopwatch;
   stopwatch.start();
+
   for (unsigned t = 0; t < 10; ++t) {
+    // TODO (RAVIL): run localIntegration on devices
     localIntegration(globalData, lts, layer);
   }
-  return stopwatch.stop();
+  double elapsed_time = stopwatch.stop();
+
+#ifdef ACL_DEVICE
+  ltsTree.freeDeviceVariablesExplicitly();
+  ltsTree.freeLeavesContainersExplicitly();
+#endif
+
+  return elapsed_time;
 }

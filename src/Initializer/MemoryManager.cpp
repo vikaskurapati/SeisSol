@@ -488,7 +488,7 @@ void seissol::initializers::MemoryManager::deriveDisplacementsBucket()
 void seissol::initializers::MemoryManager::deriveScratchPadMemoryRequired() {
   size_t totalDerivativesSize = yateto::computeFamilySize<tensor::dQ>();
 
-  for ( seissol::initializers::LTSTree::leaf_iterator layer = m_ltsTree.beginLeaf(); layer != m_ltsTree.endLeaf(); ++layer) {
+  for (seissol::initializers::LTSTree::leaf_iterator layer = m_ltsTree.beginLeaf(); layer != m_ltsTree.endLeaf(); ++layer) {
     CellLocalInformation* cellInformation = layer->var(m_lts.cellInformation);
 
     unsigned numberOfDerivativesInScratchMem = 0;
@@ -613,7 +613,6 @@ void seissol::initializers::MemoryManager::getMemoryLayoutExtended(unsigned int 
   o_globalData              = &m_globalData;
   o_deviceGlobalData        = &m_deviceGlobalData;
 }
-
 #endif
 
 

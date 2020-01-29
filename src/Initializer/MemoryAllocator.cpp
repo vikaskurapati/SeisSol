@@ -179,14 +179,16 @@ seissol::memory::ManagedAllocator::~ManagedAllocator()
 {
   for (AddressVector::const_iterator it = m_dataMemoryAddresses.begin(); it != m_dataMemoryAddresses.end(); ++it) {
       if (it->first == seissol::memory::DeviceGlobalMemory) {
-          std::cout << "ERROR::device global mem. in a destructor" << std::endl;
-          throw;
+        logError() << "Premature deallocation of device global mem. in ~ManagedAllocator. "
+                   << "Dangerous, device driver might be disconnected";
+        throw;
       }
 
 
       if (it->first == seissol::memory::DeviceUnifiedMemory) {
-          std::cout << "ERROR::uniformed mem. in a destructor" << std::endl;
-          throw;
+        logError() << "Premature deallocation of device uniformed mem. in ~ManagedAllocator. "
+                   << "Dangerous, device driver might be disconnected";
+        throw;
       }
 
       seissol::memory::free(it->second, it->first);

@@ -142,12 +142,13 @@ public:
      * */
     void  bindToDevice() {
       try {
-
         std::vector<std::string> rank_env_vars{{"OMPI_COMM_WORLD_LOCAL_RANK"},
-                                               {"MV2_COMM_WORLD_LOCAL_RANK"}};
+                                               {"MV2_COMM_WORLD_LOCAL_RANK"},
+                                               {"SLURM_LOCALID"}};
 
         std::vector<std::string> size_env_vars{{"OMPI_COMM_WORLD_LOCAL_SIZE"},
-                                               {"MV2_COMM_WORLD_LOCAL_SIZE"}};
+                                               {"MV2_COMM_WORLD_LOCAL_SIZE"},
+                                               {"SLURM_NTASKS_PER_NODE"}};
 
         m_localRank = readValueFromEnvVaraibles(rank_env_vars);
         m_localSize = readValueFromEnvVaraibles(size_env_vars);

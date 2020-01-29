@@ -231,6 +231,7 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
   real* drGlobalMatrixMem = static_cast<real*>(memoryAllocator.allocateMemory(drGlobalMatrixMemSize * sizeof(real),
                                                                               MATRIX_ALIGNMENT,
                                                                               memkind));
+  globalData.address_registry.push_back(drGlobalMatrixMem);
 
 
   real* drGlobalMatrixMemPtr = drGlobalMatrixMem;

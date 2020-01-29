@@ -284,6 +284,21 @@ void read_mesh_netcdf_c(int rank, int nProcs, const char* meshfile, bool hasFaul
 #endif // USE_NETCDF
 }
 
+#if defined(USE_METIS) && defined(USE_HDF) && defined(USE_MPI)
+/**
+ *  @brief Estimates a weight that has to be taken into account for load balancing, i.e. mesh partitioning
+ *
+ *  @details The function runs miniSeissol and computes the weight as the inverse of time spent on miniSeissol.
+ *  The function must be called by all MPI processes. NOTE: The original implementation of the procedure was inside
+ *  of "read_mesh_puml_c" function. However, calling seissol::miniSeisSol inside "read_mesh_puml_c" leaded to
+ *  corruption of stack data and as a result to a run-time error with gcc 8.3.0 compiler.
+ *
+ * @return weight
+ * */
+double estimateTopolgyWeight() {
+  return 1.0 / seissol::miniSeisSol(seissol::SeisSol::main.getMemoryManager());
+}
+#endif
 
 void read_mesh_puml_c(const char* meshfile, const char* checkPointFile, bool hasFault, double const displacement[3], double const scalingMatrix[3][3], char const* easiVelocityModel, int clusterRate)
 {
@@ -292,9 +307,11 @@ void read_mesh_puml_c(const char* meshfile, const char* checkPointFile, bool has
 #if defined(USE_METIS) && defined(USE_HDF) && defined(USE_MPI)
 	const int rank = seissol::MPI::mpi.rank();
   	double tpwgt = 1.0;
+
 	if (seissol::MPI::mpi.size() > 1) {
 	  logInfo(rank) << "Running mini SeisSol to determine node weight";
-	  tpwgt = 1.0 / seissol::miniSeisSol(seissol::SeisSol::main.getMemoryManager());
+    tpwgt = estimateTopolgyWeight();
+	  logInfo(rank) << "DEBUGGING:: Reading PUML mesh" << meshfile;
 
 	  const auto summary = seissol::statistics::parallelSummary(tpwgt);
 	  logInfo(rank) << "Node weights: mean =" << summary.mean
@@ -303,7 +320,7 @@ void read_mesh_puml_c(const char* meshfile, const char* checkPointFile, bool has
 			<< " median =" << summary.median
 			<< " max =" << summary.max;
 	}
-	
+
 	logInfo(rank) << "Reading PUML mesh" << meshfile;
 
 	Stopwatch watch;
@@ -311,10 +328,10 @@ void read_mesh_puml_c(const char* meshfile, const char* checkPointFile, bool has
 
 	bool readPartitionFromFile = seissol::SeisSol::main.simulator().checkPointingEnabled();
 
-	seissol::initializers::time_stepping::LtsWeights ltsWeights(easiVelocityModel, clusterRate);
+  seissol::initializers::time_stepping::LtsWeights ltsWeights(easiVelocityModel, clusterRate);
+  //tpwgt = 1.0;  //  DEBUGGING
 	seissol::SeisSol::main.setMeshReader(new seissol::PUMLReader(meshfile, checkPointFile, &ltsWeights, tpwgt, readPartitionFromFile));
-
-	read_mesh(rank, seissol::SeisSol::main.meshReader(), hasFault, displacement, scalingMatrix);
+  read_mesh(rank, seissol::SeisSol::main.meshReader(), hasFault, displacement, scalingMatrix);
 
 	watch.pause();
 	watch.printTime("Mesh initialized in:");

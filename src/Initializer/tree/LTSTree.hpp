@@ -67,7 +67,7 @@ private:
   std::vector<MemoryInfo> scratchPadInfo{};
   std::vector<size_t> scratchPadSizes{};  /*!< sizes of variables within the entire tree in bytes */
   void** m_scratchPads;
-#endif
+#endif  // ACL_DEVICE
 
 public:
   LTSTree() : m_vars(NULL), m_buckets(NULL) {}
@@ -181,6 +181,7 @@ public:
   }
 
 #ifdef ACL_DEVICE
+  // TODO: document (ravil)
   void allocateScratchPads() {
     m_scratchPads = new void*[scratchPadInfo.size()];
     scratchPadSizes.resize(scratchPadInfo.size(), 0);

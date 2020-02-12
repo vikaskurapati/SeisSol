@@ -104,6 +104,11 @@ void seissol::solver::FreeSurfaceIntegrator::initialize(  unsigned maxRefinement
 
 void seissol::solver::FreeSurfaceIntegrator::calculateOutput()
 {
+/**
+#ifdef ACL_DEVICE
+  // TODO: copy data from GPU
+#endif
+*/
   unsigned offset = 0;
   seissol::initializers::LayerMask ghostMask(Ghost);
   for ( seissol::initializers::LTSTree::leaf_iterator surfaceLayer = surfaceLtsTree.beginLeaf(ghostMask);

@@ -16,6 +16,8 @@ namespace seissol {
                                        AminusT,
                                        godunov,
                                        fluxSolver,
+                                       ivelocities,  // 6th, 7the and 8th columns of idofs
+                                       displacements,
                                        elements_ids,
                                        Count};
 
@@ -29,7 +31,8 @@ namespace seissol {
                                         volume = 1 << 1,
                                         local_flux = 1 << 2,
                                         neighbor_flux = 1 << 3,
-                                        Count = 4,
+                                        displacements = 1 << 4,
+                                        Count = 5,
                                         any = encode_any(Count)};
 
 

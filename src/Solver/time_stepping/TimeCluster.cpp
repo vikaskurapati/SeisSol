@@ -426,7 +426,6 @@ void seissol::time_stepping::TimeCluster::waitForInits() {
 #endif
 
 
-
 #ifndef ACL_DEVICE
 void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::initializers::Layer&  i_layerData ) {
   SCOREP_USER_REGION( "computeLocalIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
@@ -519,9 +518,21 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
   m_timeKernel.computeAderWithinWorkItem(m_timeStepWidth, tmp, table);
   m_localKernel.computeIntegralWithinWorkItem(table, tmp);
 
-  // TODO: displacements
+  ConditionalKey key(*KernelNames::displacements);
+  if (table.find(key) != table.end()) {
+    PointersTable &entry = table[key];
+    // NOTE: ivelocities have been computed implicitly, i.e
+    // it is 6th, 7the and 8th columns of idofs
+    device_accumulate_data((entry.container[*VariableID::ivelocities])->get_pointers(),
+                           (entry.container[*VariableID::displacements])->get_pointers(),
+                           tensor::displacement::Size,
+                           (entry.container[*VariableID::displacements])->get_size());
 
-  ConditionalKey key(*KernelNames::time, *ComputationKind::with_lts_buffers);
+    // TODO::Ravil there must be a signal saying whether we have to start copying data to the host
+    // device::copyFrom();
+  }
+
+  key = ConditionalKey(*KernelNames::time, *ComputationKind::with_lts_buffers);
   if (table.find(key) != table.end()) {
     PointersTable &entry = table[key];
 

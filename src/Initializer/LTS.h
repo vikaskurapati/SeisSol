@@ -104,7 +104,6 @@ struct seissol::initializers::LTS {
   // DEBUGGING::RAVIL
   Variable<LocalIntegrationData>          localIntegrationDevice;
   Variable<NeighboringIntegrationData>    neighboringIntegrationDevice;
-
   //Variable<CellMaterialData>              materialDevice;
   //Variable<PlasticityData>                plasticityDevice;
   //Variable<CellDRMapping[4]>              drMappingDevice;
@@ -154,6 +153,10 @@ struct seissol::initializers::LTS {
 
     tree.addBucket(buffersDerivatives,                          PAGESIZE_HEAP,      MEMKIND_TIMEDOFS );
     tree.addBucket(displacementsBuffer,                         PAGESIZE_HEAP,      MEMKIND_TIMEDOFS );
+    // TODO: introduce displacementsBufferOnDevice (ravil)
+    //Variable<real*> displacementsOnDevice;
+    //tree.addVar( displacementsOnDevice, LayerMask(Ghost),     PAGESIZE_HEAP,      seissol::memory::Standard ); ???
+    // tree.addBucket(ddisplacementsBufferOnDevice,    PAGESIZE_HEAP,      seissol::memory::DeviceGlobalMemory );
   }
 };
 #endif

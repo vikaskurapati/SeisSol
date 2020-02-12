@@ -145,7 +145,7 @@ target_include_directories(SeisSol-lib PUBLIC ${YAML_CPP_INCLUDE_DIR})
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(ImpalaJIT REQUIRED impalajit)
-target_link_libraries(SeisSol-lib PUBLIC ${ImpalaJIT_LINK_LIBRARIES})
+target_link_libraries(SeisSol-lib PUBLIC ${ImpalaJIT_LINK_LIBRARIES} ${ImpalaJIT_LIBRARIES})
 target_include_directories(SeisSol-lib PUBLIC ${ImpalaJIT_INCLUDE_DIRS})
 
 # In the future, we should maybe use find_package(Eigen3).
@@ -253,7 +253,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel C++
   # todo remove std?, is ffreestanding needed?
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -qopenmp")
 
   # only if openmp
   set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -qopenmp")

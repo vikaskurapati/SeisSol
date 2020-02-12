@@ -216,6 +216,7 @@ public:
   }
 
 #ifdef ACL_DEVICE
+  // TODO: document (ravil)
   void findMaxScratchPadSizes(std::vector<size_t>& bytes) {
     for (unsigned id = 0; id < bytes.size(); ++id) {
       bytes[id] = std::max(bytes[id], m_ScratchPadSizes[id]);

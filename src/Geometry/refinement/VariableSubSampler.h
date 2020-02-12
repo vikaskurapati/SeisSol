@@ -127,7 +127,6 @@ VariableSubsampler<T>::VariableSubsampler(
 }
 
 //------------------------------------------------------------------------------
-
 template<typename T>
 void VariableSubsampler<T>::get(const double* inData,  const unsigned int* cellMap,
         int variable, double* outData) const

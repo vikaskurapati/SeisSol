@@ -1,13 +1,10 @@
 #ifdef ACL_DEVICE
 
 #include <iostream>
-#include <utility>
 #include <vector>
 #include <array>
 #include <unordered_map>
-#include <iterator>
 #include <string>
-#include <limits>
 
 #include "algorithm.h"
 #include "EncodingConstants.h"
@@ -177,6 +174,31 @@ void seissol::initializers::binning::local_integral(seissol::initializers::LTS &
 
         table[key].set_not_empty_flag();
       }
+    }
+  }
+
+  // *************************************** displacements ***************************************
+  {
+    real** displacements = layer.var(handler.displacements);
+    std::vector<real*> ivelocities_ptrs{};
+    std::vector<real*> displacements_ptrs{};
+
+    // NOTE: velocity components are between 6th and 8th columns
+    const unsigned OffsetToVelocities = 6 * seissol::tensor::I::Shape[0];
+    for (unsigned cell = 0; cell < layer.getNumberOfCells(); ++cell) {
+      if (displacements[cell] != nullptr) {
+        real *ivelocity = &idofs_address_registry[cell][OffsetToVelocities];
+        ivelocities_ptrs.push_back(ivelocity);
+        displacements_ptrs.push_back(displacements[cell]);
+      }
+    }
+    if (!displacements_ptrs.empty()) {
+      ConditionalKey key(*KernelNames::displacements);
+      check_key(table, key);
+      table[key].container[*VariableID::ivelocities] = new DevicePointers(ivelocities_ptrs);
+      table[key].container[*VariableID::displacements] = new DevicePointers(displacements_ptrs);
+
+      table[key].set_not_empty_flag();
     }
   }
 }

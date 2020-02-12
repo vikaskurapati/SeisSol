@@ -44,7 +44,7 @@ void seissol::writer::PostProcessor::integrateQuantities(const double i_timestep
 	seissol::initializers::Layer& i_layerData, const unsigned int l_cell,
 	const double * const i_dofs) {
 
-	real (*integrals) = i_layerData.var(m_integrals);
+	real *integrals = i_layerData.var(m_integrals);
 	for (int i = 0; i < m_numberOfVariables; i++) {
 		integrals[l_cell*m_numberOfVariables+i] += i_dofs[NUMBER_OF_ALIGNED_BASIS_FUNCTIONS*m_integerMap[i]]*i_timestep;
 	}
@@ -78,10 +78,10 @@ void seissol::writer::PostProcessor::allocateMemory(seissol::initializers::LTSTr
       seissol::memory::Standard );
 }
 
-const double* seissol::writer::PostProcessor::getIntegrals(seissol::initializers::LTSTree* ltsTree) {
+const real* seissol::writer::PostProcessor::getIntegrals(seissol::initializers::LTSTree* ltsTree) {
 	if (m_numberOfVariables == 0) {
 		return 0L;
 	} else {
-		return reinterpret_cast<const double*>(ltsTree->var(m_integrals));
+		return reinterpret_cast<const real*>(ltsTree->var(m_integrals));
 	}
 }

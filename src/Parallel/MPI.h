@@ -54,6 +54,7 @@
 #ifdef ACL_DEVICE
 #include <cstdlib>
 #include <string>
+#include <sstream>
 #include <device_utils.h>
 #endif  // ACL_DEVICE
 
@@ -116,7 +117,14 @@ public:
       }
 
       if (!value_str) {
-        throw std::string("could not detect a value from given env. variables. Please, try another mpi implementation.");
+        std::stringstream stream;
+
+        stream << "could not detect any env. variable from a list of candidates, namely: ";
+        for (auto item: candidates)
+          stream << item << ", ";
+        stream << ". Please, consider to use any other MPI implementation with an offloading support.";
+
+        throw stream.str();
       }
 
       return std::stoi(std::string(value_str));

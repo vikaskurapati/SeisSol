@@ -311,7 +311,6 @@ void read_mesh_puml_c(const char* meshfile, const char* checkPointFile, bool has
 	if (seissol::MPI::mpi.size() > 1) {
 	  logInfo(rank) << "Running mini SeisSol to determine node weight";
     tpwgt = estimateTopolgyWeight();
-	  logInfo(rank) << "DEBUGGING:: Reading PUML mesh" << meshfile;
 
 	  const auto summary = seissol::statistics::parallelSummary(tpwgt);
 	  logInfo(rank) << "Node weights: mean =" << summary.mean

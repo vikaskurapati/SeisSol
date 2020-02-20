@@ -181,7 +181,7 @@ elseif ("${EQUATIONS}" STREQUAL "viscoelastic2")
   target_include_directories(SeisSol-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/Equations/viscoelastic2)
 endif()
 
-if ("${ACCELERATOR_TYPE}" STREQUAL "GPU-CUDA")
+if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
 
   if (${REAL_SIZE_IN_BYTES} EQUAL 8)
     configure_file(generated_code/staticly_gen_code/double/device_kernel.cpp src/generated_code/device_kernel.cpp COPYONLY)

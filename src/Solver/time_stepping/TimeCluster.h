@@ -76,6 +76,10 @@
 #include <list>
 #endif
 
+#ifdef ACL_DEVICE
+#include "device.h"
+#endif
+
 #include <Initializer/typedefs.hpp>
 #include <SourceTerm/typedefs.hpp>
 #include <utils/logger.h>
@@ -146,6 +150,7 @@ private:
    * global data allocated on a device memory
    */
   struct GlobalDataOnDevice *m_deviceGlobalData;
+  device::Device& m_Device = device::Device::getInstance();
 #endif
 
     /*

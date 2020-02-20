@@ -114,7 +114,7 @@ class seissol::memory::ManagedAllocator {
     //! holds all memory addresses, which point to data arrays and have been returned by mallocs calling functions of the memory allocator.
     AddressVector m_dataMemoryAddresses;
 
-  public:  
+  public:
     ManagedAllocator() {}
     
     /**

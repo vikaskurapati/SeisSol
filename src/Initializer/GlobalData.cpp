@@ -38,11 +38,6 @@
  **/
 
 #include "GlobalData.h"
-
-#ifdef ACL_DEVICE
-#include "device_utils.h"
-#endif
-
 #include <generated_code/init.h>
 #include <yateto.h>
 
@@ -144,7 +139,8 @@ void seissol::initializers::initializeGlobalData(GlobalData& globalData, memory:
 
 
 #ifdef ACL_DEVICE
-#include <device_utils.h>
+#include <device.h>
+using namespace device;
 // Allocates and inits global data structures on a device (gpu)
 void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& globalData,
                                                          memory::ManagedAllocator& memoryAllocator) {
@@ -152,6 +148,8 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
   seissol::memory::Memkind memkind = seissol::memory::Memkind::DeviceGlobalMemory;
   // We ensure that global matrices always start at an aligned memory address,
   // such that mixed cases with aligned and non-aligned global matrices do also work.
+
+  Device& device = Device::getInstance();
 
   // compute a memory size needed to store global tensors and matrices
   // NOTE: the memory size includes padding for efficient vectorization
@@ -217,9 +215,9 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
   // multiply all stifness matricess by -1
   // @TODO Integrate this step into the code generator
   for (unsigned transposedStiffness = 0; transposedStiffness < 3; ++transposedStiffness) {
-      device_scale_array(-1.0,
-                         init::kDivMT::size(transposedStiffness),
-                         const_cast<real*>(globalData.stiffnessMatricesTransposed(transposedStiffness)));
+    device.api->scaleArray(const_cast<real*>(globalData.stiffnessMatricesTransposed(transposedStiffness)),
+                           -1.0,
+                           init::kDivMT::size(transposedStiffness));
   }
 
 
@@ -245,83 +243,85 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
                                                        DEVICE_ALIGNMENT_IN_BYTES);
 }
 
-void seissol::initializers::compareGlobalData(const GlobalData &host, const GlobalDataOnDevice &device) {
+void seissol::initializers::compareGlobalData(const GlobalData &HostData, const GlobalDataOnDevice &DeviceData) {
+  Device& device = Device::getInstance();
+
     for (unsigned i = 0; i < 3; ++i) {
-        std::string array_name = "kDivM(" + std::to_string(i)+ ")";
-        device_compare_with_host_array(host.stiffnessMatrices(i),
-                                       device.stiffnessMatrices(i),
-                                       seissol::init::kDivM::size(i),
-                                       array_name.c_str());
+      std::string ArrayName = "kDivM(" + std::to_string(i) + ")";
+      device.api->compareDataWithHost(HostData.stiffnessMatrices(i),
+                                      DeviceData.stiffnessMatrices(i),
+                                      seissol::init::kDivM::size(i),
+                                      ArrayName.c_str());
     }
 
 
     for (unsigned i = 0; i < 3; ++i) {
-        std::string array_name = "kDivMT(" + std::to_string(i)+ ")";
-        device_compare_with_host_array(host.stiffnessMatricesTransposed(i),
-                                       device.stiffnessMatricesTransposed(i),
-                                       seissol::init::kDivMT::size(i),
-                                       array_name.c_str());
+      std::string ArrayName = "kDivMT(" + std::to_string(i) + ")";
+      device.api->compareDataWithHost(HostData.stiffnessMatricesTransposed(i),
+                                      DeviceData.stiffnessMatricesTransposed(i),
+                                      seissol::init::kDivMT::size(i),
+                                      ArrayName.c_str());
     }
 
     for (unsigned i = 0; i < 4; ++i) {
-        std::string array_name = "rDivM(" + std::to_string(i)+ ")";
-        device_compare_with_host_array(host.changeOfBasisMatrices(i),
-                                       device.changeOfBasisMatrices(i),
-                                       seissol::init::rDivM::size(i),
-                                       array_name.c_str());
+      std::string ArrayName = "rDivM(" + std::to_string(i) + ")";
+      device.api->compareDataWithHost(HostData.changeOfBasisMatrices(i),
+                                      DeviceData.changeOfBasisMatrices(i),
+                                      seissol::init::rDivM::size(i),
+                                      ArrayName.c_str());
     }
 
     for (unsigned i = 0; i < 4; ++i) {
-        std::string array_name = "rT(" + std::to_string(i)+ ")";
-        device_compare_with_host_array(host.neighbourChangeOfBasisMatricesTransposed(i),
-                                       device.neighbourChangeOfBasisMatricesTransposed(i),
-                                       seissol::init::rT::size(i),
-                                       array_name.c_str());
+      std::string ArrayName = "rT(" + std::to_string(i) + ")";
+      device.api->compareDataWithHost(HostData.neighbourChangeOfBasisMatricesTransposed(i),
+                                      DeviceData.neighbourChangeOfBasisMatricesTransposed(i),
+                                      seissol::init::rT::size(i),
+                                      ArrayName.c_str());
     }
 
     for (unsigned i = 0; i < 4; ++i) {
-        std::string array_name = "fMrT(" + std::to_string(i)+ ")";
-        device_compare_with_host_array(host.localChangeOfBasisMatricesTransposed(i),
-                                       device.localChangeOfBasisMatricesTransposed(i),
-                                       seissol::init::fMrT::size(i),
-                                       array_name.c_str());
+      std::string ArrayName = "fMrT(" + std::to_string(i) + ")";
+      device.api->compareDataWithHost(HostData.localChangeOfBasisMatricesTransposed(i),
+                                      DeviceData.localChangeOfBasisMatricesTransposed(i),
+                                      seissol::init::fMrT::size(i),
+                                      ArrayName.c_str());
     }
 
     for (unsigned i = 0; i < 3; ++i) {
-        std::string array_name = "fP(" + std::to_string(i)+ ")";
-        device_compare_with_host_array(host.neighbourFluxMatrices(i),
-                                       device.neighbourFluxMatrices(i),
-                                       seissol::init::fP::size(i),
-                                       array_name.c_str());
+      std::string ArrayName = "fP(" + std::to_string(i) + ")";
+      device.api->compareDataWithHost(HostData.neighbourFluxMatrices(i),
+                                      DeviceData.neighbourFluxMatrices(i),
+                                      seissol::init::fP::size(i),
+                                      ArrayName.c_str());
     }
 
-    device_compare_with_host_array(host.evalAtQPMatrix,
-                                   device.evalAtQPMatrix,
-                                   seissol::init::evalAtQP::size(),
-                                   "evalAtQP");
+  device.api->compareDataWithHost(HostData.evalAtQPMatrix,
+                                  DeviceData.evalAtQPMatrix,
+                                  seissol::init::evalAtQP::size(),
+                                  "evalAtQP");
 
-    device_compare_with_host_array(host.projectQPMatrix,
-                                   device.projectQPMatrix,
-                                   seissol::init::projectQP::size(),
-                                   "projectQP");
+  device.api->compareDataWithHost(HostData.projectQPMatrix,
+                                  DeviceData.projectQPMatrix,
+                                  seissol::init::projectQP::size(),
+                                  "projectQP");
 
     for (unsigned i = 0; i < 4; ++i) {
       for (unsigned j = 0; j < 4; ++j) {
-        std::string array_name = "V3mTo2nTWDivM(" + std::to_string(i) + "," + std::to_string(j) + ")";
-        device_compare_with_host_array(host.nodalFluxMatrices(i,j),
-                                       device.nodalFluxMatrices(i,j),
-                                       seissol::init::V3mTo2nTWDivM::size(i, j),
-                                       array_name.c_str());
+        std::string ArrayName = "V3mTo2nTWDivM(" + std::to_string(i) + "," + std::to_string(j) + ")";
+        device.api->compareDataWithHost(HostData.nodalFluxMatrices(i,j),
+                                        DeviceData.nodalFluxMatrices(i,j),
+                                        seissol::init::V3mTo2nTWDivM::size(i, j),
+                                        ArrayName.c_str());
       }
     }
 
     for (unsigned i = 0; i < 4; ++i) {
       for (unsigned j = 0; j < 4; ++j) {
-        std::string array_name = "V3mTo2n(" + std::to_string(i) + "," + std::to_string(j) + ")";
-        device_compare_with_host_array(host.faceToNodalMatrices(i,j),
-                                       device.faceToNodalMatrices(i,j),
-                                       seissol::init::V3mTo2nTWDivM::size(i, j),
-                                       array_name.c_str());
+        std::string ArrayName = "V3mTo2n(" + std::to_string(i) + "," + std::to_string(j) + ")";
+        device.api->compareDataWithHost(HostData.faceToNodalMatrices(i,j),
+                                        DeviceData.faceToNodalMatrices(i,j),
+                                        seissol::init::V3mTo2nTWDivM::size(i, j),
+                                        ArrayName.c_str());
       }
     }
 }

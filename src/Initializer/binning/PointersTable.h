@@ -7,7 +7,7 @@
 #include <string>
 
 #include "specific_types.h"
-#include <device_utils.h>
+#include <device.h>
 
 namespace seissol {
   namespace initializers {
@@ -17,8 +17,8 @@ namespace seissol {
       public:
         DevicePointers(std::vector<real *> i_pointers) : m_pointers(i_pointers), m_device_ptrs(nullptr) {
           if (!m_pointers.empty()) {
-            m_device_ptrs = (real**)device_malloc(m_pointers.size() * sizeof(real*));
-            device_copy_to(m_device_ptrs, m_pointers.data(), m_pointers.size() * sizeof(real*));
+            m_device_ptrs = (real**)m_Device.api->allocGlobMem(m_pointers.size() * sizeof(real*));
+            m_Device.api->copyTo(m_device_ptrs, m_pointers.data(), m_pointers.size() * sizeof(real*));
           }
         }
 
@@ -26,8 +26,8 @@ namespace seissol {
         DevicePointers(const DevicePointers& other) : m_pointers(other.m_pointers), m_device_ptrs(nullptr) {
           if (!m_pointers.empty()) {
             if (other.m_device_ptrs != nullptr) {
-              m_device_ptrs = (real**) device_malloc(other.m_pointers.size() * sizeof(real*));
-              device_copy_between(m_device_ptrs, other.m_device_ptrs, other.m_pointers.size() * sizeof(real*));
+              m_device_ptrs = (real**)m_Device.api->allocGlobMem(other.m_pointers.size() * sizeof(real*));
+              m_Device.api->copyBetween(m_device_ptrs, other.m_device_ptrs, other.m_pointers.size() * sizeof(real*));
             }
           }
         }
@@ -36,7 +36,7 @@ namespace seissol {
 
         virtual ~DevicePointers() {
           if (m_device_ptrs != nullptr) {
-            device_free(m_device_ptrs);
+            m_Device.api->freeMem(m_device_ptrs);
             m_device_ptrs = nullptr;
           }
           m_pointers.clear();
@@ -48,6 +48,8 @@ namespace seissol {
       private:
         std::vector<real*> m_pointers{};
         real **m_device_ptrs{};
+
+        device::Device& m_Device = device::Device::getInstance();
       };
     }
   }

@@ -80,10 +80,6 @@
 #include <omp.h>
 #endif
 
-#ifdef ACL_DEVICE
-#include <device_utils.h>
-#endif
-
 void seissol::initializers::MemoryManager::initialize()
 {
   // initialize global matrices

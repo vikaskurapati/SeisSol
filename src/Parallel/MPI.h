@@ -55,7 +55,7 @@
 #include <cstdlib>
 #include <string>
 #include <sstream>
-#include <device_utils.h>
+#include <device.h>
 #endif  // ACL_DEVICE
 
 #endif // USE_MPI
@@ -171,7 +171,8 @@ public:
         logError() << err.what() << ". File: " << __FILE__ << ", line: " << __LINE__;
       }
 
-      int m_numDevices = device::query::getNumDevices();
+      device::Device& DevReference = device::Device::getInstance();
+      int m_numDevices = DevReference.api->getNumDevices();
       if (m_localSize > m_numDevices) {
         logError() << "Local mpi size (in a compute node) is greater than the number of avaliable devices."
                    << "Oversubscription of devices is currently not supported by Seissol."
@@ -185,7 +186,7 @@ public:
       {
 #pragma omp critical
         {
-          device::query::setDevice(m_deviceId);
+          DevReference.api->setDevice(m_deviceId);
         }
       }
 #else

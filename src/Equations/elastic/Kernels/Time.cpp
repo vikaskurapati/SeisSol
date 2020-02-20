@@ -87,6 +87,11 @@ extern long long libxsmm_num_total_flops;
 
 #include <yateto.h>
 
+#ifdef ACL_DEVICE
+#include <device.h>
+using namespace device;
+#endif
+
 GENERATE_HAS_MEMBER(ET)
 GENERATE_HAS_MEMBER(sourceMatrix)
 
@@ -177,7 +182,6 @@ void seissol::kernels::Time::computeAder( double                      i_timeStep
 }
 
 #ifdef ACL_DEVICE
-#include <device_utils.h>
 void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
                                                        LocalTmp& tmp,
                                                        conditional_table_t &table) {
@@ -214,11 +218,10 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
     }
 
     // stream dofs to the zero derivative
-    device_stream_data((entry.container[*VariableID::dofs])->get_pointers(),
-                       (entry.container[*VariableID::derivatives])->get_pointers(),
-                       tensor::Q::Size,
-                       derivativesKrnl.num_elements);
-
+    m_Device.api->streamBatchedData((entry.container[*VariableID::dofs])->get_pointers(),
+                                    (entry.container[*VariableID::derivatives])->get_pointers(),
+                                    tensor::Q::Size,
+                                    derivativesKrnl.num_elements);
 
     intKrnl.power = i_timeStepWidth;
     intKrnl.execute0();

@@ -523,10 +523,10 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
     PointersTable &entry = table[key];
     // NOTE: ivelocities have been computed implicitly, i.e
     // it is 6th, 7the and 8th columns of idofs
-    device_accumulate_data((entry.container[*VariableID::ivelocities])->get_pointers(),
-                           (entry.container[*VariableID::displacements])->get_pointers(),
-                           tensor::displacement::Size,
-                           (entry.container[*VariableID::displacements])->get_size());
+    m_Device.api->accumulateBatchedData((entry.container[*VariableID::ivelocities])->get_pointers(),
+                                        (entry.container[*VariableID::displacements])->get_pointers(),
+                                        tensor::displacement::Size,
+                                        (entry.container[*VariableID::displacements])->get_size());
 
     // TODO::Ravil there must be a signal saying whether we have to start copying data to the host
     // device::copyFrom();
@@ -537,20 +537,20 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
     PointersTable &entry = table[key];
 
     if (m_resetLtsBuffers) {
-      device_stream_data((entry.container[*VariableID::idofs])->get_pointers(),
-                         (entry.container[*VariableID::buffers])->get_pointers(),
-                         tensor::I::Size,
-                         (entry.container[*VariableID::idofs])->get_size());
+      m_Device.api->streamBatchedData((entry.container[*VariableID::idofs])->get_pointers(),
+                                      (entry.container[*VariableID::buffers])->get_pointers(),
+                                      tensor::I::Size,
+                                      (entry.container[*VariableID::idofs])->get_size());
     }
     else {
-      device_accumulate_data((entry.container[*VariableID::idofs])->get_pointers(),
-                             (entry.container[*VariableID::buffers])->get_pointers(),
-                             tensor::I::Size,
-                             (entry.container[*VariableID::idofs])->get_size());
+      m_Device.api->accumulateBatchedData((entry.container[*VariableID::idofs])->get_pointers(),
+                                          (entry.container[*VariableID::buffers])->get_pointers(),
+                                          tensor::I::Size,
+                                          (entry.container[*VariableID::idofs])->get_size());
     }
   }
 
-  device_synch();
+  m_Device.api->synchDevice();
   m_loopStatistics->end(m_regionComputeLocalIntegration, i_layerData.getNumberOfCells());
 }
 #endif
@@ -670,8 +670,8 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
                                                             table);
 
   m_neighborKernel.computeNeighborsIntegralWithinWorkItem(table);
-  device_synch();
 
+  m_Device.api->synchDevice();
   m_loopStatistics->end(m_regionComputeNeighboringIntegration, i_layerData.getNumberOfCells());
 
 }

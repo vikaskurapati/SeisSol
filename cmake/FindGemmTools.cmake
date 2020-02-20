@@ -47,16 +47,15 @@ foreach(component ${_GEMM_TOOLS_LIST})
         find_package(BLIS REQUIRED)
 
     elseif ("${component}" STREQUAL "ACL_DEVICE_BLAS")
-        if ("${ACCELERATOR_TYPE}" STREQUAL "GPU-CUDA")
-            add_subdirectory(submodules/Device/cuda)
-            set(GemmTools_INCLUDE_DIRS ${GemmTools_INCLUDE_DIR} submodules/Device/cuda/src)
-            set(GemmTools_LIBRARIES ${GemmTools_LIBRARIES} custom_blas)
-            set(GemmTools_COMPILER_DEFINITIONS ${GemmTools_DEFINITIONS} ACL_DEVICE)
-        else()
-            message(FATAL_ERROR "ACL_DEVICE_BLAS option was chosen but ACCELERATOR_TYPE was incorrect. \
+        if (NOT DEFINED DEVICE_BACKEND)
+            message(FATAL_ERROR "ACL_DEVICE_BLAS option was chosen but DEVICE_BACKEND wasn't. \
                     Please, refer to the documentation")
         endif()
 
+        add_subdirectory(submodules/Device)
+        set(GemmTools_INCLUDE_DIRS ${GemmTools_INCLUDE_DIRS} submodules/Device)
+        set(GemmTools_COMPILER_DEFINITIONS ${GemmTools_COMPILER_DEFINITIONS} ACL_DEVICE)
+        set(GemmTools_LIBRARIES ${GemmTools_LIBRARIES} device)
 
     else()
         message(FATAL_ERROR "Gemm Tools do not have a requested component, i.e. ${component}. \

@@ -86,6 +86,7 @@
 
 #include <cassert>
 #include <cstring>
+#include <algorithm>
 
 #if defined(_OPENMP) && defined(USE_MPI) && defined(USE_COMM_THREAD)
 extern volatile unsigned int* volatile g_handleRecvs;
@@ -165,6 +166,14 @@ seissol::time_stepping::TimeCluster::TimeCluster( unsigned int                  
   m_timeKernel.setGlobalDataOnDevice(m_deviceGlobalData);
   m_localKernel.setGlobalDataOnDevice(m_deviceGlobalData);
   m_neighborKernel.setGlobalDataOnDevice(m_deviceGlobalData);
+
+  /*
+  // TODO (RAVIL)
+  const int DefaultNumStreamsPerCluster = 70;
+  m_DeviceStreams.resize(DefaultNumStreamsPerCluster);
+  for (auto& Stream: m_DeviceStreams)
+    Stream = m_Device.api->createStream();
+  */
 #endif
 
 
@@ -179,6 +188,14 @@ seissol::time_stepping::TimeCluster::~TimeCluster() {
 #ifndef NDEBUG
   logInfo() << "#(time steps):" << m_numberOfTimeSteps;
 #endif
+
+/*
+// TODO: RAVIL
+#ifdef ACL_DEVICE
+  for (auto& Stream: m_DeviceStreams)
+    m_Device.api->deleteStream(Stream);
+#endif
+*/
 }
 
 void seissol::time_stepping::TimeCluster::setPointSources( sourceterm::CellToPointSourcesMapping const* i_cellToPointSources,
@@ -662,7 +679,6 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
 
   seissol::initializers::LayerContainer &container = i_layerData.getLayerContainer();
   conditional_table_t &table = container.get_conditional_table();
-
 
   seissol::kernels::TimeCommon::computeIntegralsForWorkItem(m_timeKernel,
                                                             m_subTimeStart,

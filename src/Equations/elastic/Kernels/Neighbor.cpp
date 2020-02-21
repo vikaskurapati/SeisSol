@@ -181,7 +181,11 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
   device_gen_code::kernel::nodalFlux drKrnl = m_deviceDrKrnlPrototype;
   device_gen_code::kernel::localFlux lfKrnl = m_deviceLfKrnlPrototype;
 
+  device::Device &Device = device::Device::getInstance();
+
   for(unsigned int face = 0; face < 4; face++) {
+    // auto StreamIterator = ComputeStreams.begin();    // TODO(RAVIL)
+
     // regular and periodic
     for (unsigned face_relation = 0; face_relation < (*FaceRelations::Count); ++face_relation) {
 
@@ -202,6 +206,8 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         int k = (face_relation / 12);
         int j = (face_relation - 12 * k) / 4;
         int i = face_relation - 3 * j - 12 * k;
+
+        //  Device.api->setComputeStream(*(StreamIterator++));   // TODO(RAVIL)
         nfKrnl.execute(i, j, k);
         //(*(nfKrnl.ExecutePtrs[face_relation]))();
       }
@@ -219,6 +225,8 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
       lfKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
       lfKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
       lfKrnl.AplusT = const_cast<const real **>((entry.container[*VariableID::AminusT])->get_pointers());
+
+      //Device.api->setComputeStream(*(StreamIterator++));    // TODO(RAVIL)
       lfKrnl.execute(face);
     }
 
@@ -240,11 +248,15 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
 
         int j = (face_relation / 4);
         int i = face_relation - 4 * j;
+
+        //Device.api->setComputeStream(*(StreamIterator++));  // TODO(RAVIL)
         drKrnl.execute(i, j);
         //drKrnl.ExecutePtrs[face_relation];
       }
     }
+    //Device.api->synchAllStreams();  // TODO(RAVIL)
   }
+  //Device.api->setDefaultComputeStream();  // TODO(RAVIL)
 }
 #endif
 

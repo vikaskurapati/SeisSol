@@ -67,6 +67,7 @@ private:
   std::vector<MemoryInfo> scratchPadInfo{};
   std::vector<size_t> scratchPadSizes{};  /*!< sizes of variables within the entire tree in bytes */
   void** m_scratchPads;
+  std::vector<int> m_StreamIds{};
 #endif  // ACL_DEVICE
 
 public:

@@ -151,6 +151,7 @@ private:
    */
   struct GlobalDataOnDevice *m_deviceGlobalData;
   device::Device& m_Device = device::Device::getInstance();
+  // std::vector<int> m_DeviceStreams{}; // TODO(RAVIL)
 #endif
 
     /*

@@ -260,7 +260,7 @@ public:
 
     void freeLeavesContainersExplicitly() {
         for (LTSTree::leaf_iterator it = beginLeaf(); it != endLeaf(); ++it) {
-            it->getLayerContainer().free_conditional_table();
+          it->getLayerContainer().freeConditionalTable();
         }
     }
 #endif

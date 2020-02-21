@@ -10,7 +10,7 @@ void NeighbIntegrationRecorder::record(seissol::initializers::LTS &handler, seis
   kernels::NeighborData::Loader loader;
   loader.load(handler, layer);
   LayerContainer &container = layer.getLayerContainer();
-  auto &table = container.get_table_reference_to_init();
+  auto &table = container.getTableReferenceToInit();
 
   std::unordered_map<real*, real*> idofs_address_registery{};
   size_t idofs_address_counter = 0;

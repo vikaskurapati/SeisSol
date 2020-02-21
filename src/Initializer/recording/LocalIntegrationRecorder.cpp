@@ -17,7 +17,7 @@ void LocalIntegrationRecorder::record(seissol::initializers::LTS &handler, seiss
   kernels::LocalData::Loader loader;
   loader.load(handler, layer);
   LayerContainer &container = layer.getLayerContainer();
-  auto &table = container.get_table_reference_to_init();
+  auto &table = container.getTableReferenceToInit();
 
   // allocate counters and the registry
   std::unordered_map<index_t, real*> idofs_address_registry{};

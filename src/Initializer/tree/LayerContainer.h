@@ -23,33 +23,32 @@ namespace seissol {
         class LayerContainer {
 
         public:
-            void set_conditional_table(conditional_table_t i_table) {
-                m_cond_table = i_table;
+            void setConditionalTable(conditional_table_t Table) {
+              m_CondTable = Table;
             }
 
-            conditional_table_t& get_conditional_table() {
-                //assert(!m_cond_table.empty() && "conditional table hasn't been initialized");
-                return m_cond_table;
+            conditional_table_t& getConditionalTable() {
+                //assert(!m_CondTable.empty() && "conditional table hasn't been initialized");
+                return m_CondTable;
             }
 
-            void free_conditional_table() {
-                for (auto& index_table: m_cond_table) {
-                    for (auto pointers: index_table.second.container) {
-                        if (pointers != nullptr) {
-                            delete pointers;
+            void freeConditionalTable() {
+                for (auto& IndexTable: m_CondTable) {
+                    for (auto Pointers: IndexTable.second.container) {
+                        if (Pointers != nullptr) {
+                            delete Pointers;
                         }
                     }
                 }
             }
 
-            conditional_table_t& get_table_reference_to_init() {
-                return m_cond_table;
+            conditional_table_t& getTableReferenceToInit() {
+                return m_CondTable;
             }
 
         private:
-            conditional_table_t m_cond_table{};
+            conditional_table_t m_CondTable{};
         };
     }
 }
-
 #endif  //LAYER_CONTAINER_H_

@@ -38,7 +38,7 @@ namespace seissol {
 
         void addRecorder(AbstractRecorder *Recorder) { ConcreteRecorders.push_back(Recorder); }
 
-        void removeRecorder(int RecorderIndex) {
+        void removeRecorder(long unsigned RecorderIndex) {
           if (RecorderIndex < ConcreteRecorders.size()) {
             ConcreteRecorders.erase(ConcreteRecorders.begin() + RecorderIndex);
           }

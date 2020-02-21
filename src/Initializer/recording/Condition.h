@@ -8,7 +8,7 @@
 #include "EncodingConstants.h"
 #include "specific_types.h"
 
-using namespace seissol::initializers::binning;
+using namespace seissol::initializers::recording;
 using namespace seissol;
 
 

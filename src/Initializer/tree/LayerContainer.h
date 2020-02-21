@@ -10,11 +10,11 @@
 
 #include <Kernels/precision.hpp>
 
-#include "Initializer/binning/EncodingConstants.h"
-#include "Initializer/binning/Condition.h"
-#include "Initializer/binning/ConditionalTable.h"
-#include "Initializer/binning/PointersTable.h"
-#include "Initializer/binning/specific_types.h"
+#include "Initializer/recording/EncodingConstants.h"
+#include "Initializer/recording/Condition.h"
+#include "Initializer/recording/ConditionalTable.h"
+#include "Initializer/recording/PointersTable.h"
+#include "Initializer/recording/specific_types.h"
 
 using conditional_table_t = std::unordered_map< ConditionalKey, PointersTable, ConditionalHash<ConditionalKey> >;
 

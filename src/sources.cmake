@@ -198,11 +198,14 @@ if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
   endif()
 
   target_sources(SeisSol-lib PUBLIC
-          ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/binning/algorithm.cpp
+          ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/LocalIntegrationRecorder.cpp
+          ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/NeighbIntegrationRecorder.cpp
+          ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/PlasticityRecorder.cpp
           ${CMAKE_BINARY_DIR}/src/generated_code/device_kernel.cpp
           ${CMAKE_BINARY_DIR}/src/generated_code/device_subroutine.cpp
           )
   target_include_directories(SeisSol-lib PUBLIC
+          ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording
           ${CMAKE_BINARY_DIR}/src/generated_code
           ${CMAKE_BINARY_DIR}/src/generated_code
           )

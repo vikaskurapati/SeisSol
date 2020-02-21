@@ -11,7 +11,7 @@
 
 namespace seissol {
   namespace initializers {
-    namespace binning {
+    namespace recording {
 
       class DevicePointers {
       public:
@@ -57,7 +57,7 @@ namespace seissol {
 
 namespace seissol {
   namespace initializers {
-    namespace binning {
+    namespace recording {
       struct PointersTable {
 
       public:

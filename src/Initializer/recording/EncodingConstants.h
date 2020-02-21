@@ -5,7 +5,7 @@
 
 namespace seissol {
   namespace initializers {
-    namespace binning {
+    namespace recording {
 
       enum struct VariableID: encode_t{dofs = 0,
                                        idofs,

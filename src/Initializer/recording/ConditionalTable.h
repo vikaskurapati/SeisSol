@@ -7,7 +7,7 @@
 
 namespace seissol {
   namespace initializers {
-    namespace binning {
+    namespace recording {
 
       struct ConditionalKey {
         ConditionalKey(encode_t i_kernel,
@@ -55,5 +55,4 @@ namespace seissol {
     }
   }
 }
-
 #endif  // CONDITIONAL_TABLE_H_

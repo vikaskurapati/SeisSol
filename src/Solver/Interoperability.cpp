@@ -596,7 +596,7 @@ void seissol::Interoperability::initializeCellLocalMatrices()
                                                            m_timeStepping );
 
 #ifdef ACL_DEVICE
-  seissol::SeisSol::main.getMemoryManager().initConditionalOffsets();
+  seissol::SeisSol::main.getMemoryManager().recordExecutionPaths();
 #endif
 }
 

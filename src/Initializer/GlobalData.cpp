@@ -240,6 +240,26 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
   copy_manager.copyFamilyToMemAndSetPtr<init::V3mTo2n>(drGlobalMatrixMemPtr,
                                                        globalData.faceToNodalMatrices,
                                                        DEVICE_ALIGNMENT);
+  // Plasticity global matrices
+  unsigned plasticityGlobalMatrixMemSize = 0;
+
+
+  plasticityGlobalMatrixMemSize += yateto::alignedUpper(tensor::v::size(),    yateto::alignedReals<real>(DEVICE_ALIGNMENT));
+  plasticityGlobalMatrixMemSize += yateto::alignedUpper(tensor::vInv::size(), yateto::alignedReals<real>(DEVICE_ALIGNMENT));
+
+  real* plasticityGlobalMatrixMem = static_cast<real*>(memoryAllocator.allocateMemory(plasticityGlobalMatrixMemSize * sizeof(real),
+                                                                                      MATRIX_ALIGNMENT,
+                                                                                      memkind));
+  globalData.address_registry.push_back(plasticityGlobalMatrixMem);
+
+  real* plasticityGlobalMatrixMemPtr = plasticityGlobalMatrixMem;
+  copy_manager.copyTensorToMemAndSetPtr<init::v>(plasticityGlobalMatrixMemPtr,
+                                                 globalData.vandermondeMatrix,
+                                                 MATRIX_ALIGNMENT);
+
+  copy_manager.copyTensorToMemAndSetPtr<init::vInv>(plasticityGlobalMatrixMemPtr,
+                                                    globalData.vandermondeMatrixInverse,
+                                                    MATRIX_ALIGNMENT);
 }
 
 
@@ -335,5 +355,15 @@ void seissol::initializers::compareGlobalData(const GlobalData &HostData, const 
       ArrayName.str(FlushSting);
     }
   }
+
+  device.api->compareDataWithHost(HostData.vandermondeMatrix,
+                                  DeviceData.vandermondeMatrix,
+                                  seissol::init::v::size(),
+                                  std::string("v"));
+
+  device.api->compareDataWithHost(HostData.vandermondeMatrixInverse,
+                                  DeviceData.vandermondeMatrixInverse,
+                                  seissol::init::vInv::size(),
+                                  std::string("vInv"));
 }
 #endif

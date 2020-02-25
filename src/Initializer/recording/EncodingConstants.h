@@ -18,6 +18,7 @@ namespace seissol {
                                        fluxSolver,
                                        ivelocities,  // 6th, 7the and 8th columns of idofs
                                        displacements,
+                                       NodalStressTensor,
                                        elements_ids,
                                        Count};
 
@@ -32,7 +33,8 @@ namespace seissol {
                                         local_flux = 1 << 2,
                                         neighbor_flux = 1 << 3,
                                         displacements = 1 << 4,
-                                        Count = 5,
+                                        plasticity = 1 << 5,
+                                        Count = 6,
                                         any = encode_any(Count)};
 
 

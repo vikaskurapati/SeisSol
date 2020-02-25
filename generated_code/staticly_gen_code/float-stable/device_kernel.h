@@ -82,42 +82,6 @@ namespace device_gen_code {
     };
   }
   namespace kernel {
-    struct plConvertToNodal {
-      constexpr static unsigned long const NonZeroFlops = 33048;
-      constexpr static unsigned long const HardwareFlops = 37632;
-
-      float const** QStress{};
-      float** QStressNodal{};
-      float const* v{};
-
-      unsigned QStress_offset{};
-      unsigned QStressNodal_offset{};
-      unsigned v_offset{};
-
-      size_t num_elements{};
-
-      void execute();
-    };
-  }
-  namespace kernel {
-    struct plConvertToModal {
-      constexpr static unsigned long const NonZeroFlops = 31140;
-      constexpr static unsigned long const HardwareFlops = 37632;
-
-      float** QStress{};
-      float const** QStressNodal{};
-      float const* vInv{};
-
-      unsigned QStress_offset{};
-      unsigned QStressNodal_offset{};
-      unsigned vInv_offset{};
-
-      size_t num_elements{};
-
-      void execute();
-    };
-  }
-  namespace kernel {
     struct localFlux {
       constexpr static unsigned long const NonZeroFlops[] = {9936, 10080, 31968, 27216};
       constexpr static unsigned long const HardwareFlops[] = {49248, 49248, 49248, 49248};

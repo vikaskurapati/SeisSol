@@ -72,6 +72,7 @@
 #	define MEMKIND_CONSTANT seissol::memory::Standard
 #	define MEMKIND_DOFS     seissol::memory::DeviceUnifiedMemory
 #	define MEMKIND_TIMEDOFS seissol::memory::DeviceUnifiedMemory
+# define MEMKIND_UNIFIED  seissol::memory::DeviceUnifiedMemory
 #endif
 
 
@@ -130,22 +131,22 @@ struct seissol::initializers::LTS {
     tree.addVar(                 buffers,      LayerMask(),                 1,      MEMKIND_TIMEDOFS );
     tree.addVar(             derivatives,      LayerMask(),                 1,      MEMKIND_TIMEDOFS );
     tree.addVar(         cellInformation,      LayerMask(),                 1,      MEMKIND_CONSTANT );
-    tree.addVar(           faceNeighbors, LayerMask(Ghost),                 1,      MEMKIND_GLOBAL  ); // DEBUGGING: used to be MEMKIND_TIMEDOFS
+    tree.addVar(           faceNeighbors, LayerMask(Ghost),                 1,      MEMKIND_GLOBAL   ); // DEBUGGING: used to be MEMKIND_TIMEDOFS
     tree.addVar(        localIntegration, LayerMask(Ghost),                 1,      MEMKIND_CONSTANT );
     tree.addVar(  neighboringIntegration, LayerMask(Ghost),                 1,      MEMKIND_CONSTANT );
     tree.addVar(                material, LayerMask(Ghost),                 1,      seissol::memory::Standard );
-    tree.addVar(              plasticity,   plasticityMask,                 1,      seissol::memory::Standard );
+    tree.addVar(              plasticity,   plasticityMask,                 1,      MEMKIND_UNIFIED  ); // DEBUGGING: used to be seissol::memory::Standard
     tree.addVar(               drMapping, LayerMask(Ghost),                 1,      MEMKIND_CONSTANT );
-    tree.addVar(                 pstrain,   plasticityMask,     PAGESIZE_HEAP,      seissol::memory::Standard );
+    tree.addVar(                 pstrain,   plasticityMask,     PAGESIZE_HEAP,      MEMKIND_UNIFIED  ); // DEBUGGING: used to be seissol::memory::Standard
     tree.addVar(           displacements, LayerMask(Ghost),     PAGESIZE_HEAP,      seissol::memory::Standard );
 
 #ifdef ACL_DEVICE
-    // DEBUGGING::RAVIL
     tree.addVar(       localIntegrationDevice,   LayerMask(Ghost),  1,      seissol::memory::DeviceGlobalMemory );
     tree.addVar( neighboringIntegrationDevice,   LayerMask(Ghost),  1,      seissol::memory::DeviceGlobalMemory );
     //tree.addVar(               materialDevice, LayerMask(Ghost),    1,      seissol::memory::DeviceGlobalMemory );
-    //tree.addVar(             plasticityDevice,   plasticityMask,    1,      seissol::memory::DeviceGlobalMemory );
     //tree.addVar(              drMappingDevice, LayerMask(Ghost),    1,      seissol::memory::DeviceGlobalMemory );
+
+    //tree.addVar(             plasticityDevice,   plasticityMask,    1,      seissol::memory::DeviceGlobalMemory );
     //tree.addVar(                pstrainDevice,   plasticityMask,    1,      seissol::memory::DeviceGlobalMemory );
     tree.addScratchPad(         idofs_scratch,                      1,       seissol::memory::DeviceGlobalMemory);
     tree.addScratchPad(   derivatives_scratch,                      1,       seissol::memory::DeviceGlobalMemory);
@@ -156,7 +157,7 @@ struct seissol::initializers::LTS {
     // TODO: introduce displacementsBufferOnDevice (ravil)
     //Variable<real*> displacementsOnDevice;
     //tree.addVar( displacementsOnDevice, LayerMask(Ghost),     PAGESIZE_HEAP,      seissol::memory::Standard ); ???
-    // tree.addBucket(ddisplacementsBufferOnDevice,    PAGESIZE_HEAP,      seissol::memory::DeviceGlobalMemory );
+    //tree.addBucket(ddisplacementsBufferOnDevice,    PAGESIZE_HEAP,      seissol::memory::DeviceGlobalMemory );
   }
 };
 #endif

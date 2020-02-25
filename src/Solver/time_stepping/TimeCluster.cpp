@@ -532,9 +532,6 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
                                         (entry.container[*VariableID::displacements])->get_pointers(),
                                         tensor::displacement::Size,
                                         (entry.container[*VariableID::displacements])->get_size());
-
-    // TODO::Ravil there must be a signal saying whether we have to start copying data to the host
-    // device::copyFrom();
   }
 
   key = ConditionalKey(*KernelNames::time, *ComputationKind::with_lts_buffers);
@@ -676,30 +673,28 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
                                                             m_timeStepWidth,
                                                             Table);
   m_neighborKernel.computeNeighborsIntegralWithinWorkItem(Table);
-
-
-/*
-#ifndef USE_PLASTICITY
-  PlasticityData*             plasticity                    = i_layerData.var(m_lts->plasticity);
-  real                      (*pstrain)[7]                   = i_layerData.var(m_lts->pstrain);
-  unsigned                   numberOTetsWithPlasticYielding = 0;
-
-  numberOTetsWithPlasticYielding += seissol::kernels::Plasticity::computePlasticity( m_relaxTime,
-                                                                                     m_timeStepWidth,
-                                                                                     m_globalData,
-                                                                                     &plasticity[l_cell],
-                                                                                     data.dofs,
-                                                                                     pstrain[l_cell] );
-#endif
-  */
   m_Device.api->synchDevice();
-/*
-#ifndef USE_PLASTICITY
-  g_SeisSolNonZeroFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_nonZero[PlasticityCheck] + numberOTetsWithPlasticYielding * m_flops_nonZero[PlasticityYield];
-  g_SeisSolHardwareFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_hardware[PlasticityCheck] + numberOTetsWithPlasticYielding * m_flops_hardware[PlasticityYield];
+  m_Device.api->popLastProfilingMark();
+
+  m_Device.api->putProfilingMark("computePlasticity", ProfilingColors::Black);
+
+#ifdef USE_PLASTICITY
+  PlasticityData* Plasticity = i_layerData.var(m_lts->plasticity);
+  real (*Pstrains)[7] = i_layerData.var(m_lts->pstrain);
+
+  unsigned NumAdjustedDofs = seissol::kernels::Plasticity::computePlasticityWithinWorkItem(m_relaxTime,
+                                                                                           m_timeStepWidth,
+                                                                                           m_deviceGlobalData,
+                                                                                           Table,
+                                                                                           Plasticity,
+                                                                                           Pstrains);
+
+  g_SeisSolNonZeroFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_nonZero[PlasticityCheck] + NumAdjustedDofs * m_flops_nonZero[PlasticityYield];
+  g_SeisSolHardwareFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_hardware[PlasticityCheck] + NumAdjustedDofs * m_flops_hardware[PlasticityYield];
 #endif
-  */
+
   m_loopStatistics->end(m_regionComputeNeighboringIntegration, i_layerData.getNumberOfCells());
+  m_Device.api->synchDevice();
   m_Device.api->popLastProfilingMark();
 }
 #endif

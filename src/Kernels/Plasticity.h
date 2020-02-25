@@ -45,6 +45,10 @@
 #include <Initializer/typedefs.hpp>
 #include <generated_code/tensor.h>
 
+#ifdef ACL_DEVICE
+#include "Initializer/recording/ConditionalTable.h"
+#endif
+
 namespace seissol {
   namespace kernels {
     class Plasticity;
@@ -61,6 +65,15 @@ public:
                                      PlasticityData const*       plasticityData,
                                      real                        degreesOfFreedom[tensor::Q::size()],
                                      real*                       pstrain);
+
+#ifdef ACL_DEVICE
+  static unsigned computePlasticityWithinWorkItem(double relaxTime,
+                                                  double timeStepWidth,
+                                                  GlobalData const* global,
+                                                  conditional_table_t &Table,
+                                                  PlasticityData* Plasticity,
+                                                  real (*Pstrains)[7]);
+#endif
 
   static void flopsPlasticity(  long long&  o_nonZeroFlopsCheck,
                                 long long&  o_hardwareFlopsCheck,

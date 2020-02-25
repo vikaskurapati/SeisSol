@@ -1,22 +1,13 @@
 #ifndef LAYER_CONTAINER_H_
 #define LAYER_CONTAINER_H_
 
-#include <iostream>  // DEBUGING
-
 #include <assert.h>
 #include <utility>
 #include <vector>
 #include <unordered_map>
 
 #include <Kernels/precision.hpp>
-
-#include "Initializer/recording/EncodingConstants.h"
-#include "Initializer/recording/Condition.h"
 #include "Initializer/recording/ConditionalTable.h"
-#include "Initializer/recording/PointersTable.h"
-#include "Initializer/recording/specific_types.h"
-
-using conditional_table_t = std::unordered_map< ConditionalKey, PointersTable, ConditionalHash<ConditionalKey> >;
 
 namespace seissol {
     namespace initializers {

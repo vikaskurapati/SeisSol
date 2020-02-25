@@ -46,13 +46,14 @@
 #include <cmath>
 #include <generated_code/kernel.h>
 #include <generated_code/init.h>
+#include <kernels/cuda/Plasticity.h>
 
-unsigned seissol::kernels::Plasticity::computePlasticity( double                      relaxTime,
-                                                      double                      timeStepWidth,
-                                                      GlobalData const*           global,
-                                                      PlasticityData const*       plasticityData,
-                                                      real                        degreesOfFreedom[tensor::Q::size()],
-                                                      real*                       pstrain)
+unsigned seissol::kernels::Plasticity::computePlasticity(double                      relaxTime,
+                                                         double                      timeStepWidth,
+                                                         GlobalData const*           global,
+                                                         PlasticityData const*       plasticityData,
+                                                         real                        degreesOfFreedom[tensor::Q::size()],
+                                                         real*                       pstrain)
 {
   assert( reinterpret_cast<uintptr_t>(degreesOfFreedom) % ALIGNMENT == 0 );
   assert( reinterpret_cast<uintptr_t>(global->vandermondeMatrix) % ALIGNMENT == 0 );
@@ -73,7 +74,7 @@ unsigned seissol::kernels::Plasticity::computePlasticity( double                
   // @todo multiple sims
   real prev_degreesOfFreedom[6];
   for (unsigned q = 0; q < 6; ++q) {
-	  prev_degreesOfFreedom[q] = degreesOfFreedom[q * NUMBER_OF_ALIGNED_BASIS_FUNCTIONS];
+    prev_degreesOfFreedom[q] = degreesOfFreedom[q * NUMBER_OF_ALIGNED_BASIS_FUNCTIONS];
   }
 
   kernel::plConvertToNodal m2nKrnl;
@@ -101,11 +102,11 @@ unsigned seissol::kernels::Plasticity::computePlasticity( double                
   siKrnl.QStressNodal = QStressNodal;
   siKrnl.weightSecondInvariant = init::weightSecondInvariant::Values;
   siKrnl.execute();
-  
+
   for (unsigned ip = 0; ip < tensor::secondInvariant::size(); ++ip) {
     tau[ip] = sqrt(secondInvariant[ip]);
   }
-  
+
   for (unsigned ip = 0; ip < tensor::meanStress::size(); ++ip) {
     taulim[ip] = std::max((real) 0.0, plasticityData->cohesionTimesCosAngularFriction - meanStress[ip] * plasticityData->sinAngularFriction);
   }
@@ -145,6 +146,96 @@ unsigned seissol::kernels::Plasticity::computePlasticity( double                
   
   return 0;
 }
+
+#ifdef ACL_DEVICE
+#include "device.h"
+#include "generated_code/device_kernel.h"
+using namespace device;
+unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double RelaxTime,
+                                                                       double TimeStepWidth,
+                                                                       GlobalData const* Global,
+                                                                       conditional_table_t &Table,
+                                                                       PlasticityData* Plasticity,
+                                                                       real (*Pstrains)[7]) {
+
+  Device &device = Device::getInstance();
+
+  ConditionalKey key(*KernelNames::plasticity);
+  if(Table.find(key) != Table.end()) {
+
+    PointersTable &Entry = Table[key];
+    const unsigned NumElements = (Entry.container[*VariableID::dofs])->get_size();
+    real** ModalStressTensors = Entry.container[*VariableID::dofs]->get_pointers();
+    real** NodalStressTensors = Entry.container[*VariableID::NodalStressTensor]->get_pointers();
+
+    real *FirsModes = reinterpret_cast<real*>(device.api->getStackMemory(6 * NumElements * sizeof(real)));
+
+    device.PlasticityLaunchers.saveFirstModes(ModalStressTensors,
+                                              FirsModes,
+                                              NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                              NumElements);
+
+    // Convert Modal to Nodal Stresses
+    device_gen_code::kernel::plConvertToNodal m2nKrnl;
+    m2nKrnl.v = Global->vandermondeMatrix;
+    m2nKrnl.QStress = const_cast<const real**>(ModalStressTensors);
+    m2nKrnl.QStressNodal = NodalStressTensors;
+    m2nKrnl.num_elements = NumElements;
+    m2nKrnl.execute();
+
+
+    const unsigned NumNodes = NUMBER_OF_ALIGNED_BASIS_FUNCTIONS * NumElements;
+    real *MeanStresses = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
+    real *Invariants = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
+    real *YieldFactor = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
+    unsigned *AdjustFlags = reinterpret_cast<unsigned*>(device.api->getStackMemory(NumElements * sizeof(unsigned)));
+
+    // computes and adjust deviatoric tensors
+    device.PlasticityLaunchers.adjustDeviatoricTensors(NodalStressTensors,
+                                                       Plasticity,
+                                                       MeanStresses,
+                                                       Invariants,
+                                                       YieldFactor,
+                                                       AdjustFlags,
+                                                       RelaxTime,
+                                                       NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                                       NumElements);
+
+    // adjust Stresses and converts them back to the modal form
+    device.PlasticityLaunchers.adjustModalStresses(AdjustFlags,
+                                                   NodalStressTensors,
+                                                   ModalStressTensors,
+                                                   Global->vandermondeMatrix,
+                                                   YieldFactor,
+                                                   MeanStresses,
+                                                   NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                                   NumElements);
+
+    // compute Pstrains
+    device.PlasticityLaunchers.computePstrains(AdjustFlags,
+                                               ModalStressTensors,
+                                               FirsModes,
+                                               Plasticity,
+                                               Pstrains,
+                                               TimeStepWidth,
+                                               NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                               NumElements);
+
+    // Compute how many tensors have been adjusted (fan-in algorithm)
+    unsigned NumAdjustedDofs = device.PlasticityLaunchers.computeNumAdjustedDofs(AdjustFlags, NumElements);
+
+    device.api->popStackMemory();
+    device.api->popStackMemory();
+    device.api->popStackMemory();
+    device.api->popStackMemory();
+    device.api->popStackMemory();
+    device.api->synchDevice();
+
+    return NumAdjustedDofs;
+  }
+  return 0;
+}
+#endif
 
 void seissol::kernels::Plasticity::flopsPlasticity( long long&  o_NonZeroFlopsCheck,
                                                     long long&  o_HardwareFlopsCheck,

@@ -54,6 +54,8 @@
 #include <Model/datastructures.hpp>
 #include <generated_code/tensor.h>
 
+#include <Initializer/PlasticityDataType.h>
+
 #include <cstddef>
 
 enum mpiTag {
@@ -381,14 +383,6 @@ struct CellMaterialData {
   seissol::model::Material neighbor[4];
 };
 
-// plasticity information per cell
-struct PlasticityData {
-  // initial loading (stress tensor)
-  real initialLoading[6];
-  real cohesionTimesCosAngularFriction;
-  real sinAngularFriction;
-  real mufactor;
-};
 
 /** A piecewise linear function.
  * 

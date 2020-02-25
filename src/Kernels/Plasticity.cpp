@@ -46,7 +46,10 @@
 #include <cmath>
 #include <generated_code/kernel.h>
 #include <generated_code/init.h>
+
+#ifdef ACL_DEVICE
 #include <kernels/cuda/Plasticity.h>
+#endif
 
 unsigned seissol::kernels::Plasticity::computePlasticity(double                      relaxTime,
                                                          double                      timeStepWidth,
@@ -150,6 +153,7 @@ unsigned seissol::kernels::Plasticity::computePlasticity(double                 
 #ifdef ACL_DEVICE
 #include "device.h"
 #include "generated_code/device_kernel.h"
+#include <iostream>
 using namespace device;
 unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double RelaxTime,
                                                                        double TimeStepWidth,
@@ -170,6 +174,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
 
     real *FirsModes = reinterpret_cast<real*>(device.api->getStackMemory(6 * NumElements * sizeof(real)));
 
+
     device.PlasticityLaunchers.saveFirstModes(ModalStressTensors,
                                               FirsModes,
                                               NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
@@ -183,12 +188,12 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
     m2nKrnl.num_elements = NumElements;
     m2nKrnl.execute();
 
-
     const unsigned NumNodes = NUMBER_OF_ALIGNED_BASIS_FUNCTIONS * NumElements;
     real *MeanStresses = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
     real *Invariants = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
     real *YieldFactor = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
     unsigned *AdjustFlags = reinterpret_cast<unsigned*>(device.api->getStackMemory(NumElements * sizeof(unsigned)));
+
 
     // computes and adjust deviatoric tensors
     device.PlasticityLaunchers.adjustDeviatoricTensors(NodalStressTensors,
@@ -205,7 +210,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
     device.PlasticityLaunchers.adjustModalStresses(AdjustFlags,
                                                    NodalStressTensors,
                                                    ModalStressTensors,
-                                                   Global->vandermondeMatrix,
+                                                   Global->vandermondeMatrixInverse,
                                                    YieldFactor,
                                                    MeanStresses,
                                                    NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
@@ -231,7 +236,9 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
     device.api->popStackMemory();
     device.api->synchDevice();
 
+    //std::cout << "NumAdjustedDofs: " << NumAdjustedDofs << std::endl;
     return NumAdjustedDofs;
+
   }
   return 0;
 }

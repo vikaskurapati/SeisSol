@@ -66,7 +66,7 @@
 #else
 #   define MEMKIND_DOFS     seissol::memory::Standard
 #endif
-
+# define MEMKIND_UNIFIED  seissol::memory::Standard
 #else
 #	define MEMKIND_GLOBAL   seissol::memory::Standard
 #	define MEMKIND_CONSTANT seissol::memory::Standard

@@ -200,7 +200,9 @@ void seissol::time_stepping::TimeCluster::writeReceivers() {
 }
 
 void seissol::time_stepping::TimeCluster::computeSources() {
+#ifdef ACL_DEVICE
   m_Device.api->putProfilingMark("computeSources", ProfilingColors::Blue);
+#endif
   SCOREP_USER_REGION( "computeSources", SCOREP_USER_REGION_TYPE_FUNCTION )
 
   // Return when point sources not initialised. This might happen if there
@@ -235,12 +237,16 @@ void seissol::time_stepping::TimeCluster::computeSources() {
       }
     }
   }
+#ifdef ACL_DEVICE
   m_Device.api->popLastProfilingMark();
+#endif
 }
 
 void seissol::time_stepping::TimeCluster::computeDynamicRupture( seissol::initializers::Layer&  layerData ) {
-  SCOREP_USER_REGION( "computeDynamicRupture", SCOREP_USER_REGION_TYPE_FUNCTION )
+#ifdef ACL_DEVICE
   m_Device.api->putProfilingMark("computeDynamic", ProfilingColors::Cyan);
+#endif
+  SCOREP_USER_REGION( "computeDynamicRupture", SCOREP_USER_REGION_TYPE_FUNCTION )
   m_loopStatistics->begin(m_regionComputeDynamicRupture);
 
   DRFaceInformation*                    faceInformation                                                   = layerData.var(m_dynRup->faceInformation);
@@ -279,7 +285,9 @@ void seissol::time_stepping::TimeCluster::computeDynamicRupture( seissol::initia
   }
 
   m_loopStatistics->end(m_regionComputeDynamicRupture, layerData.getNumberOfCells());
+#ifdef ACL_DEVICE
   m_Device.api->popLastProfilingMark();
+#endif
 }
 
 
@@ -676,10 +684,12 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
   m_Device.api->synchDevice();
   m_Device.api->popLastProfilingMark();
 
-  m_Device.api->putProfilingMark("computePlasticity", ProfilingColors::Black);
+  /*
 
 #ifdef USE_PLASTICITY
-  PlasticityData* Plasticity = i_layerData.var(m_lts->plasticity);
+   m_Device.api->putProfilingMark("computePlasticity", ProfilingColors::Black);
+
+   PlasticityData* Plasticity = i_layerData.var(m_lts->plasticity);
   real (*Pstrains)[7] = i_layerData.var(m_lts->pstrain);
 
   unsigned NumAdjustedDofs = seissol::kernels::Plasticity::computePlasticityWithinWorkItem(m_relaxTime,
@@ -693,9 +703,13 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
   g_SeisSolHardwareFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_hardware[PlasticityCheck] + NumAdjustedDofs * m_flops_hardware[PlasticityYield];
 #endif
 
-  m_loopStatistics->end(m_regionComputeNeighboringIntegration, i_layerData.getNumberOfCells());
+
+
   m_Device.api->synchDevice();
+
   m_Device.api->popLastProfilingMark();
+     */
+  m_loopStatistics->end(m_regionComputeNeighboringIntegration, i_layerData.getNumberOfCells());
 }
 #endif
 

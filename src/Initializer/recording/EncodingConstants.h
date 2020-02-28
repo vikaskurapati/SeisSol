@@ -19,6 +19,7 @@ namespace seissol {
                                        ivelocities,  // 6th, 7the and 8th columns of idofs
                                        displacements,
                                        NodalStressTensor,
+                                       Pstrains,
                                        elements_ids,
                                        Count};
 

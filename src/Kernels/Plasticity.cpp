@@ -49,6 +49,10 @@
 
 #ifdef ACL_DEVICE
 #include <kernels/cuda/Plasticity.h>
+#include "device.h"
+#include "generated_code/device_kernel.h"
+#include <iostream>
+using namespace device;
 #endif
 
 unsigned seissol::kernels::Plasticity::computePlasticity(double                      relaxTime,
@@ -132,6 +136,7 @@ unsigned seissol::kernels::Plasticity::computePlasticity(double                 
     adjKrnl.yieldFactor = yieldFactor;
     adjKrnl.execute();
 
+
     // calculate plastic strain with first dof only (for now)
     for (unsigned q = 0; q < 6; ++q) {
         real mufactor = plasticityData->mufactor;
@@ -143,7 +148,6 @@ unsigned seissol::kernels::Plasticity::computePlasticity(double                 
     pstrain[6] += timeStepWidth * sqrt(0.5 * (dudt_pstrain[0]*dudt_pstrain[0] + dudt_pstrain[1]*dudt_pstrain[1]
             + dudt_pstrain[2]*dudt_pstrain[2])+ dudt_pstrain[3]*dudt_pstrain[3]
 			+ dudt_pstrain[4]*dudt_pstrain[4] + dudt_pstrain[5]*dudt_pstrain[5]);
-      
     return 1;
   }
   
@@ -151,16 +155,11 @@ unsigned seissol::kernels::Plasticity::computePlasticity(double                 
 }
 
 #ifdef ACL_DEVICE
-#include "device.h"
-#include "generated_code/device_kernel.h"
-#include <iostream>
-using namespace device;
 unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double RelaxTime,
                                                                        double TimeStepWidth,
                                                                        GlobalData const* Global,
                                                                        conditional_table_t &Table,
-                                                                       PlasticityData* Plasticity,
-                                                                       real (*Pstrains)[7]) {
+                                                                       PlasticityData* Plasticity) {
 
   Device &device = Device::getInstance();
 
@@ -173,10 +172,8 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
     real** NodalStressTensors = Entry.container[*VariableID::NodalStressTensor]->get_pointers();
 
     real *FirsModes = reinterpret_cast<real*>(device.api->getStackMemory(6 * NumElements * sizeof(real)));
-
-
-    device.PlasticityLaunchers.saveFirstModes(ModalStressTensors,
-                                              FirsModes,
+    device.PlasticityLaunchers.saveFirstModes(FirsModes,
+                                              const_cast<const real**>(ModalStressTensors),
                                               NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
                                               NumElements);
 
@@ -189,39 +186,31 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
     m2nKrnl.execute();
 
     const unsigned NumNodes = NUMBER_OF_ALIGNED_BASIS_FUNCTIONS * NumElements;
-    real *MeanStresses = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
-    real *Invariants = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
-    real *YieldFactor = reinterpret_cast<real*>(device.api->getStackMemory(NumNodes * sizeof(real)));
     unsigned *AdjustFlags = reinterpret_cast<unsigned*>(device.api->getStackMemory(NumElements * sizeof(unsigned)));
 
-
-    // computes and adjust deviatoric tensors
+    // computes stress adjustment
     device.PlasticityLaunchers.adjustDeviatoricTensors(NodalStressTensors,
-                                                       Plasticity,
-                                                       MeanStresses,
-                                                       Invariants,
-                                                       YieldFactor,
                                                        AdjustFlags,
+                                                       Plasticity,
                                                        RelaxTime,
                                                        NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
                                                        NumElements);
 
-    // adjust Stresses and converts them back to the modal form
-    device.PlasticityLaunchers.adjustModalStresses(AdjustFlags,
-                                                   NodalStressTensors,
-                                                   ModalStressTensors,
+    // apply stress adjustment
+    device.PlasticityLaunchers.adjustModalStresses(ModalStressTensors,
+                                                   const_cast<const real**>(NodalStressTensors),
                                                    Global->vandermondeMatrixInverse,
-                                                   YieldFactor,
-                                                   MeanStresses,
+                                                   AdjustFlags,
                                                    NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
                                                    NumElements);
 
     // compute Pstrains
-    device.PlasticityLaunchers.computePstrains(AdjustFlags,
-                                               ModalStressTensors,
+    real** Pstrains = Entry.container[*VariableID::Pstrains]->get_pointers();
+    device.PlasticityLaunchers.computePstrains(Pstrains,
+                                               AdjustFlags,
+                                               const_cast<const real**>(ModalStressTensors),
                                                FirsModes,
                                                Plasticity,
-                                               Pstrains,
                                                TimeStepWidth,
                                                NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
                                                NumElements);
@@ -231,14 +220,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
 
     device.api->popStackMemory();
     device.api->popStackMemory();
-    device.api->popStackMemory();
-    device.api->popStackMemory();
-    device.api->popStackMemory();
-    device.api->synchDevice();
-
-    //std::cout << "NumAdjustedDofs: " << NumAdjustedDofs << std::endl;
     return NumAdjustedDofs;
-
   }
   return 0;
 }

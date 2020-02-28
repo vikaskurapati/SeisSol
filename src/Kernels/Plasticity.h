@@ -71,8 +71,7 @@ public:
                                                   double timeStepWidth,
                                                   GlobalData const* global,
                                                   conditional_table_t &Table,
-                                                  PlasticityData* Plasticity,
-                                                  real (*Pstrains)[7]);
+                                                  PlasticityData* Plasticity);
 #endif
 
   static void flopsPlasticity(  long long&  o_nonZeroFlopsCheck,

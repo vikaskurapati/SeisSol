@@ -156,7 +156,7 @@ namespace device_gen_code {
     unsigned offset_QStress = QStress_offset;
     
     
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 6, 56, 1.0, vInv, 56, QStressNodal, 56, 0.0, QStress, 56, offset_vInv, offset_QStressNodal, offset_QStress, num_elements);
+    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 6, 56, 1.0, vInv, 56, QStressNodal, 56, 1.0, QStress, 56, offset_vInv, offset_QStressNodal, offset_QStress, num_elements);
     }
   }
   constexpr unsigned long const kernel::localFlux::NonZeroFlops[];

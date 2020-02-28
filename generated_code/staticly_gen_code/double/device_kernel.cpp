@@ -125,6 +125,40 @@ namespace device_gen_code {
     device.gemm(device::ColMajor, device::NoTrans, device::Trans, 9, 9, 9, fluxScale, star(0), 9, T, 9, 0.0, fluxSolver, 9, offset_star, offset_T, offset_fluxSolver, num_elements);
     }
   }
+  constexpr unsigned long const kernel::plConvertToNodal::NonZeroFlops;
+  constexpr unsigned long const kernel::plConvertToNodal::HardwareFlops;
+  void kernel::plConvertToNodal::execute() {
+    assert(QStress != nullptr);
+    assert(QStressNodal != nullptr);
+    assert(v != nullptr);
+    assert(kernel::plConvertToNodal::num_elements != 0);
+    device::Device& device = device::Device::getInstance();
+    {
+    unsigned offset_v = 0;
+    unsigned offset_QStress = QStress_offset;
+    unsigned offset_QStressNodal = QStressNodal_offset;
+    
+    
+    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 6, 56, 1.0, v, 56, QStress, 56, 0.0, QStressNodal, 56, offset_v, offset_QStress, offset_QStressNodal, num_elements);
+    }
+  }
+  constexpr unsigned long const kernel::plConvertToModal::NonZeroFlops;
+  constexpr unsigned long const kernel::plConvertToModal::HardwareFlops;
+  void kernel::plConvertToModal::execute() {
+    assert(QStress != nullptr);
+    assert(QStressNodal != nullptr);
+    assert(vInv != nullptr);
+    assert(kernel::plConvertToModal::num_elements != 0);
+    device::Device& device = device::Device::getInstance();
+    {
+    unsigned offset_vInv = 0;
+    unsigned offset_QStressNodal = QStressNodal_offset;
+    unsigned offset_QStress = QStress_offset;
+    
+    
+    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 6, 56, 1.0, vInv, 56, QStressNodal, 56, 1.0, QStress, 56, offset_vInv, offset_QStressNodal, offset_QStress, num_elements);
+    }
+  }
   constexpr unsigned long const kernel::localFlux::NonZeroFlops[];
   constexpr unsigned long const kernel::localFlux::HardwareFlops[];
   constexpr kernel::localFlux::member_function_ptr kernel::localFlux::ExecutePtrs[];

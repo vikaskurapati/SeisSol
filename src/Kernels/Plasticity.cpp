@@ -186,38 +186,48 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
     m2nKrnl.execute();
 
     const unsigned NumNodes = NUMBER_OF_ALIGNED_BASIS_FUNCTIONS * NumElements;
-    unsigned *AdjustFlags = reinterpret_cast<unsigned*>(device.api->getStackMemory(NumElements * sizeof(unsigned)));
+    int *Indices = reinterpret_cast<int*>(device.api->getStackMemory(NumElements * sizeof(int)));
+    int *AdjustedIndices = reinterpret_cast<int*>(device.api->getStackMemory(NumElements * sizeof(int)));
 
     // computes stress adjustment
     device.PlasticityLaunchers.adjustDeviatoricTensors(NodalStressTensors,
-                                                       AdjustFlags,
+                                                       Indices,
                                                        Plasticity,
                                                        RelaxTime,
                                                        NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
                                                        NumElements);
 
-    // apply stress adjustment
-    device.PlasticityLaunchers.adjustModalStresses(ModalStressTensors,
-                                                   const_cast<const real**>(NodalStressTensors),
-                                                   Global->vandermondeMatrixInverse,
-                                                   AdjustFlags,
-                                                   NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
-                                                   NumElements);
+    unsigned NumAdjustedDofs = device.PlasticityLaunchers.getAdjustedIndices(Indices, AdjustedIndices, NumElements);
 
-    // compute Pstrains
-    real** Pstrains = Entry.container[*VariableID::Pstrains]->get_pointers();
-    device.PlasticityLaunchers.computePstrains(Pstrains,
-                                               AdjustFlags,
-                                               const_cast<const real**>(ModalStressTensors),
-                                               FirsModes,
-                                               Plasticity,
-                                               TimeStepWidth,
-                                               NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
-                                               NumElements);
+    if (NumAdjustedDofs != 0) {
+      // apply stress adjustment
+      device.PlasticityLaunchers.adjustModalStresses(ModalStressTensors,
+                                                     const_cast<const real **>(NodalStressTensors),
+                                                     Global->vandermondeMatrixInverse,
+                                                     AdjustedIndices,
+                                                     NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                                     NumAdjustedDofs);
 
-    // Compute how many tensors have been adjusted (fan-in algorithm)
-    unsigned NumAdjustedDofs = device.PlasticityLaunchers.computeNumAdjustedDofs(AdjustFlags, NumElements);
+      // compute Pstrains
+      real **Pstrains = Entry.container[*VariableID::Pstrains]->get_pointers();
+      device.PlasticityLaunchers.computePstrains(Pstrains,
+                                                 AdjustedIndices,
+                                                 const_cast<const real **>(ModalStressTensors),
+                                                 FirsModes,
+                                                 Plasticity,
+                                                 TimeStepWidth,
+                                                 NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                                 NumAdjustedDofs);
 
+    }
+
+    // NOTE: Temp memory must be properly clean after using negative signed integers
+    //       This kind of memory is mainly used for floating-point numbers. Negative signed ints might corrupt
+    //       the most significant bits. We came to this conclusion by our first-hand experience
+    device.api->touchMemory(reinterpret_cast<real*>(Indices), NumElements * sizeof(int) / sizeof(real), true);
+    device.api->touchMemory(reinterpret_cast<real*>(AdjustedIndices), NumElements * sizeof(int) / sizeof(real), true);
+
+    device.api->popStackMemory();
     device.api->popStackMemory();
     device.api->popStackMemory();
     return NumAdjustedDofs;

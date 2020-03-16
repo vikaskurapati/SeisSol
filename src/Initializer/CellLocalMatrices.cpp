@@ -208,7 +208,7 @@ void seissol::initializers::initializeCellLocalMatrices( MeshReader const&      
 
 #ifdef ACL_DEVICE
   // Byte-copy of element static data from the host to device
-  device::Device& Dev = device::Device::getInstance();
+  device::DeviceInstance& Dev = device::DeviceInstance::getInstance();
   const std::vector<size_t > &variable_sizes = io_ltsTree->getVariableSizes();
 
   Dev.api->copyTo(io_ltsTree->var(i_lts->localIntegrationDevice),

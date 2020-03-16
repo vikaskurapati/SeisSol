@@ -55,6 +55,9 @@ configure_file (
 find_package(GemmTools REQUIRED)
 include(src/sources.cmake)
 
+# the following include file checks programming style
+include(src/StyleChecker.cmake)
+
 if(GemmTools_INCLUDE_DIRS)
   target_include_directories(SeisSol-lib PUBLIC ${GemmTools_INCLUDE_DIRS})
 endif()

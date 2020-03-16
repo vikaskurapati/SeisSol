@@ -171,7 +171,7 @@ public:
         logError() << err.what() << ". File: " << __FILE__ << ", line: " << __LINE__;
       }
 
-      device::Device& DevReference = device::Device::getInstance();
+      device::DeviceInstance& DevReference = device::DeviceInstance::getInstance();
       int m_numDevices = DevReference.api->getNumDevices();
       if (m_localSize > m_numDevices) {
         logError() << "Local mpi size (in a compute node) is greater than the number of avaliable devices."

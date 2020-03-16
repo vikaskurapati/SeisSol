@@ -161,7 +161,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
                                                                        conditional_table_t &Table,
                                                                        PlasticityData* Plasticity) {
 
-  Device &device = Device::getInstance();
+  DeviceInstance &device = DeviceInstance::getInstance();
 
   ConditionalKey key(*KernelNames::plasticity);
   if(Table.find(key) != Table.end()) {
@@ -185,17 +185,17 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
     m2nKrnl.num_elements = NumElements;
     m2nKrnl.execute();
 
-    const unsigned NumNodes = NUMBER_OF_ALIGNED_BASIS_FUNCTIONS * NumElements;
     int *Indices = reinterpret_cast<int*>(device.api->getStackMemory(NumElements * sizeof(int)));
     int *AdjustedIndices = reinterpret_cast<int*>(device.api->getStackMemory(NumElements * sizeof(int)));
-
+    const unsigned NumNodesPerElement = init::v::Shape[0];
     // computes stress adjustment
     device.PlasticityLaunchers.adjustDeviatoricTensors(NodalStressTensors,
                                                        Indices,
                                                        Plasticity,
                                                        RelaxTime,
-                                                       NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                                       NumNodesPerElement,
                                                        NumElements);
+
 
     unsigned NumAdjustedDofs = device.PlasticityLaunchers.getAdjustedIndices(Indices, AdjustedIndices, NumElements);
 
@@ -205,7 +205,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
                                                      const_cast<const real **>(NodalStressTensors),
                                                      Global->vandermondeMatrixInverse,
                                                      AdjustedIndices,
-                                                     NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                                     NumNodesPerElement,
                                                      NumAdjustedDofs);
 
       // compute Pstrains
@@ -216,7 +216,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
                                                  FirsModes,
                                                  Plasticity,
                                                  TimeStepWidth,
-                                                 NUMBER_OF_ALIGNED_BASIS_FUNCTIONS,
+                                                 NumNodesPerElement,
                                                  NumAdjustedDofs);
 
     }
@@ -235,6 +235,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
   return 0;
 }
 #endif
+
 
 void seissol::kernels::Plasticity::flopsPlasticity( long long&  o_NonZeroFlopsCheck,
                                                     long long&  o_HardwareFlopsCheck,

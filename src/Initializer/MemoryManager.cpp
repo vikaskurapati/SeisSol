@@ -86,7 +86,7 @@ void seissol::initializers::MemoryManager::initialize()
   initializeGlobalData( m_globalData, m_memoryAllocator, MEMKIND_GLOBAL );
 
 #ifdef ACL_DEVICE
-  // initialize global matrices on a Device
+  // initialize global matrices on a DeviceInstance
   initializeGlobalDataOnDevice(m_deviceGlobalData, m_memoryAllocator);
 #ifndef NDEBUG
   compareGlobalData(m_globalData, m_deviceGlobalData);

@@ -115,13 +115,13 @@ void* seissol::memory::allocate(size_t i_size, size_t i_alignment, enum Memkind 
 #ifdef ACL_DEVICE
     }
     else if (i_memkind == DeviceGlobalMemory){
-      l_ptrBuffer = device::Device::getInstance().api->allocGlobMem(i_size);
+      l_ptrBuffer = device::DeviceInstance::getInstance().api->allocGlobMem(i_size);
     }
     else if (i_memkind == DeviceUnifiedMemory){
-      l_ptrBuffer = device::Device::getInstance().api->allocUnifiedMem(i_size);
+      l_ptrBuffer = device::DeviceInstance::getInstance().api->allocUnifiedMem(i_size);
     }
     else if (i_memkind == PinnedMemory) {
-      l_ptrBuffer = device::Device::getInstance().api->allocPinnedMem(i_size);
+      l_ptrBuffer = device::DeviceInstance::getInstance().api->allocPinnedMem(i_size);
     }
 #endif
 
@@ -153,10 +153,10 @@ void seissol::memory::free(void* i_pointer, enum Memkind i_memkind) {
 #ifdef ACL_DEVICE
     }
     else if ((i_memkind == DeviceGlobalMemory) || (i_memkind == DeviceUnifiedMemory)) {
-      device::Device::getInstance().api->freeMem(i_pointer);
+      device::DeviceInstance::getInstance().api->freeMem(i_pointer);
     }
     else if (i_memkind == PinnedMemory) {
-      device::Device::getInstance().api->freePinnedMem(i_pointer);
+      device::DeviceInstance::getInstance().api->freePinnedMem(i_pointer);
     }
 #endif
 

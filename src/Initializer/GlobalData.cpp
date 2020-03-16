@@ -151,7 +151,7 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
   // We ensure that global matrices always start at an aligned memory address,
   // such that mixed cases with aligned and non-aligned global matrices do also work.
 
-  Device& device = Device::getInstance();
+  DeviceInstance& device = DeviceInstance::getInstance();
 
   // compute a memory size needed to store global tensors and matrices
   // NOTE: the memory size includes padding for efficient vectorization
@@ -264,7 +264,7 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
 
 
 void seissol::initializers::compareGlobalData(const GlobalData &HostData, const GlobalDataOnDevice &DeviceData) {
-  Device& device = Device::getInstance();
+  DeviceInstance& device = DeviceInstance::getInstance();
 
   std::stringstream ArrayName;
   std::string FlushSting("");

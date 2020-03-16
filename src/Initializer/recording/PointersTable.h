@@ -49,7 +49,7 @@ namespace seissol {
         std::vector<real*> m_pointers{};
         real **m_device_ptrs{};
 
-        device::Device& m_Device = device::Device::getInstance();
+        device::DeviceInstance& m_Device = device::DeviceInstance::getInstance();
       };
     }
   }

@@ -150,7 +150,7 @@ private:
    * global data allocated on a device memory
    */
   struct GlobalDataOnDevice *m_deviceGlobalData;
-  device::Device& m_Device = device::Device::getInstance();
+  device::DeviceInstance& m_Device = device::DeviceInstance::getInstance();
 #endif
 
     /*

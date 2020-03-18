@@ -536,10 +536,10 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
     PointersTable &entry = Table[key];
     // NOTE: ivelocities have been computed implicitly, i.e
     // it is 6th, 7the and 8th columns of idofs
-    m_Device.api->accumulateBatchedData((entry.container[*VariableID::ivelocities])->get_pointers(),
-                                        (entry.container[*VariableID::displacements])->get_pointers(),
+    m_Device.api->accumulateBatchedData((entry.m_Container[*VariableID::ivelocities])->getPointers(),
+                                        (entry.m_Container[*VariableID::displacements])->getPointers(),
                                         tensor::displacement::Size,
-                                        (entry.container[*VariableID::displacements])->get_size());
+                                        (entry.m_Container[*VariableID::displacements])->getSize());
   }
 
   key = ConditionalKey(*KernelNames::time, *ComputationKind::with_lts_buffers);
@@ -547,16 +547,16 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
     PointersTable &entry = Table[key];
 
     if (m_resetLtsBuffers) {
-      m_Device.api->streamBatchedData((entry.container[*VariableID::idofs])->get_pointers(),
-                                      (entry.container[*VariableID::buffers])->get_pointers(),
+      m_Device.api->streamBatchedData((entry.m_Container[*VariableID::idofs])->getPointers(),
+                                      (entry.m_Container[*VariableID::buffers])->getPointers(),
                                       tensor::I::Size,
-                                      (entry.container[*VariableID::idofs])->get_size());
+                                      (entry.m_Container[*VariableID::idofs])->getSize());
     }
     else {
-      m_Device.api->accumulateBatchedData((entry.container[*VariableID::idofs])->get_pointers(),
-                                          (entry.container[*VariableID::buffers])->get_pointers(),
+      m_Device.api->accumulateBatchedData((entry.m_Container[*VariableID::idofs])->getPointers(),
+                                          (entry.m_Container[*VariableID::buffers])->getPointers(),
                                           tensor::I::Size,
-                                          (entry.container[*VariableID::idofs])->get_size());
+                                          (entry.m_Container[*VariableID::idofs])->getSize());
     }
   }
 

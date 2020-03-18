@@ -137,9 +137,9 @@ void seissol::kernels::TimeCommon::computeIntegralsForWorkItem(Time& i_time,
     i_time.computeIntegralWithinWorkItem(i_timeStepStart,
                                          i_timeStepStart,
                                          i_timeStepStart + i_timeStepWidth,
-                                         const_cast<const real **>((entry.container[*VariableID::derivatives])->get_pointers()),
-                                         (entry.container[*VariableID::idofs])->get_pointers(),
-                                         (entry.container[*VariableID::idofs])->get_size());
+                                         const_cast<const real **>((entry.m_Container[*VariableID::derivatives])->getPointers()),
+                                         (entry.m_Container[*VariableID::idofs])->getPointers(),
+                                         (entry.m_Container[*VariableID::idofs])->getSize());
   }
 
   // Compute time integrated dofs using neighbours derivatives using the LTS relation,
@@ -150,9 +150,9 @@ void seissol::kernels::TimeCommon::computeIntegralsForWorkItem(Time& i_time,
     i_time.computeIntegralWithinWorkItem(0.0,
                                          i_timeStepStart,
                                          i_timeStepStart + i_timeStepWidth,
-                                         const_cast<const real **>((entry.container[*VariableID::derivatives])->get_pointers()),
-                                         (entry.container[*VariableID::idofs])->get_pointers(),
-                                         (entry.container[*VariableID::idofs])->get_size());
+                                         const_cast<const real **>((entry.m_Container[*VariableID::derivatives])->getPointers()),
+                                         (entry.m_Container[*VariableID::idofs])->getPointers(),
+                                         (entry.m_Container[*VariableID::idofs])->getSize());
   }
 }
 #endif

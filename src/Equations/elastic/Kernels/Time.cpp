@@ -194,22 +194,22 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
 
     PointersTable &entry = table[key];
 
-    derivativesKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
-    intKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
+    derivativesKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
+    intKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
 
-    intKrnl.I = (entry.container[*VariableID::idofs])->get_pointers();
+    intKrnl.I = (entry.m_Container[*VariableID::idofs])->getPointers();
 
     unsigned star_offset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-      derivativesKrnl.star(i) = const_cast<const real **>((entry.container[*VariableID::star])->get_pointers());
+      derivativesKrnl.star(i) = const_cast<const real **>((entry.m_Container[*VariableID::star])->getPointers());
       derivativesKrnl.star_offset(i) = star_offset;
       star_offset += tensor::star::size(i);
     }
 
     unsigned derivatives_offset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
-      derivativesKrnl.dQ(i) = (entry.container[*VariableID::derivatives])->get_pointers();
-      intKrnl.dQ(i) = const_cast<const real **>((entry.container[*VariableID::derivatives])->get_pointers());
+      derivativesKrnl.dQ(i) = (entry.m_Container[*VariableID::derivatives])->getPointers();
+      intKrnl.dQ(i) = const_cast<const real **>((entry.m_Container[*VariableID::derivatives])->getPointers());
 
       derivativesKrnl.dQ_offset(i) = derivatives_offset;
       intKrnl.dQ_offset(i) = derivatives_offset;
@@ -218,8 +218,8 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
     }
 
     // stream dofs to the zero derivative
-    m_Device.api->streamBatchedData((entry.container[*VariableID::dofs])->get_pointers(),
-                                    (entry.container[*VariableID::derivatives])->get_pointers(),
+    m_Device.api->streamBatchedData((entry.m_Container[*VariableID::dofs])->getPointers(),
+                                    (entry.m_Container[*VariableID::derivatives])->getPointers(),
                                     tensor::Q::Size,
                                     derivativesKrnl.num_elements);
 

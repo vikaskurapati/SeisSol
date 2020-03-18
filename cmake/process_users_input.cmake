@@ -73,6 +73,9 @@ set(GEMM_TOOLS_LIST "LIBXSMM,PSpaMM" CACHE STRING "choose a gemm tool(s) for the
 set(GEMM_TOOLS_OPTIONS "LIBXSMM,PSpaMM" "LIBXSMM" "MKL" "OpenBLAS" "BLIS" "OpenBLAS,ACL_DEVICE_BLAS" "LIBXSMM,PSpaMM,ACL_DEVICE_BLAS")
 set_property(CACHE GEMM_TOOLS_LIST PROPERTY STRINGS ${GEMM_TOOLS_OPTIONS})
 
+
+option(ANALYZE_SRC_CODE "use clang-tidy to analyze the source code" OFF)
+
 #-------------------------------------------------------------------------------
 # ------------------------------- ERROR CHECKING -------------------------------
 #-------------------------------------------------------------------------------

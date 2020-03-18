@@ -2,9 +2,9 @@
 #include <Kernels/Interface.hpp>
 #include <yateto.h>
 
-#include "EncodingConstants.h"
 #include "Condition.h"
 #include "ConditionalTable.h"
+#include "EncodingConstants.h"
 #include "PointersTable.h"
 #include "specific_types.h"
 
@@ -12,161 +12,159 @@ using namespace device;
 using namespace seissol::initializers;
 using namespace seissol::initializers::recording;
 
-void LocalIntegrationRecorder::record(seissol::initializers::LTS &handler, seissol::initializers::Layer &layer) {
+void LocalIntegrationRecorder::record(seissol::initializers::LTS &Handler, seissol::initializers::Layer &Layer) {
 
-  kernels::LocalData::Loader loader;
-  loader.load(handler, layer);
-  LayerContainer &container = layer.getLayerContainer();
-  auto &table = container.getTableReferenceToInit();
+  kernels::LocalData::Loader Loader;
+  Loader.load(Handler, Layer);
+  LayerContainer &Container = Layer.getLayerContainer();
+  auto &Table = Container.getTableReferenceToInit();
 
   // allocate counters and the registry
-  std::unordered_map<index_t, real*> idofs_address_registry{};
+  std::unordered_map<index_t, real *> IDofsAddressRegistry{};
 
-  size_t idofs_address_counter = 0;
-  size_t derivatives_address_counter = 0;
+  size_t IDofsAddressCounter = 0;
+  size_t DerivativesAddressCounter = 0;
 
   // get base pointers for the temp. memory
-  real* idofs_scratch_mem = static_cast<real*>(layer.scratch_mem(handler.idofs_scratch));
-  real* derivatives_scratch_mem = static_cast<real*>(layer.scratch_mem(handler.derivatives_scratch));
+  real *IDofsScratchMem = static_cast<real *>(Layer.scratch_mem(Handler.idofs_scratch));
+  real *DerivativesScratchMem = static_cast<real *>(Layer.scratch_mem(Handler.derivatives_scratch));
 
-  // *************************************** time and volume integrals ***************************************
+  // ********************** time and volume integrals **********************
   {
-    if (layer.getNumberOfCells()) {
+    if (Layer.getNumberOfCells()) {
 
-      std::vector<real*> dofs_ptrs{};
-      std::vector<real*> star_ptrs{};
-      std::vector<real*> idofs_ptrs{};
-      std::vector<real*> dQ_ptrs{};
+      std::vector<real *> DofsPtrs{};
+      std::vector<real *> StarPtrs{};
+      std::vector<real *> IDofsPtrs{};
+      std::vector<real *> DQPtrs{};
 
-      std::vector<real*> lts_buffers{};
-      std::vector<real*> idofs_for_lts_buffers{};
+      std::vector<real *> LtsBuffers{};
+      std::vector<real *> IDofsForLtsBuffers{};
 
-      real ** derivatives = layer.var(handler.derivatives);
-      real ** buffers = layer.var(handler.buffers);
+      real **Derivatives = Layer.var(Handler.derivatives);
+      real **Buffers = Layer.var(Handler.buffers);
 
-      for (unsigned cell = 0; cell < layer.getNumberOfCells(); ++cell) {
-        auto data = loader.entry(cell);
+      for (unsigned Cell = 0; Cell < Layer.getNumberOfCells(); ++Cell) {
+        auto Data = Loader.entry(Cell);
 
         // dofs
-        dofs_ptrs.push_back(static_cast<real *>(data.dofs));
+        DofsPtrs.push_back(static_cast<real *>(Data.dofs));
 
         // idofs
-        real *next_idof_ptr = &idofs_scratch_mem[idofs_address_counter];
-        bool l_BuffersProvided = ((data.cellInformation.ltsSetup >> 8) % 2) == 1;
-        bool l_LtsBuffers = ((data.cellInformation.ltsSetup >> 10) % 2) == 1;
+        real *NextIDofPtr = &IDofsScratchMem[IDofsAddressCounter];
+        bool IsBuffersProvided = ((Data.cellInformation.ltsSetup >> 8) % 2) == 1;
+        bool IsLtsBuffers = ((Data.cellInformation.ltsSetup >> 10) % 2) == 1;
 
-        if (l_BuffersProvided) {
-          if (l_LtsBuffers) {
+        if (IsBuffersProvided) {
+          if (IsLtsBuffers) {
             // lts buffers may require either accumulation or overriding (in case of reset command)
-            idofs_ptrs.push_back(next_idof_ptr);
+            IDofsPtrs.push_back(NextIDofPtr);
 
-            idofs_for_lts_buffers.push_back(next_idof_ptr);
-            lts_buffers.push_back(buffers[cell]);
+            IDofsForLtsBuffers.push_back(NextIDofPtr);
+            LtsBuffers.push_back(Buffers[Cell]);
 
-            idofs_address_registry[cell] = next_idof_ptr;
-            idofs_address_counter += tensor::I::size();
-          }
-          else {
+            IDofsAddressRegistry[Cell] = NextIDofPtr;
+            IDofsAddressCounter += tensor::I::size();
+          } else {
             // gts buffers have to be always overridden
-            idofs_ptrs.push_back(buffers[cell]);
-            idofs_address_registry[cell] = buffers[cell];
+            IDofsPtrs.push_back(Buffers[Cell]);
+            IDofsAddressRegistry[Cell] = Buffers[Cell];
           }
-        }
-        else {
-          idofs_ptrs.push_back(next_idof_ptr);
-          idofs_address_registry[cell] = next_idof_ptr;
-          idofs_address_counter += tensor::I::size();
+        } else {
+          IDofsPtrs.push_back(NextIDofPtr);
+          IDofsAddressRegistry[Cell] = NextIDofPtr;
+          IDofsAddressCounter += tensor::I::size();
         }
 
         // stars
-        star_ptrs.push_back(static_cast<real *>(data.localIntegrationDevice.starMatrices[0]));
+        StarPtrs.push_back(static_cast<real *>(Data.localIntegrationDevice.starMatrices[0]));
 
         // derivatives
-        bool l_DerivativesProvided = ((data.cellInformation.ltsSetup >> 9) % 2) == 1;
-        if (l_DerivativesProvided) {
-          dQ_ptrs.push_back(derivatives[cell]);
+        bool IsDerivativesProvided = ((Data.cellInformation.ltsSetup >> 9) % 2) == 1;
+        if (IsDerivativesProvided) {
+          DQPtrs.push_back(Derivatives[Cell]);
 
         } else {
-          dQ_ptrs.push_back(&derivatives_scratch_mem[derivatives_address_counter]);
-          derivatives_address_counter += yateto::computeFamilySize<tensor::dQ>();
+          DQPtrs.push_back(&DerivativesScratchMem[DerivativesAddressCounter]);
+          DerivativesAddressCounter += yateto::computeFamilySize<tensor::dQ>();
         }
       }
 
-      ConditionalKey key(KernelNames::time || KernelNames::volume);
-      checkKey(table, key);
+      ConditionalKey Key(KernelNames::time || KernelNames::volume);
+      checkKey(Table, Key);
 
-      table[key].container[*VariableID::dofs] = new DevicePointers(dofs_ptrs);
-      table[key].container[*VariableID::star] = new DevicePointers(star_ptrs);
-      table[key].container[*VariableID::idofs] = new DevicePointers(idofs_ptrs);
-      table[key].container[*VariableID::derivatives] = new DevicePointers(dQ_ptrs);
+      Table[Key].m_Container[*VariableID::dofs] = new DevicePointers(DofsPtrs);
+      Table[Key].m_Container[*VariableID::star] = new DevicePointers(StarPtrs);
+      Table[Key].m_Container[*VariableID::idofs] = new DevicePointers(IDofsPtrs);
+      Table[Key].m_Container[*VariableID::derivatives] = new DevicePointers(DQPtrs);
 
-      table[key].set_not_empty_flag();
+      Table[Key].setNotEmpty();
 
-      if (!idofs_for_lts_buffers.empty()) {
-        ConditionalKey key(*KernelNames::time, *ComputationKind::with_lts_buffers);
+      if (!IDofsForLtsBuffers.empty()) {
+        ConditionalKey Key(*KernelNames::time, *ComputationKind::with_lts_buffers);
 
-        table[key].container[*VariableID::buffers] = new DevicePointers(lts_buffers);
-        table[key].container[*VariableID::idofs] = new DevicePointers(idofs_for_lts_buffers);
-        table[key].set_not_empty_flag();
+        Table[Key].m_Container[*VariableID::buffers] = new DevicePointers(LtsBuffers);
+        Table[Key].m_Container[*VariableID::idofs] = new DevicePointers(IDofsForLtsBuffers);
+        Table[Key].setNotEmpty();
       }
     }
   }
 
-  // *************************************** local flux integral ***************************************
+  // ********************** local flux integral **********************
   {
-    for (unsigned face = 0; face < 4; ++face) {
+    for (unsigned Face = 0; Face < 4; ++Face) {
 
-      std::vector<real*> idofs_ptrs{};
-      std::vector<real*> dofs_ptrs{};
-      std::vector<real*> AplusT_ptrs{};
+      std::vector<real *> IDofsPtrs{};
+      std::vector<real *> DofsPtrs{};
+      std::vector<real *> AplusTPtrs{};
 
-      for (unsigned cell = 0; cell < layer.getNumberOfCells(); ++cell) {
+      for (unsigned Cell = 0; Cell < Layer.getNumberOfCells(); ++Cell) {
 
-        auto data = loader.entry(cell);
+        auto Data = Loader.entry(Cell);
 
         // no element local contribution in the case of dynamic rupture boundary conditions
-        if(data.cellInformation.faceTypes[face] != dynamicRupture) {
-          idofs_ptrs.push_back(idofs_address_registry[cell]);
-          dofs_ptrs.push_back(static_cast<real*>(data.dofs));
-          AplusT_ptrs.push_back(static_cast<real*>(data.localIntegrationDevice.nApNm1[face]));
+        if (Data.cellInformation.faceTypes[Face] != dynamicRupture) {
+          IDofsPtrs.push_back(IDofsAddressRegistry[Cell]);
+          DofsPtrs.push_back(static_cast<real *>(Data.dofs));
+          AplusTPtrs.push_back(static_cast<real *>(Data.localIntegrationDevice.nApNm1[Face]));
         }
       }
 
       // NOTE: we can check any container, but we must check that a set is not empty!
-      if (!dofs_ptrs.empty()) {
-        ConditionalKey key(*KernelNames::local_flux, !FaceKinds::dynamicRupture, face);
-        checkKey(table, key);
-        table[key].container[*VariableID::idofs] = new DevicePointers(idofs_ptrs);
-        table[key].container[*VariableID::dofs] = new DevicePointers(dofs_ptrs);
-        table[key].container[*VariableID::AplusT] = new DevicePointers(AplusT_ptrs);
+      if (!DofsPtrs.empty()) {
+        ConditionalKey Key(*KernelNames::local_flux, !FaceKinds::dynamicRupture, Face);
+        checkKey(Table, Key);
+        Table[Key].m_Container[*VariableID::idofs] = new DevicePointers(IDofsPtrs);
+        Table[Key].m_Container[*VariableID::dofs] = new DevicePointers(DofsPtrs);
+        Table[Key].m_Container[*VariableID::AplusT] = new DevicePointers(AplusTPtrs);
 
-        table[key].set_not_empty_flag();
+        Table[Key].setNotEmpty();
       }
     }
   }
 
-  // *************************************** displacements ***************************************
+  // ********************** displacements **********************
   {
-    real** displacements = layer.var(handler.displacements);
-    std::vector<real*> ivelocities_ptrs{};
-    std::vector<real*> displacements_ptrs{};
+    real **Displacements = Layer.var(Handler.displacements);
+    std::vector<real *> IvelocitiesPtrs{};
+    std::vector<real *> DisplacementsPtrs{};
 
     // NOTE: velocity components are between 6th and 8th columns
-    const unsigned OffsetToVelocities = 6 * seissol::tensor::I::Shape[0];
-    for (unsigned cell = 0; cell < layer.getNumberOfCells(); ++cell) {
-      if (displacements[cell] != nullptr) {
-        real *ivelocity = &idofs_address_registry[cell][OffsetToVelocities];
-        ivelocities_ptrs.push_back(ivelocity);
-        displacements_ptrs.push_back(displacements[cell]);
+    const unsigned OFFSET_TO_VELOCITIES = 6 * seissol::tensor::I::Shape[0];
+    for (unsigned Cell = 0; Cell < Layer.getNumberOfCells(); ++Cell) {
+      if (Displacements[Cell] != nullptr) {
+        real *IVelocity = &IDofsAddressRegistry[Cell][OFFSET_TO_VELOCITIES];
+        IvelocitiesPtrs.push_back(IVelocity);
+        DisplacementsPtrs.push_back(Displacements[Cell]);
       }
     }
-    if (!displacements_ptrs.empty()) {
-      ConditionalKey key(*KernelNames::displacements);
-      checkKey(table, key);
-      table[key].container[*VariableID::ivelocities] = new DevicePointers(ivelocities_ptrs);
-      table[key].container[*VariableID::displacements] = new DevicePointers(displacements_ptrs);
+    if (!DisplacementsPtrs.empty()) {
+      ConditionalKey Key(*KernelNames::displacements);
+      checkKey(Table, Key);
+      Table[Key].m_Container[*VariableID::ivelocities] = new DevicePointers(IvelocitiesPtrs);
+      Table[Key].m_Container[*VariableID::displacements] = new DevicePointers(DisplacementsPtrs);
 
-      table[key].set_not_empty_flag();
+      Table[Key].setNotEmpty();
     }
   }
 }

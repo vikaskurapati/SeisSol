@@ -6,37 +6,37 @@ using namespace device;
 using namespace seissol::initializers;
 using namespace seissol::initializers::recording;
 
-void PlasticityRecorder::record(seissol::initializers::LTS &handler, seissol::initializers::Layer &layer) {
-  kernels::LocalData::Loader loader;
-  loader.load(handler, layer);
-  LayerContainer &container = layer.getLayerContainer();
-  auto &table = container.getTableReferenceToInit();
+void PlasticityRecorder::record(seissol::initializers::LTS &Handler, seissol::initializers::Layer &Layer) {
+  kernels::LocalData::Loader Loader;
+  Loader.load(Handler, Layer);
+  LayerContainer &Container = Layer.getLayerContainer();
+  auto &Table = Container.getTableReferenceToInit();
 
   // allocate counters and the registry
-  std::unordered_map<index_t, real*> idofs_address_registry{};
+  std::unordered_map<index_t, real *> IDofsAddressRegistry{};
 
-  real (*Pstrains)[7] = layer.var(handler.pstrain);
+  real(*Pstrains)[7] = Layer.var(Handler.pstrain);
   size_t NodalStressTensorCounter = 0;
-  real* ScratchMem = static_cast<real*>(layer.scratch_mem(handler.idofs_scratch));
-  if (layer.getNumberOfCells()) {
-    std::vector<real*> DofsPtrs{};
-    std::vector<real*> QStressNodalPtrs{};
-    std::vector<real*> PstransPtrs{};
+  real *ScratchMem = static_cast<real *>(Layer.scratch_mem(Handler.idofs_scratch));
+  if (Layer.getNumberOfCells()) {
+    std::vector<real *> DofsPtrs{};
+    std::vector<real *> QStressNodalPtrs{};
+    std::vector<real *> PstransPtrs{};
 
-    for (unsigned cell = 0; cell < layer.getNumberOfCells(); ++cell) {
-      auto data = loader.entry(cell);
-      DofsPtrs.push_back(static_cast<real *>(data.dofs));
+    for (unsigned Cell = 0; Cell < Layer.getNumberOfCells(); ++Cell) {
+      auto Data = Loader.entry(Cell);
+      DofsPtrs.push_back(static_cast<real *>(Data.dofs));
       QStressNodalPtrs.push_back(&ScratchMem[NodalStressTensorCounter]);
       NodalStressTensorCounter += tensor::QStressNodal::size();
-      PstransPtrs.push_back(static_cast<real*>(Pstrains[cell]));
+      PstransPtrs.push_back(static_cast<real *>(Pstrains[Cell]));
     }
     if (!DofsPtrs.empty()) {
-      ConditionalKey key(*KernelNames::plasticity);
-      checkKey(table, key);
-      table[key].container[*VariableID::dofs] = new DevicePointers(DofsPtrs);
-      table[key].container[*VariableID::NodalStressTensor] = new DevicePointers(QStressNodalPtrs);
-      table[key].container[*VariableID::Pstrains] = new DevicePointers(PstransPtrs);
-      table[key].set_not_empty_flag();
+      ConditionalKey Key(*KernelNames::plasticity);
+      checkKey(Table, Key);
+      Table[Key].m_Container[*VariableID::dofs] = new DevicePointers(DofsPtrs);
+      Table[Key].m_Container[*VariableID::NodalStressTensor] = new DevicePointers(QStressNodalPtrs);
+      Table[Key].m_Container[*VariableID::Pstrains] = new DevicePointers(PstransPtrs);
+      Table[Key].setNotEmpty();
     }
   }
 }

@@ -167,9 +167,9 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
   if(Table.find(key) != Table.end()) {
 
     PointersTable &Entry = Table[key];
-    const unsigned NumElements = (Entry.container[*VariableID::dofs])->get_size();
-    real** ModalStressTensors = Entry.container[*VariableID::dofs]->get_pointers();
-    real** NodalStressTensors = Entry.container[*VariableID::NodalStressTensor]->get_pointers();
+    const unsigned NumElements = (Entry.m_Container[*VariableID::dofs])->getSize();
+    real** ModalStressTensors = Entry.m_Container[*VariableID::dofs]->getPointers();
+    real** NodalStressTensors = Entry.m_Container[*VariableID::NodalStressTensor]->getPointers();
 
     real *FirsModes = reinterpret_cast<real*>(device.api->getStackMemory(6 * NumElements * sizeof(real)));
     device.PlasticityLaunchers.saveFirstModes(FirsModes,
@@ -209,7 +209,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
                                                      NumAdjustedDofs);
 
       // compute Pstrains
-      real **Pstrains = Entry.container[*VariableID::Pstrains]->get_pointers();
+      real **Pstrains = Entry.m_Container[*VariableID::Pstrains]->getPointers();
       device.PlasticityLaunchers.computePstrains(Pstrains,
                                                  AdjustedIndices,
                                                  const_cast<const real **>(ModalStressTensors),

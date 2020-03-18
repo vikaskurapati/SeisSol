@@ -25,7 +25,7 @@ namespace seissol {
 
             void freeConditionalTable() {
                 for (auto& IndexTable: m_CondTable) {
-                    for (auto Pointers: IndexTable.second.container) {
+                    for (auto Pointers: IndexTable.second.m_Container) {
                         if (Pointers != nullptr) {
                             delete Pointers;
                         }

@@ -56,7 +56,9 @@ find_package(GemmTools REQUIRED)
 include(src/sources.cmake)
 
 # the following include file checks programming style
-include(src/StyleChecker.cmake)
+if (ANALYZE_SRC_CODE)
+include(src/CodeChecker.cmake)
+endif()
 
 if(GemmTools_INCLUDE_DIRS)
   target_include_directories(SeisSol-lib PUBLIC ${GemmTools_INCLUDE_DIRS})

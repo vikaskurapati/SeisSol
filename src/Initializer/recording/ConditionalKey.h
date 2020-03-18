@@ -1,58 +1,49 @@
 #ifndef CONDITIONAL_KEY_H_
 #define CONDITIONAL_KEY_H_
 
-#include <utility>
-#include <limits>
 #include "specific_types.h"
+#include <limits>
+#include <utility>
 
 namespace seissol {
   namespace initializers {
     namespace recording {
 
       struct ConditionalKey {
-        ConditionalKey(encode_t i_kernel,
-                       encode_t i_type = std::numeric_limits<encode_t>::max(),
-                       encode_t i_face_id = std::numeric_limits<encode_t>::max(),
-                       encode_t i_relation = std::numeric_limits<encode_t>::max()) : kernel(i_kernel),
-                                                                                     type(i_type),
-                                                                                     face_id(i_face_id),
-                                                                                     face_relation(i_relation) {
-        };
-          encode_t kernel;
-          encode_t type;
-          encode_t face_id;
-          encode_t face_relation;
+        ConditionalKey(encode_t Kernel, encode_t Type = std::numeric_limits<encode_t>::max(),
+                       encode_t FaceId = std::numeric_limits<encode_t>::max(),
+                       encode_t Relation = std::numeric_limits<encode_t>::max())
+            : m_Kernel(Kernel), m_Type(Type), m_FaceId(FaceId), m_FaceRelation(Relation){};
 
-          bool operator==(const ConditionalKey &key) const {
-            return ((kernel == key.kernel) &&
-                    (type == key.type) &&
-                    (face_id == key.face_id) &&
-                    (face_relation == key.face_relation));
-            }
+        bool operator==(const ConditionalKey &Key) const {
+          return ((m_Kernel == Key.m_Kernel) && (m_Type == Key.m_Type) && (m_FaceId == Key.m_FaceId) &&
+                  (m_FaceRelation == Key.m_FaceRelation));
+        }
+
+        encode_t m_Kernel;
+        encode_t m_Type;
+        encode_t m_FaceId;
+        encode_t m_FaceRelation;
       };
 
-      template <class T>
-      inline void _hash_combine(std::size_t& seed, const T& v) {
-        std::hash<T> hasher;
-        seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+      template <class T> inline void hashCombine(std::size_t &Seed, const T &Value) {
+        std::hash<T> Hasher;
+        Seed ^= Hasher(Value) + 0x9e3779b9 + (Seed << 6) + (Seed >> 2);
       }
 
+      template <class T> class ConditionalHash;
 
-      template <class T>
-      class ConditionalHash;
-
-      template<>
-      struct ConditionalHash<ConditionalKey> {
-        std::size_t operator()(ConditionalKey const& key) const {
-          std::size_t result = 0;
-          _hash_combine(result, key.kernel);
-          _hash_combine(result, key.type);
-          _hash_combine(result, key.face_id);
-          _hash_combine(result, key.face_relation);
-          return result;
+      template <> struct ConditionalHash<ConditionalKey> {
+        std::size_t operator()(ConditionalKey const &Key) const {
+          std::size_t Result = 0;
+          hashCombine(Result, Key.m_Kernel);
+          hashCombine(Result, Key.m_Type);
+          hashCombine(Result, Key.m_FaceId);
+          hashCombine(Result, Key.m_FaceRelation);
+          return Result;
         }
       };
-    }
-  }
-}
-#endif  // CONDITIONAL_KEY_H_
+    } // namespace recording
+  }   // namespace initializers
+} // namespace seissol
+#endif // CONDITIONAL_KEY_H_

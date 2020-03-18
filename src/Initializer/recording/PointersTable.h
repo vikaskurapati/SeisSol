@@ -1,10 +1,10 @@
-#ifndef INDEX_TABLE_H_ 
+#ifndef INDEX_TABLE_H_
 #define INDEX_TABLE_H_
 
-#include <unordered_map>
-#include <vector>
-#include <utility>
 #include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "specific_types.h"
 #include <device.h>
@@ -15,45 +15,43 @@ namespace seissol {
 
       class DevicePointers {
       public:
-        DevicePointers(std::vector<real *> i_pointers) : m_pointers(i_pointers), m_device_ptrs(nullptr) {
-          if (!m_pointers.empty()) {
-            m_device_ptrs = (real**)m_Device.api->allocGlobMem(m_pointers.size() * sizeof(real*));
-            m_Device.api->copyTo(m_device_ptrs, m_pointers.data(), m_pointers.size() * sizeof(real*));
+        DevicePointers(std::vector<real *> Pointers) : m_Pointers(Pointers), m_DevicePtrs(nullptr) {
+          if (!m_Pointers.empty()) {
+            m_DevicePtrs = (real **)m_Device.api->allocGlobMem(m_Pointers.size() * sizeof(real *));
+            m_Device.api->copyTo(m_DevicePtrs, m_Pointers.data(), m_Pointers.size() * sizeof(real *));
           }
         }
 
-        explicit
-        DevicePointers(const DevicePointers& other) : m_pointers(other.m_pointers), m_device_ptrs(nullptr) {
-          if (!m_pointers.empty()) {
-            if (other.m_device_ptrs != nullptr) {
-              m_device_ptrs = (real**)m_Device.api->allocGlobMem(other.m_pointers.size() * sizeof(real*));
-              m_Device.api->copyBetween(m_device_ptrs, other.m_device_ptrs, other.m_pointers.size() * sizeof(real*));
+        explicit DevicePointers(const DevicePointers &Other) : m_Pointers(Other.m_Pointers), m_DevicePtrs(nullptr) {
+          if (!m_Pointers.empty()) {
+            if (Other.m_DevicePtrs != nullptr) {
+              m_DevicePtrs = (real **)m_Device.api->allocGlobMem(Other.m_Pointers.size() * sizeof(real *));
+              m_Device.api->copyBetween(m_DevicePtrs, Other.m_DevicePtrs, Other.m_Pointers.size() * sizeof(real *));
             }
           }
         }
 
-        DevicePointers& operator=(const DevicePointers& other) = delete;
+        DevicePointers &operator=(const DevicePointers &Other) = delete;
 
         virtual ~DevicePointers() {
-          if (m_device_ptrs != nullptr) {
-            m_Device.api->freeMem(m_device_ptrs);
-            m_device_ptrs = nullptr;
+          if (m_DevicePtrs != nullptr) {
+            m_Device.api->freeMem(m_DevicePtrs);
+            m_DevicePtrs = nullptr;
           }
-          m_pointers.clear();
+          m_Pointers.clear();
         }
 
-        real **get_pointers() { return m_device_ptrs; }
-        index_t get_size() { return m_pointers.size(); }
+        real **getPointers() { return m_DevicePtrs; }
+        index_t getSize() { return m_Pointers.size(); }
 
       private:
-        std::vector<real*> m_pointers{};
-        real **m_device_ptrs{};
-
-        device::DeviceInstance& m_Device = device::DeviceInstance::getInstance();
+        std::vector<real *> m_Pointers{};
+        real **m_DevicePtrs{};
+        device::DeviceInstance &m_Device = device::DeviceInstance::getInstance();
       };
-    }
-  }
-}
+    } // namespace recording
+  }   // namespace initializers
+} // namespace seissol
 
 namespace seissol {
   namespace initializers {
@@ -61,21 +59,20 @@ namespace seissol {
       struct PointersTable {
 
       public:
-        PointersTable() : m_is_empty(true) {
-          for (auto& pointers: container)
-            pointers = nullptr;
+        PointersTable() : m_IsEmpty(true) {
+          for (auto &Pointers : m_Container)
+            Pointers = nullptr;
         }
 
+        std::array<DevicePointers *, *VariableID::Count> m_Container;
 
-        std::array<DevicePointers*, *VariableID::Count> container;
-
-        bool is_empty() { return m_is_empty; };
-        void set_not_empty_flag() { m_is_empty = false; }
+        bool isEmpty() { return m_IsEmpty; };
+        void setNotEmpty() { m_IsEmpty = false; }
 
       private:
-        bool m_is_empty;  // TODO: doesn't make sense to keep this flag???
+        bool m_IsEmpty; // TODO: doesn't make sense to keep this flag???
       };
-    }
-  }
-}
-#endif 
+    } // namespace recording
+  }   // namespace initializers
+} // namespace seissol
+#endif

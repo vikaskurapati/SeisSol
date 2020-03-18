@@ -17,7 +17,7 @@ namespace device_gen_code {
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
     assert(kernel::volume::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp2, *_tmp4;
     double *d_buffer0 = (double*)device.api->getStackMemory(324 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -80,7 +80,7 @@ namespace device_gen_code {
     assert(Tinv != nullptr);
     assert(godunovMatrix != nullptr);
     assert(kernel::rotateGodunovStateLocal::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     {
     unsigned offset_Tinv = Tinv_offset;
     unsigned offset_QgodLocal = QgodLocal_offset;
@@ -97,7 +97,7 @@ namespace device_gen_code {
     assert(Tinv != nullptr);
     assert(godunovMatrix != nullptr);
     assert(kernel::rotateGodunovStateNeighbor::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     {
     unsigned offset_Tinv = Tinv_offset;
     unsigned offset_QgodNeighbor = QgodNeighbor_offset;
@@ -115,7 +115,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(star(0) != nullptr);
     assert(kernel::rotateFluxMatrix::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     {
     unsigned offset_star = star_offset(0);
     unsigned offset_T = T_offset;
@@ -132,7 +132,7 @@ namespace device_gen_code {
     assert(QStressNodal != nullptr);
     assert(v != nullptr);
     assert(kernel::plConvertToNodal::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     {
     unsigned offset_v = 0;
     unsigned offset_QStress = QStress_offset;
@@ -149,7 +149,7 @@ namespace device_gen_code {
     assert(QStressNodal != nullptr);
     assert(vInv != nullptr);
     assert(kernel::plConvertToModal::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     {
     unsigned offset_vInv = 0;
     unsigned offset_QStressNodal = QStressNodal_offset;
@@ -169,7 +169,7 @@ namespace device_gen_code {
     assert(fMrT(0) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(kernel::localFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -209,7 +209,7 @@ namespace device_gen_code {
     assert(fMrT(1) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(kernel::localFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -249,7 +249,7 @@ namespace device_gen_code {
     assert(fMrT(2) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(kernel::localFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -289,7 +289,7 @@ namespace device_gen_code {
     assert(fMrT(3) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(kernel::localFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -333,7 +333,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -383,7 +383,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -433,7 +433,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -483,7 +483,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -533,7 +533,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -583,7 +583,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -633,7 +633,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -683,7 +683,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -733,7 +733,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -783,7 +783,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -833,7 +833,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -883,7 +883,7 @@ namespace device_gen_code {
     assert(rDivM(0) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -933,7 +933,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -983,7 +983,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1033,7 +1033,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1083,7 +1083,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1133,7 +1133,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1183,7 +1183,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1233,7 +1233,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1283,7 +1283,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1333,7 +1333,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1383,7 +1383,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1433,7 +1433,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1483,7 +1483,7 @@ namespace device_gen_code {
     assert(rDivM(1) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1533,7 +1533,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1583,7 +1583,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1633,7 +1633,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1683,7 +1683,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1733,7 +1733,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1783,7 +1783,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1833,7 +1833,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1883,7 +1883,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1933,7 +1933,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -1983,7 +1983,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2033,7 +2033,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2083,7 +2083,7 @@ namespace device_gen_code {
     assert(rDivM(2) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2133,7 +2133,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2183,7 +2183,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2233,7 +2233,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(0) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2283,7 +2283,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2333,7 +2333,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2383,7 +2383,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(1) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2433,7 +2433,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2483,7 +2483,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2533,7 +2533,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(2) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2583,7 +2583,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2633,7 +2633,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2683,7 +2683,7 @@ namespace device_gen_code {
     assert(rDivM(3) != nullptr);
     assert(rT(3) != nullptr);
     assert(kernel::neighboringFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp1, *_tmp2;
     double *d_buffer0 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
     double *d_buffer1 = (double*)device.api->getStackMemory(216 * num_elements * sizeof(double));
@@ -2733,7 +2733,7 @@ namespace device_gen_code {
     assert(I != nullptr);
     assert(dQ(0) != nullptr);
     assert(kernel::derivativeTaylorExpansion::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     device.copyAddScale(56, 9, power, dQ(0) + 0, 56, 0.0, I + 0, 56, dQ_offset(0), I_offset, num_elements);
   }
   void kernel::derivativeTaylorExpansion::execute1() {
@@ -2741,7 +2741,7 @@ namespace device_gen_code {
     assert(I != nullptr);
     assert(dQ(1) != nullptr);
     assert(kernel::derivativeTaylorExpansion::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     device.copyAddScale(35, 9, power, dQ(1) + 0, 36, 1.0, I + 0, 56, dQ_offset(1), I_offset, num_elements);
   }
   void kernel::derivativeTaylorExpansion::execute2() {
@@ -2749,7 +2749,7 @@ namespace device_gen_code {
     assert(I != nullptr);
     assert(dQ(2) != nullptr);
     assert(kernel::derivativeTaylorExpansion::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     device.copyAddScale(20, 9, power, dQ(2) + 0, 20, 1.0, I + 0, 56, dQ_offset(2), I_offset, num_elements);
   }
   void kernel::derivativeTaylorExpansion::execute3() {
@@ -2757,7 +2757,7 @@ namespace device_gen_code {
     assert(I != nullptr);
     assert(dQ(3) != nullptr);
     assert(kernel::derivativeTaylorExpansion::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     device.copyAddScale(10, 9, power, dQ(3) + 0, 12, 1.0, I + 0, 56, dQ_offset(3), I_offset, num_elements);
   }
   void kernel::derivativeTaylorExpansion::execute4() {
@@ -2765,7 +2765,7 @@ namespace device_gen_code {
     assert(I != nullptr);
     assert(dQ(4) != nullptr);
     assert(kernel::derivativeTaylorExpansion::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     device.copyAddScale(4, 9, power, dQ(4) + 0, 4, 1.0, I + 0, 56, dQ_offset(4), I_offset, num_elements);
   }
   void kernel::derivativeTaylorExpansion::execute5() {
@@ -2773,7 +2773,7 @@ namespace device_gen_code {
     assert(I != nullptr);
     assert(dQ(5) != nullptr);
     assert(kernel::derivativeTaylorExpansion::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     device.copyAddScale(1, 9, power, dQ(5) + 0, 4, 1.0, I + 0, 56, dQ_offset(5), I_offset, num_elements);
   }
   constexpr unsigned long const kernel::derivative::NonZeroFlops[];
@@ -2789,7 +2789,7 @@ namespace device_gen_code {
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
     assert(kernel::derivative::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp2, *_tmp4;
     double *d_buffer0 = (double*)device.api->getStackMemory(324 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -2855,7 +2855,7 @@ namespace device_gen_code {
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
     assert(kernel::derivative::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp2, *_tmp4;
     double *d_buffer0 = (double*)device.api->getStackMemory(180 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -2921,7 +2921,7 @@ namespace device_gen_code {
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
     assert(kernel::derivative::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp2, *_tmp4;
     double *d_buffer0 = (double*)device.api->getStackMemory(108 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -2987,7 +2987,7 @@ namespace device_gen_code {
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
     assert(kernel::derivative::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp2, *_tmp4;
     double *d_buffer0 = (double*)device.api->getStackMemory(36 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3053,7 +3053,7 @@ namespace device_gen_code {
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
     assert(kernel::derivative::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0, *_tmp2, *_tmp4;
     double *d_buffer0 = (double*)device.api->getStackMemory(36 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3118,7 +3118,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3146,7 +3146,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3174,7 +3174,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3202,7 +3202,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3230,7 +3230,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3258,7 +3258,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3286,7 +3286,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3314,7 +3314,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3342,7 +3342,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3370,7 +3370,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3398,7 +3398,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3426,7 +3426,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3454,7 +3454,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3482,7 +3482,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3510,7 +3510,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3538,7 +3538,7 @@ namespace device_gen_code {
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::godunovState::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3569,7 +3569,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3597,7 +3597,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3625,7 +3625,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3653,7 +3653,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3681,7 +3681,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3709,7 +3709,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3737,7 +3737,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3765,7 +3765,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3793,7 +3793,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3821,7 +3821,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3849,7 +3849,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3877,7 +3877,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3905,7 +3905,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3933,7 +3933,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3961,7 +3961,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;
@@ -3989,7 +3989,7 @@ namespace device_gen_code {
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
     assert(kernel::nodalFlux::num_elements != 0);
-    device::Device& device = device::Device::getInstance();
+    device::DeviceInstance& device = device::DeviceInstance::getInstance();
     double *_tmp0;
     double *d_buffer0 = (double*)device.api->getStackMemory(468 * num_elements * sizeof(double));
     _tmp0 = d_buffer0;

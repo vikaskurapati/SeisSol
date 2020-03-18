@@ -20,7 +20,7 @@
 include(FindPackageHandleStandardArgs)
 
 find_program(CLANG_TIDY_EXE clang-tidy
-             HINTS ENV CLANG_TIDY_DIR)
+             HINTS ${CLANG_TIDY_DIR})
 
 if (CLANG_TIDY_EXE)
     execute_process(COMMAND clang-tidy --version
@@ -30,6 +30,7 @@ if (CLANG_TIDY_EXE)
     set(SUCCESSFUL_TERMINATION 0)
     if (${TERMINATION_CODE} STREQUAL ${SUCCESSFUL_TERMINATION})
         set(CLANG_CORRECT_VERSION True)
+        set(CLANG_TIDY_DIR ${CLANG_TIDY_EXE} CACHE STRING "path to the correct clang-tidy")
     else()
         message(WARNING "the executable has been found but it doesn't match"
                 "the requested version: ${CLANG_MINIMUM_VERSION_REQUIRED}")

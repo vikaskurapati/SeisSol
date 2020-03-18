@@ -6,6 +6,6 @@
 namespace seissol {
   using encode_t = uint32_t;
   using index_t = unsigned;
-}
+} // namespace seissol
 
 #endif

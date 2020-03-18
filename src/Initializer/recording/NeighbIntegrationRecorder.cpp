@@ -6,62 +6,63 @@ using namespace device;
 using namespace seissol::initializers;
 using namespace seissol::initializers::recording;
 
-void NeighbIntegrationRecorder::record(seissol::initializers::LTS &handler, seissol::initializers::Layer &layer) {
-  kernels::NeighborData::Loader loader;
-  loader.load(handler, layer);
-  LayerContainer &container = layer.getLayerContainer();
-  auto &table = container.getTableReferenceToInit();
+void NeighbIntegrationRecorder::record(seissol::initializers::LTS &Handler, seissol::initializers::Layer &Layer) {
+  kernels::NeighborData::Loader Loader;
+  Loader.load(Handler, Layer);
+  LayerContainer &Container = Layer.getLayerContainer();
+  auto &Table = Container.getTableReferenceToInit();
 
-  std::unordered_map<real*, real*> idofs_address_registery{};
-  size_t idofs_address_counter = 0;
+  std::unordered_map<real *, real *> IDofsAddressRegistery{};
+  size_t IDofsAddressCounter = 0;
 
   // get base pointers for the temp. memory
-  real* idofs_scratch_mem = static_cast<real*>(layer.scratch_mem(handler.idofs_scratch));
+  real *IDofsScratchMem = static_cast<real *>(Layer.scratch_mem(Handler.idofs_scratch));
 
-  real* (*faceNeighbors)[4] = layer.var(handler.faceNeighbors);
+  real *(*FaceNeighbors)[4] = Layer.var(Handler.faceNeighbors);
 
   {
-    if (layer.getNumberOfCells()) {
-      std::vector<real *> lts_idofs_ptrs{};
-      std::vector<real *> lts_derivatives_ptrs{};
+    if (Layer.getNumberOfCells()) {
+      std::vector<real *> LtsIDofsPtrs{};
+      std::vector<real *> LtsDerivativesPtrs{};
 
-      std::vector<real *> gts_derivatives_ptrs{};
-      std::vector<real *> gts_idofs_ptrs{};
+      std::vector<real *> GtsDerivativesPtrs{};
+      std::vector<real *> GtsIDofsPtrs{};
 
-      for (unsigned cell = 0; cell < layer.getNumberOfCells(); ++cell) {
-        auto data = loader.entry(cell);
+      for (unsigned Cell = 0; Cell < Layer.getNumberOfCells(); ++Cell) {
+        auto Data = Loader.entry(Cell);
 
-        for (unsigned face = 0; face < 4; ++face) {
-          real *neighbour_buffer = faceNeighbors[cell][face];
+        for (unsigned Face = 0; Face < 4; ++Face) {
+          real *NeighbourBuffer = FaceNeighbors[Cell][Face];
 
           // check whether a neighbour element idofs has not been counted twice
-          if ((idofs_address_registery.find(neighbour_buffer) == idofs_address_registery.end())) {
+          if ((IDofsAddressRegistery.find(NeighbourBuffer) == IDofsAddressRegistery.end())) {
 
             // maybe, because of BCs, a pointer can be a nullptr, i.e. skip it
-            if (neighbour_buffer != nullptr) {
+            if (NeighbourBuffer != nullptr) {
 
-              if(data.cellInformation.faceTypes[face] != outflow && data.cellInformation.faceTypes[face] != dynamicRupture) {
+              if (Data.cellInformation.faceTypes[Face] != outflow &&
+                  Data.cellInformation.faceTypes[Face] != dynamicRupture) {
 
-                bool l_NeighbProvidesDerivatives = ((data.cellInformation.ltsSetup >> face) % 2) == 1;
+                bool IsNeighbProvidesDerivatives = ((Data.cellInformation.ltsSetup >> Face) % 2) == 1;
 
-                if (l_NeighbProvidesDerivatives) {
-                  real *next_temp_idofs_ptr = &idofs_scratch_mem[idofs_address_counter];
+                if (IsNeighbProvidesDerivatives) {
+                  real *NextTempIDofsPtr = &IDofsScratchMem[IDofsAddressCounter];
 
-                  bool l_isGtsNeigbour = ((data.cellInformation.ltsSetup >> (face + 4)) % 2) == 1;
-                  if (l_isGtsNeigbour) {
+                  bool IsGtsNeigbour = ((Data.cellInformation.ltsSetup >> (Face + 4)) % 2) == 1;
+                  if (IsGtsNeigbour) {
 
-                    idofs_address_registery[neighbour_buffer] = next_temp_idofs_ptr;
-                    gts_idofs_ptrs.push_back(next_temp_idofs_ptr);
-                    gts_derivatives_ptrs.push_back(neighbour_buffer);
+                    IDofsAddressRegistery[NeighbourBuffer] = NextTempIDofsPtr;
+                    GtsIDofsPtrs.push_back(NextTempIDofsPtr);
+                    GtsDerivativesPtrs.push_back(NeighbourBuffer);
 
                   } else {
-                    idofs_address_registery[neighbour_buffer] = next_temp_idofs_ptr;
-                    lts_idofs_ptrs.push_back(next_temp_idofs_ptr);
-                    lts_derivatives_ptrs.push_back(neighbour_buffer);
+                    IDofsAddressRegistery[NeighbourBuffer] = NextTempIDofsPtr;
+                    LtsIDofsPtrs.push_back(NextTempIDofsPtr);
+                    LtsDerivativesPtrs.push_back(NeighbourBuffer);
                   }
-                  idofs_address_counter += tensor::I::size();
+                  IDofsAddressCounter += tensor::I::size();
                 } else {
-                  idofs_address_registery[neighbour_buffer] = neighbour_buffer;
+                  IDofsAddressRegistery[NeighbourBuffer] = NeighbourBuffer;
                 }
               }
             }
@@ -70,136 +71,128 @@ void NeighbIntegrationRecorder::record(seissol::initializers::LTS &handler, seis
       }
 
       // step 1: time evaluation of dofs
-      if (!gts_idofs_ptrs.empty()) {
-        ConditionalKey key(*KernelNames::neighbor_flux,
-                           *ComputationKind::with_gts_derivatives);
-        checkKey(table, key);
-        table[key].container[*VariableID::derivatives] = new DevicePointers(gts_derivatives_ptrs);
-        table[key].container[*VariableID::idofs] = new DevicePointers(gts_idofs_ptrs);
-        table[key].set_not_empty_flag();
+      if (!GtsIDofsPtrs.empty()) {
+        ConditionalKey Key(*KernelNames::neighbor_flux, *ComputationKind::with_gts_derivatives);
+        checkKey(Table, Key);
+        Table[Key].m_Container[*VariableID::derivatives] = new DevicePointers(GtsDerivativesPtrs);
+        Table[Key].m_Container[*VariableID::idofs] = new DevicePointers(GtsIDofsPtrs);
+        Table[Key].setNotEmpty();
       }
 
-      if (!lts_idofs_ptrs.empty()) {
-        ConditionalKey key(*KernelNames::neighbor_flux,
-                           *ComputationKind::with_lts_derivatives);
-        checkKey(table, key);
-        table[key].container[*VariableID::derivatives] = new DevicePointers(lts_derivatives_ptrs);
-        table[key].container[*VariableID::idofs] = new DevicePointers(lts_idofs_ptrs);
-        table[key].set_not_empty_flag();
+      if (!LtsIDofsPtrs.empty()) {
+        ConditionalKey Key(*KernelNames::neighbor_flux, *ComputationKind::with_lts_derivatives);
+        checkKey(Table, Key);
+        Table[Key].m_Container[*VariableID::derivatives] = new DevicePointers(LtsDerivativesPtrs);
+        Table[Key].m_Container[*VariableID::idofs] = new DevicePointers(LtsIDofsPtrs);
+        Table[Key].setNotEmpty();
       }
     }
   }
 
-  std::array<std::vector<real*>[*FaceRelations::Count], *FaceId::Count> regular_periodic_dofs{};
-  std::array<std::vector<real*>[*FaceRelations::Count], *FaceId::Count> regular_periodic_idofs{};
-  std::array<std::vector<real*>[*FaceRelations::Count], *FaceId::Count> regular_periodic_AminusT{};
+  std::array<std::vector<real *>[*FaceRelations::Count], *FaceId::Count> RegularPeriodicDofs {};
+  std::array<std::vector<real *>[*FaceRelations::Count], *FaceId::Count> RegularPeriodicIDofs {};
+  std::array<std::vector<real *>[*FaceRelations::Count], *FaceId::Count> RegularPeriodicAminusT {};
 
+  std::vector<real *> FreeSurfaceDofs[*FaceId::Count];
+  std::vector<real *> FreeSurfaceIDofs[*FaceId::Count];
+  std::vector<real *> FreeSurfaceAminusT[*FaceId::Count];
 
-  std::vector<real*> freeSurface_dofs[*FaceId::Count];
-  std::vector<real*> freeSurface_idofs[*FaceId::Count];
-  std::vector<real*> freeSurface_AminusT[*FaceId::Count];
+  std::array<std::vector<real *>[*DrFaceRelations::Count], *FaceId::Count> DrDofs {};
+  std::array<std::vector<real *>[*DrFaceRelations::Count], *FaceId::Count> DrGodunov {};
+  std::array<std::vector<real *>[*DrFaceRelations::Count], *FaceId::Count> DrFluxSolver {};
 
-  std::array<std::vector<real*>[*DrFaceRelations::Count], *FaceId::Count> dr_dofs{};
-  std::array<std::vector<real*>[*DrFaceRelations::Count], *FaceId::Count> dr_godunov{};
-  std::array<std::vector<real*>[*DrFaceRelations::Count], *FaceId::Count> dr_flux_solver{};
-
-  CellDRMapping (*drMapping)[4] = layer.var(handler.drMapping);
+  CellDRMapping(*DrMapping)[4] = Layer.var(Handler.drMapping);
 
   // step 2: evaluation of neighbour flux integrals
-  //auto neighbour_data = loader.entry(data.cellInformation.faceNeighborIds[face]);
-  for (unsigned cell = 0; cell < layer.getNumberOfCells(); ++cell) {
-    auto data = loader.entry(cell);
-    for(unsigned int face = 0; face < 4; face++) {
+  // auto neighbour_data = Loader.entry(data.cellInformation.faceNeighborIds[face]);
+  for (unsigned Cell = 0; Cell < Layer.getNumberOfCells(); ++Cell) {
+    auto Data = Loader.entry(Cell);
+    for (unsigned int Face = 0; Face < 4; Face++) {
 
-      real *neighbour_buffer_ptr = faceNeighbors[cell][face];
+      real *NeighbourBufferPtr = FaceNeighbors[Cell][Face];
       // maybe, because of BCs, a pointer can be a nullptr, i.e. skip it
-      if (neighbour_buffer_ptr != nullptr) {
+      if (NeighbourBufferPtr != nullptr) {
 
-        switch (data.cellInformation.faceTypes[face]) {
-          case regular:
-            // Fallthrough intended
-          case periodic: {
-            // compute face type relation
-            unsigned face_relation = data.cellInformation.faceRelations[face][1]
-                                     + 3 * data.cellInformation.faceRelations[face][0]
-                                     + 12 * face;
+        switch (Data.cellInformation.faceTypes[Face]) {
+        case regular:
+          // Fallthrough intended
+        case periodic: {
+          // compute face type relation
+          unsigned FaceRelation =
+              Data.cellInformation.faceRelations[Face][1] + 3 * Data.cellInformation.faceRelations[Face][0] + 12 * Face;
 
-            assert((*FaceRelations::Count) > face_relation &&
-                   "ERROR::BINNING::NEIGB.::reg./period. incorrect face ralation count has been detected");
+          assert((*FaceRelations::Count) > FaceRelation &&
+                 "ERROR::BINNING::NEIGB.::reg./period. incorrect face ralation count has been "
+                 "detected");
 
-            regular_periodic_dofs[face][face_relation].push_back(static_cast<real*>(data.dofs));
-            regular_periodic_idofs[face][face_relation].push_back(idofs_address_registery[neighbour_buffer_ptr]);
-            regular_periodic_AminusT[face][face_relation].push_back(static_cast<real*>(data.neighboringIntegrationDevice.nAmNm1[face]));
-            break;
-          }
-          case freeSurface: {
-            freeSurface_dofs[face].push_back(static_cast<real*>(data.dofs));
-            freeSurface_idofs[face].push_back(idofs_address_registery[neighbour_buffer_ptr]);
-            freeSurface_AminusT[face].push_back(static_cast<real*>(data.neighboringIntegrationDevice.nAmNm1[face]));
-            break;
-          }
-          case dynamicRupture: {
-            unsigned face_relation = drMapping[cell][face].side + 4 * drMapping[cell][face].faceRelation;
-            assert((*DrFaceRelations::Count) > face_relation &&
-                   "ERROR::BINNING::NEIGB.::dyn. rupture incorrect face ralation count has been detected");
+          RegularPeriodicDofs[Face][FaceRelation].push_back(static_cast<real *>(Data.dofs));
+          RegularPeriodicIDofs[Face][FaceRelation].push_back(IDofsAddressRegistery[NeighbourBufferPtr]);
+          RegularPeriodicAminusT[Face][FaceRelation].push_back(
+              static_cast<real *>(Data.neighboringIntegrationDevice.nAmNm1[Face]));
+          break;
+        }
+        case freeSurface: {
+          FreeSurfaceDofs[Face].push_back(static_cast<real *>(Data.dofs));
+          FreeSurfaceIDofs[Face].push_back(IDofsAddressRegistery[NeighbourBufferPtr]);
+          FreeSurfaceAminusT[Face].push_back(static_cast<real *>(Data.neighboringIntegrationDevice.nAmNm1[Face]));
+          break;
+        }
+        case dynamicRupture: {
+          unsigned face_relation = DrMapping[Cell][Face].side + 4 * DrMapping[Cell][Face].faceRelation;
+          assert((*DrFaceRelations::Count) > face_relation &&
+                 "ERROR::BINNING::NEIGB.::dyn. rupture incorrect face ralation count has been "
+                 "detected");
 
-            dr_dofs[face][face_relation].push_back(static_cast<real*>(data.dofs));
-            dr_godunov[face][face_relation].push_back(drMapping[cell][face].godunov);
-            dr_flux_solver[face][face_relation].push_back(drMapping[cell][face].fluxSolver);
+          DrDofs[Face][face_relation].push_back(static_cast<real *>(Data.dofs));
+          DrGodunov[Face][face_relation].push_back(DrMapping[Cell][Face].godunov);
+          DrFluxSolver[Face][face_relation].push_back(DrMapping[Cell][Face].fluxSolver);
 
-            break;
-          }
-          case outflow:
-            break;
-          default: {
-            std::cout << "condition::" << data.cellInformation.faceTypes[face] << std::endl;
-            throw std::string("ERROR::unknown boundary condition");
-          }
+          break;
+        }
+        case outflow:
+          break;
+        default: {
+          std::cout << "condition::" << Data.cellInformation.faceTypes[Face] << std::endl;
+          throw std::string("ERROR::unknown boundary condition");
+        }
         }
       }
     }
   }
 
-  for(unsigned int face = 0; face < 4; face++) {
+  for (unsigned int Face = 0; Face < 4; Face++) {
     // regular and periodic
-    for (unsigned face_relation = 0; face_relation < (*FaceRelations::Count); ++face_relation) {
-      if (!regular_periodic_dofs[face][face_relation].empty()) {
-        ConditionalKey key(*KernelNames::neighbor_flux,
-                           (FaceKinds::regular || FaceKinds::periodic),
-                           face,
-                           face_relation);
-        checkKey(table, key);
+    for (unsigned FaceRelation = 0; FaceRelation < (*FaceRelations::Count); ++FaceRelation) {
+      if (!RegularPeriodicDofs[Face][FaceRelation].empty()) {
+        ConditionalKey Key(
+            *KernelNames::neighbor_flux, (FaceKinds::regular || FaceKinds::periodic), Face, FaceRelation);
+        checkKey(Table, Key);
 
-        table[key].container[*VariableID::idofs] = new DevicePointers(regular_periodic_idofs[face][face_relation]);
-        table[key].container[*VariableID::dofs] = new DevicePointers(regular_periodic_dofs[face][face_relation]);
-        table[key].container[*VariableID::AminusT] = new DevicePointers(regular_periodic_AminusT[face][face_relation]);
+        Table[Key].m_Container[*VariableID::idofs] = new DevicePointers(RegularPeriodicIDofs[Face][FaceRelation]);
+        Table[Key].m_Container[*VariableID::dofs] = new DevicePointers(RegularPeriodicDofs[Face][FaceRelation]);
+        Table[Key].m_Container[*VariableID::AminusT] = new DevicePointers(RegularPeriodicAminusT[Face][FaceRelation]);
       }
     }
 
     // free surface
-    if (!freeSurface_dofs[face].empty()) {
-      ConditionalKey key(*KernelNames::neighbor_flux,
-                         *FaceKinds::freeSurface,
-                         face);
-      checkKey(table, key);
+    if (!FreeSurfaceDofs[Face].empty()) {
+      ConditionalKey Key(*KernelNames::neighbor_flux, *FaceKinds::freeSurface, Face);
+      checkKey(Table, Key);
 
-      table[key].container[*VariableID::idofs] = new DevicePointers(freeSurface_idofs[face]);
-      table[key].container[*VariableID::dofs] = new DevicePointers(freeSurface_dofs[face]);
-      table[key].container[*VariableID::AminusT] = new DevicePointers(freeSurface_AminusT[face]);
+      Table[Key].m_Container[*VariableID::idofs] = new DevicePointers(FreeSurfaceIDofs[Face]);
+      Table[Key].m_Container[*VariableID::dofs] = new DevicePointers(FreeSurfaceDofs[Face]);
+      Table[Key].m_Container[*VariableID::AminusT] = new DevicePointers(FreeSurfaceAminusT[Face]);
     }
 
     // dynamic rupture
-    for (unsigned face_relation = 0; face_relation < (*DrFaceRelations::Count); ++face_relation) {
-      if (!dr_dofs[face][face_relation].empty()) {
-        ConditionalKey key(*KernelNames::neighbor_flux,
-                           *FaceKinds::dynamicRupture,
-                           face,
-                           face_relation);
-        checkKey(table, key);
+    for (unsigned FaceRelation = 0; FaceRelation < (*DrFaceRelations::Count); ++FaceRelation) {
+      if (!DrDofs[Face][FaceRelation].empty()) {
+        ConditionalKey Key(*KernelNames::neighbor_flux, *FaceKinds::dynamicRupture, Face, FaceRelation);
+        checkKey(Table, Key);
 
-        table[key].container[*VariableID::dofs] = new DevicePointers(dr_dofs[face][face_relation]);
-        table[key].container[*VariableID::godunov] = new DevicePointers(dr_godunov[face][face_relation]);
-        table[key].container[*VariableID::fluxSolver] = new DevicePointers(dr_flux_solver[face][face_relation]);
+        Table[Key].m_Container[*VariableID::dofs] = new DevicePointers(DrDofs[Face][FaceRelation]);
+        Table[Key].m_Container[*VariableID::godunov] = new DevicePointers(DrGodunov[Face][FaceRelation]);
+        Table[Key].m_Container[*VariableID::fluxSolver] = new DevicePointers(DrFluxSolver[Face][FaceRelation]);
       }
     }
   }

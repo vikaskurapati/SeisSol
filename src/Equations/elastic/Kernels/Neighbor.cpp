@@ -193,11 +193,11 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
       if(table.find(key) != table.end()) {
         PointersTable &entry = table[key];
 
-        nfKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
+        nfKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
 
-        nfKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
-        nfKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
-        nfKrnl.AminusT = const_cast<const real **>((entry.container[*VariableID::AminusT])->get_pointers());
+        nfKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
+        nfKrnl.I = const_cast<const real **>((entry.m_Container[*VariableID::idofs])->getPointers());
+        nfKrnl.AminusT = const_cast<const real **>((entry.m_Container[*VariableID::AminusT])->getPointers());
 
         int k = (face_relation / 12);
         int j = (face_relation - 12 * k) / 4;
@@ -216,10 +216,10 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
     if(table.find(key) != table.end()) {
       PointersTable &entry = table[key];
 
-      lfKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
-      lfKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
-      lfKrnl.I = const_cast<const real **>((entry.container[*VariableID::idofs])->get_pointers());
-      lfKrnl.AplusT = const_cast<const real **>((entry.container[*VariableID::AminusT])->get_pointers());
+      lfKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
+      lfKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
+      lfKrnl.I = const_cast<const real **>((entry.m_Container[*VariableID::idofs])->getPointers());
+      lfKrnl.AplusT = const_cast<const real **>((entry.m_Container[*VariableID::AminusT])->getPointers());
 
       lfKrnl.execute(face);
     }
@@ -235,10 +235,10 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
       if(table.find(key) != table.end()) {
         PointersTable &entry = table[key];
 
-        drKrnl.num_elements = (entry.container[*VariableID::dofs])->get_size();
-        drKrnl.fluxSolver = const_cast<const real **>((entry.container[*VariableID::fluxSolver])->get_pointers());
-        drKrnl.godunovState = const_cast<const real **>((entry.container[*VariableID::godunov])->get_pointers());
-        drKrnl.Q = (entry.container[*VariableID::dofs])->get_pointers();
+        drKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
+        drKrnl.fluxSolver = const_cast<const real **>((entry.m_Container[*VariableID::fluxSolver])->getPointers());
+        drKrnl.godunovState = const_cast<const real **>((entry.m_Container[*VariableID::godunov])->getPointers());
+        drKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
 
         int j = (face_relation / 4);
         int i = face_relation - 4 * j;

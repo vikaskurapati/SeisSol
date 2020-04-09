@@ -4,6 +4,7 @@
 #include "specific_types.h"
 #include <limits>
 #include <utility>
+#include <functional>
 
 namespace seissol {
   namespace initializers {

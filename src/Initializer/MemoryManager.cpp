@@ -72,6 +72,7 @@
 #include "InternalState.h"
 #include "GlobalData.h"
 #include <yateto.h>
+#include <unordered_set>
 
 #include <Kernels/common.hpp>
 #include <generated_code/tensor.h>

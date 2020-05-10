@@ -1,27 +1,26 @@
-#ifndef DEVICE_GEN_CODE_DEVICE_KERNEL_H_
-#define DEVICE_GEN_CODE_DEVICE_KERNEL_H_
+#ifndef DEVICE_GEN_CODE_KERNEL_H_
+#define DEVICE_GEN_CODE_KERNEL_H_
 #include <cmath>
 #include <limits>
 #include "tensor.h"
-#include <stdlib.h>
 using namespace seissol;
+
 namespace device_gen_code {
   namespace kernel {
     struct volume {
       constexpr static unsigned long const NonZeroFlops = 34839;
-      constexpr static unsigned long const HardwareFlops = 125280;
+      constexpr static unsigned long const HardwareFlops = 144288;
 
       float const** I{};
       float** Q{};
       tensor::kDivM::Container<float const*> kDivM;
       tensor::star::Container<float const**> star;
 
-      unsigned I_offset{};
-      unsigned Q_offset{};
-      tensor::kDivM::Container<unsigned> kDivM_offset;
-      tensor::star::Container<unsigned> star_offset;
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_I{};
+      int ExtraOffset_Q{};
+      tensor::kDivM::Container<int> ExtraOffset_kDivM;
+      tensor::star::Container<int> ExtraOffset_star;
 
       void execute();
     };
@@ -35,11 +34,10 @@ namespace device_gen_code {
       float const** Tinv{};
       float** godunovMatrix{};
 
-      unsigned QgodLocal_offset{};
-      unsigned Tinv_offset{};
-      unsigned godunovMatrix_offset{};
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_QgodLocal{};
+      int ExtraOffset_Tinv{};
+      int ExtraOffset_godunovMatrix{};
 
       void execute();
     };
@@ -53,11 +51,10 @@ namespace device_gen_code {
       float const** Tinv{};
       float** godunovMatrix{};
 
-      unsigned QgodNeighbor_offset{};
-      unsigned Tinv_offset{};
-      unsigned godunovMatrix_offset{};
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_QgodNeighbor{};
+      int ExtraOffset_Tinv{};
+      int ExtraOffset_godunovMatrix{};
 
       void execute();
     };
@@ -72,11 +69,10 @@ namespace device_gen_code {
       float** fluxSolver{};
       tensor::star::Container<float const**> star;
 
-      unsigned T_offset{};
-      unsigned fluxSolver_offset{};
-      tensor::star::Container<unsigned> star_offset;
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_T{};
+      int ExtraOffset_fluxSolver{};
+      tensor::star::Container<int> ExtraOffset_star;
 
       void execute();
     };
@@ -84,35 +80,33 @@ namespace device_gen_code {
   namespace kernel {
     struct plConvertToNodal {
       constexpr static unsigned long const NonZeroFlops = 33048;
-      constexpr static unsigned long const HardwareFlops = 37632;
+      constexpr static unsigned long const HardwareFlops = 43008;
 
       float const** QStress{};
       float** QStressNodal{};
       float const* v{};
 
-      unsigned QStress_offset{};
-      unsigned QStressNodal_offset{};
-      unsigned v_offset{};
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_QStress{};
+      int ExtraOffset_QStressNodal{};
+      int ExtraOffset_v{};
 
       void execute();
     };
   }
   namespace kernel {
     struct plConvertToModal {
-      constexpr static unsigned long const NonZeroFlops = 31140;
-      constexpr static unsigned long const HardwareFlops = 37632;
+      constexpr static unsigned long const NonZeroFlops = 31476;
+      constexpr static unsigned long const HardwareFlops = 43008;
 
       float** QStress{};
       float const** QStressNodal{};
       float const* vInv{};
 
-      unsigned QStress_offset{};
-      unsigned QStressNodal_offset{};
-      unsigned vInv_offset{};
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_QStress{};
+      int ExtraOffset_QStressNodal{};
+      int ExtraOffset_vInv{};
 
       void execute();
     };
@@ -120,7 +114,7 @@ namespace device_gen_code {
   namespace kernel {
     struct localFlux {
       constexpr static unsigned long const NonZeroFlops[] = {9936, 10080, 31968, 27216};
-      constexpr static unsigned long const HardwareFlops[] = {49248, 49248, 49248, 49248};
+      constexpr static unsigned long const HardwareFlops[] = {61632, 61632, 61632, 61632};
 
       float const** AplusT{};
       float const** I{};
@@ -128,13 +122,12 @@ namespace device_gen_code {
       tensor::fMrT::Container<float const*> fMrT;
       tensor::rDivM::Container<float const*> rDivM;
 
-      unsigned AplusT_offset{};
-      unsigned I_offset{};
-      unsigned Q_offset{};
-      tensor::fMrT::Container<unsigned> fMrT_offset;
-      tensor::rDivM::Container<unsigned> rDivM_offset;
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_AplusT{};
+      int ExtraOffset_I{};
+      int ExtraOffset_Q{};
+      tensor::fMrT::Container<int> ExtraOffset_fMrT;
+      tensor::rDivM::Container<int> ExtraOffset_rDivM;
 
       struct Prefetch {
         float const** I{};
@@ -165,7 +158,7 @@ namespace device_gen_code {
   namespace kernel {
     struct neighboringFlux {
       constexpr static unsigned long const NonZeroFlops[] = {11349, 10125, 11349, 11421, 10197, 11421, 22365, 21141, 22365, 19989, 18765, 19989, 11421, 10197, 11421, 11493, 10269, 11493, 22437, 21213, 22437, 20061, 18837, 20061, 22365, 21141, 22365, 22437, 21213, 22437, 33381, 32157, 33381, 31005, 29781, 31005, 19989, 18765, 19989, 20061, 18837, 20061, 31005, 29781, 31005, 28629, 27405, 28629};
-      constexpr static unsigned long const HardwareFlops[] = {58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320};
+      constexpr static unsigned long const HardwareFlops[] = {73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728};
 
       float const** AminusT{};
       float const** I{};
@@ -174,14 +167,13 @@ namespace device_gen_code {
       tensor::rDivM::Container<float const*> rDivM;
       tensor::rT::Container<float const*> rT;
 
-      unsigned AminusT_offset{};
-      unsigned I_offset{};
-      unsigned Q_offset{};
-      tensor::fP::Container<unsigned> fP_offset;
-      tensor::rDivM::Container<unsigned> rDivM_offset;
-      tensor::rT::Container<unsigned> rT_offset;
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_AminusT{};
+      int ExtraOffset_I{};
+      int ExtraOffset_Q{};
+      tensor::fP::Container<int> ExtraOffset_fP;
+      tensor::rDivM::Container<int> ExtraOffset_rDivM;
+      tensor::rT::Container<int> ExtraOffset_rT;
 
       struct Prefetch {
         float const** I{};
@@ -255,16 +247,15 @@ namespace device_gen_code {
   namespace kernel {
     struct derivativeTaylorExpansion {
       constexpr static unsigned long const NonZeroFlops[] = {504, 630, 360, 180, 72, 18};
-      constexpr static unsigned long const HardwareFlops[] = {0, 0, 0, 0, 0, 0};
+      constexpr static unsigned long const HardwareFlops[] = {504, 1008, 1008, 1008, 1008, 1008};
 
       float power = std::numeric_limits<float>::signaling_NaN();
       float** I{};
       tensor::dQ::Container<float const**> dQ;
 
-      unsigned I_offset{};
-      tensor::dQ::Container<unsigned> dQ_offset;
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_I{};
+      tensor::dQ::Container<int> ExtraOffset_dQ;
 
       void execute0();
       void execute1();
@@ -291,17 +282,16 @@ namespace device_gen_code {
   namespace kernel {
     struct derivative {
       constexpr static unsigned long const NonZeroFlops[] = {0, 34524, 13806, 4716, 1260, 216};
-      constexpr static unsigned long const HardwareFlops[] = {0, 136080, 54432, 23328, 7344, 4752};
+      constexpr static unsigned long const HardwareFlops[] = {0, 163296, 72576, 23328, 14688, 9504};
 
       tensor::dQ::Container<float**> dQ;
       tensor::kDivMT::Container<float const*> kDivMT;
       tensor::star::Container<float const**> star;
 
-      tensor::dQ::Container<unsigned> dQ_offset;
-      tensor::kDivMT::Container<unsigned> kDivMT_offset;
-      tensor::star::Container<unsigned> star_offset;
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      tensor::dQ::Container<int> ExtraOffset_dQ;
+      tensor::kDivMT::Container<int> ExtraOffset_kDivMT;
+      tensor::star::Container<int> ExtraOffset_star;
 
       void execute1();
       void execute2();
@@ -327,19 +317,18 @@ namespace device_gen_code {
   namespace kernel {
     struct godunovState {
       constexpr static unsigned long const NonZeroFlops[] = {53676, 56448, 56448, 56448, 56889, 54117, 56889, 56889, 56889, 56889, 56889, 56889, 54117, 56889, 56889, 56889};
-      constexpr static unsigned long const HardwareFlops[] = {65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520};
+      constexpr static unsigned long const HardwareFlops[] = {74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880};
 
       float const** Q{};
       tensor::V3mTo2n::Container<float const*> V3mTo2n;
       float const** godunovMatrix{};
       float** godunovState{};
 
-      unsigned Q_offset{};
-      tensor::V3mTo2n::Container<unsigned> V3mTo2n_offset;
-      unsigned godunovMatrix_offset{};
-      unsigned godunovState_offset{};
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_Q{};
+      tensor::V3mTo2n::Container<int> ExtraOffset_V3mTo2n;
+      int ExtraOffset_godunovMatrix{};
+      int ExtraOffset_godunovState{};
 
       struct Prefetch {
         float const** godunovState{};
@@ -381,19 +370,18 @@ namespace device_gen_code {
   namespace kernel {
     struct nodalFlux {
       constexpr static unsigned long const NonZeroFlops[] = {54117, 56889, 56889, 56889, 56889, 54117, 56889, 56889, 56889, 56889, 56889, 56889, 54117, 56889, 56889, 56889};
-      constexpr static unsigned long const HardwareFlops[] = {58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464};
+      constexpr static unsigned long const HardwareFlops[] = {66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816};
 
       float** Q{};
       tensor::V3mTo2nTWDivM::Container<float const*> V3mTo2nTWDivM;
       float const** fluxSolver{};
       float const** godunovState{};
 
-      unsigned Q_offset{};
-      tensor::V3mTo2nTWDivM::Container<unsigned> V3mTo2nTWDivM_offset;
-      unsigned fluxSolver_offset{};
-      unsigned godunovState_offset{};
-
-      size_t num_elements{};
+      size_t NumElements = 0;
+      int ExtraOffset_Q{};
+      tensor::V3mTo2nTWDivM::Container<int> ExtraOffset_V3mTo2nTWDivM;
+      int ExtraOffset_fluxSolver{};
+      int ExtraOffset_godunovState{};
 
       struct Prefetch {
         float const** I{};

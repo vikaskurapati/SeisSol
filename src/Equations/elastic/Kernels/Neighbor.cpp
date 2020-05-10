@@ -193,7 +193,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
       if(table.find(key) != table.end()) {
         PointersTable &entry = table[key];
 
-        nfKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
+        nfKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
 
         nfKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
         nfKrnl.I = const_cast<const real **>((entry.m_Container[*VariableID::idofs])->getPointers());
@@ -216,7 +216,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
     if(table.find(key) != table.end()) {
       PointersTable &entry = table[key];
 
-      lfKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
+      lfKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
       lfKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
       lfKrnl.I = const_cast<const real **>((entry.m_Container[*VariableID::idofs])->getPointers());
       lfKrnl.AplusT = const_cast<const real **>((entry.m_Container[*VariableID::AminusT])->getPointers());
@@ -235,7 +235,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
       if(table.find(key) != table.end()) {
         PointersTable &entry = table[key];
 
-        drKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
+        drKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
         drKrnl.fluxSolver = const_cast<const real **>((entry.m_Container[*VariableID::fluxSolver])->getPointers());
         drKrnl.godunovState = const_cast<const real **>((entry.m_Container[*VariableID::godunov])->getPointers());
         drKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();

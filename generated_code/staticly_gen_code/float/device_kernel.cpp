@@ -16,61 +16,25 @@ namespace device_gen_code {
     assert(star(2) != nullptr);
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
-    assert(kernel::volume::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float *d_buffer0 = (float*)device.api->getStackMemory(360 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_I = I_offset;
-    unsigned offset_star = star_offset(0);
-    unsigned offset__tmp0 = 360;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 9, 1.0, I, 56, star(0), 9, 0.0, _tmp0, 40, offset_I, offset_star, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_kDivM = 0;
-    unsigned offset__tmp0 = 360;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 35, 1.0, kDivM(0), 56, _tmp0, 40, 1.0, Q, 56, offset_kDivM, offset__tmp0, offset_Q, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset_I = I_offset;
-    unsigned offset_star = star_offset(1);
-    unsigned offset__tmp2 = 360;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 9, 1.0, I, 56, star(1), 9, 0.0, _tmp2, 40, offset_I, offset_star, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_kDivM = 0;
-    unsigned offset__tmp2 = 360;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 35, 1.0, kDivM(1), 56, _tmp2, 40, 1.0, Q, 56, offset_kDivM, offset__tmp2, offset_Q, num_elements);
-    }
-    _tmp4 = d_buffer0;
-    {
-    unsigned offset_I = I_offset;
-    unsigned offset_star = star_offset(2);
-    unsigned offset__tmp4 = 360;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 9, 1.0, I, 56, star(2), 9, 0.0, _tmp4, 40, offset_I, offset_star, offset__tmp4, num_elements);
-    }
-    {
-    unsigned offset_kDivM = 0;
-    unsigned offset__tmp4 = 360;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 35, 1.0, kDivM(2), 56, _tmp4, 40, 1.0, Q, 56, offset_kDivM, offset__tmp4, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 432);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(0)), ExtraOffset_star(0), _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m53_64_n9_48_k35_nsp_49df72e(const_cast<const float *>(kDivM(0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(1)), ExtraOffset_star(1), _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m54_64_n9_48_k35_nsp_13f0270(const_cast<const float *>(kDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    _tmp4 = _buffer0;
+
+    sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(2)), ExtraOffset_star(2), _tmp4, 0, NumElements);
+
+    sgemm_NT_NT_m55_64_n9_48_k35_nsp_6daa8d7(const_cast<const float *>(kDivM(2)), 0, const_cast<const float *>(_tmp4), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   constexpr unsigned long const kernel::rotateGodunovStateLocal::NonZeroFlops;
@@ -79,16 +43,10 @@ namespace device_gen_code {
     assert(QgodLocal != nullptr);
     assert(Tinv != nullptr);
     assert(godunovMatrix != nullptr);
-    assert(kernel::rotateGodunovStateLocal::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    {
-    unsigned offset_Tinv = Tinv_offset;
-    unsigned offset_QgodLocal = QgodLocal_offset;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    
-    
-    device.gemm(device::ColMajor, device::Trans, device::NoTrans, 9, 9, 9, 1.0, Tinv, 9, QgodLocal, 9, 0.0, godunovMatrix, 9, offset_Tinv, offset_QgodLocal, offset_godunovMatrix, num_elements);
-    }
+
+    sgemm_T_NT_m9_9_n9_9_k9_ppp_db79476(const_cast<const float **>(Tinv), ExtraOffset_Tinv, const_cast<const float **>(QgodLocal), ExtraOffset_QgodLocal, godunovMatrix, ExtraOffset_godunovMatrix, NumElements);
   }
   constexpr unsigned long const kernel::rotateGodunovStateNeighbor::NonZeroFlops;
   constexpr unsigned long const kernel::rotateGodunovStateNeighbor::HardwareFlops;
@@ -96,16 +54,10 @@ namespace device_gen_code {
     assert(QgodNeighbor != nullptr);
     assert(Tinv != nullptr);
     assert(godunovMatrix != nullptr);
-    assert(kernel::rotateGodunovStateNeighbor::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    {
-    unsigned offset_Tinv = Tinv_offset;
-    unsigned offset_QgodNeighbor = QgodNeighbor_offset;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    
-    
-    device.gemm(device::ColMajor, device::Trans, device::NoTrans, 9, 9, 9, 1.0, Tinv, 9, QgodNeighbor, 9, 0.0, godunovMatrix, 9, offset_Tinv, offset_QgodNeighbor, offset_godunovMatrix, num_elements);
-    }
+
+    sgemm_T_NT_m9_9_n9_9_k9_ppp_db79476(const_cast<const float **>(Tinv), ExtraOffset_Tinv, const_cast<const float **>(QgodNeighbor), ExtraOffset_QgodNeighbor, godunovMatrix, ExtraOffset_godunovMatrix, NumElements);
   }
   constexpr unsigned long const kernel::rotateFluxMatrix::NonZeroFlops;
   constexpr unsigned long const kernel::rotateFluxMatrix::HardwareFlops;
@@ -114,16 +66,10 @@ namespace device_gen_code {
     assert(T != nullptr);
     assert(fluxSolver != nullptr);
     assert(star(0) != nullptr);
-    assert(kernel::rotateFluxMatrix::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    {
-    unsigned offset_star = star_offset(0);
-    unsigned offset_T = T_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::Trans, 9, 9, 9, fluxScale, star(0), 9, T, 9, 0.0, fluxSolver, 9, offset_star, offset_T, offset_fluxSolver, num_elements);
-    }
+
+    sgemm_NT_T_m9_9_n9_9_k9_ppp_0c970c0(fluxScale, const_cast<const float **>(star(0)), ExtraOffset_star(0), const_cast<const float **>(T), ExtraOffset_T, fluxSolver, ExtraOffset_fluxSolver, NumElements);
   }
   constexpr unsigned long const kernel::plConvertToNodal::NonZeroFlops;
   constexpr unsigned long const kernel::plConvertToNodal::HardwareFlops;
@@ -131,16 +77,10 @@ namespace device_gen_code {
     assert(QStress != nullptr);
     assert(QStressNodal != nullptr);
     assert(v != nullptr);
-    assert(kernel::plConvertToNodal::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    {
-    unsigned offset_v = 0;
-    unsigned offset_QStress = QStress_offset;
-    unsigned offset_QStressNodal = QStressNodal_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 6, 56, 1.0, v, 56, QStress, 56, 0.0, QStressNodal, 56, offset_v, offset_QStress, offset_QStressNodal, num_elements);
-    }
+
+    sgemm_NT_NT_m56_64_n6_64_k56_npp_968d18f(const_cast<const float *>(v), 0, const_cast<const float **>(QStress), ExtraOffset_QStress, QStressNodal, ExtraOffset_QStressNodal, NumElements);
   }
   constexpr unsigned long const kernel::plConvertToModal::NonZeroFlops;
   constexpr unsigned long const kernel::plConvertToModal::HardwareFlops;
@@ -148,16 +88,10 @@ namespace device_gen_code {
     assert(QStress != nullptr);
     assert(QStressNodal != nullptr);
     assert(vInv != nullptr);
-    assert(kernel::plConvertToModal::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    {
-    unsigned offset_vInv = 0;
-    unsigned offset_QStressNodal = QStressNodal_offset;
-    unsigned offset_QStress = QStress_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 6, 56, 1.0, vInv, 56, QStressNodal, 56, 1.0, QStress, 56, offset_vInv, offset_QStressNodal, offset_QStress, num_elements);
-    }
+
+    sgemm_NT_NT_m56_64_n6_64_k56_npp_3250429(const_cast<const float *>(vInv), 0, const_cast<const float **>(QStressNodal), ExtraOffset_QStressNodal, QStress, ExtraOffset_QStress, NumElements);
   }
   constexpr unsigned long const kernel::localFlux::NonZeroFlops[];
   constexpr unsigned long const kernel::localFlux::HardwareFlops[];
@@ -168,37 +102,19 @@ namespace device_gen_code {
     assert(Q != nullptr);
     assert(fMrT(0) != nullptr);
     assert(rDivM(0) != nullptr);
-    assert(kernel::localFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_fMrT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, fMrT(0), 24, I, 56, 0.0, _tmp0, 24, offset_fMrT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset__tmp0 = 216;
-    unsigned offset_AplusT = AplusT_offset;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp0, 24, AplusT, 9, 0.0, _tmp1, 24, offset__tmp0, offset_AplusT, offset__tmp1, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp1 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp1, 24, 1.0, Q, 56, offset_rDivM, offset__tmp1, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(fMrT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -208,37 +124,19 @@ namespace device_gen_code {
     assert(Q != nullptr);
     assert(fMrT(1) != nullptr);
     assert(rDivM(1) != nullptr);
-    assert(kernel::localFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_fMrT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, fMrT(1), 24, I, 56, 0.0, _tmp0, 24, offset_fMrT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset__tmp0 = 216;
-    unsigned offset_AplusT = AplusT_offset;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp0, 24, AplusT, 9, 0.0, _tmp1, 24, offset__tmp0, offset_AplusT, offset__tmp1, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp1 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp1, 24, 1.0, Q, 56, offset_rDivM, offset__tmp1, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(fMrT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -248,37 +146,19 @@ namespace device_gen_code {
     assert(Q != nullptr);
     assert(fMrT(2) != nullptr);
     assert(rDivM(2) != nullptr);
-    assert(kernel::localFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_fMrT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, fMrT(2), 24, I, 56, 0.0, _tmp0, 24, offset_fMrT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset__tmp0 = 216;
-    unsigned offset_AplusT = AplusT_offset;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp0, 24, AplusT, 9, 0.0, _tmp1, 24, offset__tmp0, offset_AplusT, offset__tmp1, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp1 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp1, 24, 1.0, Q, 56, offset_rDivM, offset__tmp1, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(fMrT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -288,37 +168,19 @@ namespace device_gen_code {
     assert(Q != nullptr);
     assert(fMrT(3) != nullptr);
     assert(rDivM(3) != nullptr);
-    assert(kernel::localFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_fMrT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, fMrT(3), 24, I, 56, 0.0, _tmp0, 24, offset_fMrT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset__tmp0 = 216;
-    unsigned offset_AplusT = AplusT_offset;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp0, 24, AplusT, 9, 0.0, _tmp1, 24, offset__tmp0, offset_AplusT, offset__tmp1, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp1 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp1, 24, 1.0, Q, 56, offset_rDivM, offset__tmp1, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(fMrT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -332,46 +194,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -382,46 +220,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -432,46 +246,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -482,46 +272,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -532,46 +298,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -582,46 +324,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -632,46 +350,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -682,46 +376,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -732,46 +402,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -782,46 +428,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -832,46 +454,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -882,46 +480,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(0) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(0), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -932,46 +506,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -982,46 +532,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1032,46 +558,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1082,46 +584,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1132,46 +610,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1182,46 +636,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1232,46 +662,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1282,46 +688,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1332,46 +714,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1382,46 +740,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1432,46 +766,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1482,46 +792,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(1) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(1), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1532,46 +818,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1582,46 +844,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1632,46 +870,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1682,46 +896,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1732,46 +922,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1782,46 +948,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1832,46 +974,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1882,46 +1000,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1932,46 +1026,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1982,46 +1052,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2032,46 +1078,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2082,46 +1104,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(2) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(2), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2132,46 +1130,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2182,46 +1156,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2232,46 +1182,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(0) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(0), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2282,46 +1208,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2332,46 +1234,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2382,46 +1260,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(1) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(1), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2432,46 +1286,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2482,46 +1312,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2532,46 +1338,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(2) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(2), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2582,46 +1364,22 @@ namespace device_gen_code {
     assert(fP(0) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(0), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2632,46 +1390,22 @@ namespace device_gen_code {
     assert(fP(1) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(1), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2682,46 +1416,22 @@ namespace device_gen_code {
     assert(fP(2) != nullptr);
     assert(rDivM(3) != nullptr);
     assert(rT(3) != nullptr);
-    assert(kernel::neighboringFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    float *d_buffer1 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_rT = 0;
-    unsigned offset_I = I_offset;
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 56, 1.0, rT(3), 24, I, 56, 0.0, _tmp0, 24, offset_rT, offset_I, offset__tmp0, num_elements);
-    }
-    _tmp1 = d_buffer1;
-    {
-    unsigned offset_fP = 0;
-    unsigned offset__tmp0 = 216;
-    unsigned offset__tmp1 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 21, 1.0, fP(2), 24, _tmp0, 24, 0.0, _tmp1, 24, offset_fP, offset__tmp0, offset__tmp1, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset__tmp1 = 216;
-    unsigned offset_AminusT = AminusT_offset;
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp1, 24, AminusT, 9, 0.0, _tmp2, 24, offset__tmp1, offset_AminusT, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset_rDivM = 0;
-    unsigned offset__tmp2 = 216;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 21, 1.0, rDivM(3), 56, _tmp2, 24, 1.0, Q, 56, offset_rDivM, offset__tmp2, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    _tmp1 = _buffer1;
+
+    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -2732,49 +1442,49 @@ namespace device_gen_code {
     assert(!std::isnan(power));
     assert(I != nullptr);
     assert(dQ(0) != nullptr);
-    assert(kernel::derivativeTaylorExpansion::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    device.copyAddScale(56, 9, power, dQ(0) + 0, 56, 0.0, I + 0, 56, dQ_offset(0), I_offset, num_elements);
+    scopyAddScale_m56_64_n9_64_pp_1869608(power, dQ(0), ExtraOffset_dQ(0), I, ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute1() {
     assert(!std::isnan(power));
     assert(I != nullptr);
     assert(dQ(1) != nullptr);
-    assert(kernel::derivativeTaylorExpansion::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    device.copyAddScale(35, 9, power, dQ(1) + 0, 40, 1.0, I + 0, 56, dQ_offset(1), I_offset, num_elements);
+    scopyAddScale_m35_64_n9_64_pp_8aadec7(power, dQ(1), ExtraOffset_dQ(1), I, ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute2() {
     assert(!std::isnan(power));
     assert(I != nullptr);
     assert(dQ(2) != nullptr);
-    assert(kernel::derivativeTaylorExpansion::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    device.copyAddScale(20, 9, power, dQ(2) + 0, 24, 1.0, I + 0, 56, dQ_offset(2), I_offset, num_elements);
+    scopyAddScale_m20_64_n9_64_pp_f68fa48(power, dQ(2), ExtraOffset_dQ(2), I, ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute3() {
     assert(!std::isnan(power));
     assert(I != nullptr);
     assert(dQ(3) != nullptr);
-    assert(kernel::derivativeTaylorExpansion::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    device.copyAddScale(10, 9, power, dQ(3) + 0, 16, 1.0, I + 0, 56, dQ_offset(3), I_offset, num_elements);
+    scopyAddScale_m10_64_n9_64_pp_5f5bfb7(power, dQ(3), ExtraOffset_dQ(3), I, ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute4() {
     assert(!std::isnan(power));
     assert(I != nullptr);
     assert(dQ(4) != nullptr);
-    assert(kernel::derivativeTaylorExpansion::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    device.copyAddScale(4, 9, power, dQ(4) + 0, 8, 1.0, I + 0, 56, dQ_offset(4), I_offset, num_elements);
+    scopyAddScale_m4_64_n9_64_pp_8b6c4ec(power, dQ(4), ExtraOffset_dQ(4), I, ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute5() {
     assert(!std::isnan(power));
     assert(I != nullptr);
     assert(dQ(5) != nullptr);
-    assert(kernel::derivativeTaylorExpansion::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    device.copyAddScale(1, 9, power, dQ(5) + 0, 8, 1.0, I + 0, 56, dQ_offset(5), I_offset, num_elements);
+    scopyAddScale_m1_64_n9_64_pp_ddfc1ea(power, dQ(5), ExtraOffset_dQ(5), I, ExtraOffset_I, NumElements);
   }
   constexpr unsigned long const kernel::derivative::NonZeroFlops[];
   constexpr unsigned long const kernel::derivative::HardwareFlops[];
@@ -2788,61 +1498,25 @@ namespace device_gen_code {
     assert(star(2) != nullptr);
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
-    assert(kernel::derivative::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float *d_buffer0 = (float*)device.api->getStackMemory(360 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(0);
-    unsigned offset__tmp0 = 360;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 53, 1.0, kDivMT(0), 40, dQ(0), 56, 0.0, _tmp0, 40, offset_kDivMT, offset_dQ + 1, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 360;
-    unsigned offset_star = star_offset(0);
-    unsigned offset_dQ = dQ_offset(1);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 9, 1.0, _tmp0, 40, star(0), 9, 0.0, dQ(1), 40, offset__tmp0, offset_star, offset_dQ, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(0);
-    unsigned offset__tmp2 = 360;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 54, 1.0, kDivMT(1), 40, dQ(0), 56, 0.0, _tmp2, 40, offset_kDivMT, offset_dQ + 1, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset__tmp2 = 360;
-    unsigned offset_star = star_offset(1);
-    unsigned offset_dQ = dQ_offset(1);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 9, 1.0, _tmp2, 40, star(1), 9, 1.0, dQ(1), 40, offset__tmp2, offset_star, offset_dQ, num_elements);
-    }
-    _tmp4 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(0);
-    unsigned offset__tmp4 = 360;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 55, 1.0, kDivMT(2), 40, dQ(0), 56, 0.0, _tmp4, 40, offset_kDivMT, offset_dQ + 1, offset__tmp4, num_elements);
-    }
-    {
-    unsigned offset__tmp4 = 360;
-    unsigned offset_star = star_offset(2);
-    unsigned offset_dQ = dQ_offset(1);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 40, 9, 9, 1.0, _tmp4, 40, star(2), 9, 1.0, dQ(1), 40, offset__tmp4, offset_star, offset_dQ, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 432);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m35_48_n9_64_k53_nps_7539a56(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m35_48_n9_9_k9_spp_bcf4f26(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(1), ExtraOffset_dQ(1), NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m35_48_n9_64_k54_nps_bfcf3fd(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(1), ExtraOffset_dQ(1), NumElements);
+    _tmp4 = _buffer0;
+
+    sgemm_NT_NT_m35_48_n9_64_k55_nps_72bd187(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp4, 0, NumElements);
+
+    sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(1), ExtraOffset_dQ(1), NumElements);
     device.api->popStackMemory();
   }
   void kernel::derivative::execute2() {
@@ -2854,61 +1528,25 @@ namespace device_gen_code {
     assert(star(2) != nullptr);
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
-    assert(kernel::derivative::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float *d_buffer0 = (float*)device.api->getStackMemory(216 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(1);
-    unsigned offset__tmp0 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 32, 1.0, kDivMT(0), 40, dQ(1), 40, 0.0, _tmp0, 24, offset_kDivMT, offset_dQ + 1, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 216;
-    unsigned offset_star = star_offset(0);
-    unsigned offset_dQ = dQ_offset(2);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp0, 24, star(0), 9, 0.0, dQ(2), 24, offset__tmp0, offset_star, offset_dQ, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(1);
-    unsigned offset__tmp2 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 33, 1.0, kDivMT(1), 40, dQ(1), 40, 0.0, _tmp2, 24, offset_kDivMT, offset_dQ + 1, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset__tmp2 = 216;
-    unsigned offset_star = star_offset(1);
-    unsigned offset_dQ = dQ_offset(2);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp2, 24, star(1), 9, 1.0, dQ(2), 24, offset__tmp2, offset_star, offset_dQ, num_elements);
-    }
-    _tmp4 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(1);
-    unsigned offset__tmp4 = 216;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 34, 1.0, kDivMT(2), 40, dQ(1), 40, 0.0, _tmp4, 24, offset_kDivMT, offset_dQ + 1, offset__tmp4, num_elements);
-    }
-    {
-    unsigned offset__tmp4 = 216;
-    unsigned offset_star = star_offset(2);
-    unsigned offset_dQ = dQ_offset(2);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 24, 9, 9, 1.0, _tmp4, 24, star(2), 9, 1.0, dQ(2), 24, offset__tmp4, offset_star, offset_dQ, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m20_48_n9_48_k32_nps_c879df6(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m20_32_n9_9_k9_spp_7cafb26(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(2), ExtraOffset_dQ(2), NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m20_48_n9_48_k33_nps_34e9903(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(2), ExtraOffset_dQ(2), NumElements);
+    _tmp4 = _buffer0;
+
+    sgemm_NT_NT_m20_48_n9_48_k34_nps_c44f1e3(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp4, 0, NumElements);
+
+    sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(2), ExtraOffset_dQ(2), NumElements);
     device.api->popStackMemory();
   }
   void kernel::derivative::execute3() {
@@ -2920,61 +1558,25 @@ namespace device_gen_code {
     assert(star(2) != nullptr);
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
-    assert(kernel::derivative::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float *d_buffer0 = (float*)device.api->getStackMemory(144 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(2);
-    unsigned offset__tmp0 = 144;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 16, 9, 17, 1.0, kDivMT(0), 40, dQ(2), 24, 0.0, _tmp0, 16, offset_kDivMT, offset_dQ + 1, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 144;
-    unsigned offset_star = star_offset(0);
-    unsigned offset_dQ = dQ_offset(3);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 16, 9, 9, 1.0, _tmp0, 16, star(0), 9, 0.0, dQ(3), 16, offset__tmp0, offset_star, offset_dQ, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(2);
-    unsigned offset__tmp2 = 144;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 16, 9, 18, 1.0, kDivMT(1), 40, dQ(2), 24, 0.0, _tmp2, 16, offset_kDivMT, offset_dQ + 1, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset__tmp2 = 144;
-    unsigned offset_star = star_offset(1);
-    unsigned offset_dQ = dQ_offset(3);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 16, 9, 9, 1.0, _tmp2, 16, star(1), 9, 1.0, dQ(3), 16, offset__tmp2, offset_star, offset_dQ, num_elements);
-    }
-    _tmp4 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(2);
-    unsigned offset__tmp4 = 144;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 16, 9, 19, 1.0, kDivMT(2), 40, dQ(2), 24, 0.0, _tmp4, 16, offset_kDivMT, offset_dQ + 1, offset__tmp4, num_elements);
-    }
-    {
-    unsigned offset__tmp4 = 144;
-    unsigned offset_star = star_offset(2);
-    unsigned offset_dQ = dQ_offset(3);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 16, 9, 9, 1.0, _tmp4, 16, star(2), 9, 1.0, dQ(3), 16, offset__tmp4, offset_star, offset_dQ, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 144);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m10_48_n9_32_k17_nps_eeac906(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m10_16_n9_9_k9_spp_afbfa38(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(3), ExtraOffset_dQ(3), NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m10_48_n9_32_k18_nps_2125e35(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m10_16_n9_9_k9_spp_fe81cdb(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(3), ExtraOffset_dQ(3), NumElements);
+    _tmp4 = _buffer0;
+
+    sgemm_NT_NT_m10_48_n9_32_k19_nps_63bce85(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp4, 0, NumElements);
+
+    sgemm_NT_NT_m10_16_n9_9_k9_spp_fe81cdb(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(3), ExtraOffset_dQ(3), NumElements);
     device.api->popStackMemory();
   }
   void kernel::derivative::execute4() {
@@ -2986,61 +1588,25 @@ namespace device_gen_code {
     assert(star(2) != nullptr);
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
-    assert(kernel::derivative::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float *d_buffer0 = (float*)device.api->getStackMemory(72 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(3);
-    unsigned offset__tmp0 = 72;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 7, 1.0, kDivMT(0), 40, dQ(3), 16, 0.0, _tmp0, 8, offset_kDivMT, offset_dQ + 1, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 72;
-    unsigned offset_star = star_offset(0);
-    unsigned offset_dQ = dQ_offset(4);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 9, 1.0, _tmp0, 8, star(0), 9, 0.0, dQ(4), 8, offset__tmp0, offset_star, offset_dQ, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(3);
-    unsigned offset__tmp2 = 72;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 8, 1.0, kDivMT(1), 40, dQ(3), 16, 0.0, _tmp2, 8, offset_kDivMT, offset_dQ + 1, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset__tmp2 = 72;
-    unsigned offset_star = star_offset(1);
-    unsigned offset_dQ = dQ_offset(4);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 9, 1.0, _tmp2, 8, star(1), 9, 1.0, dQ(4), 8, offset__tmp2, offset_star, offset_dQ, num_elements);
-    }
-    _tmp4 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(3);
-    unsigned offset__tmp4 = 72;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 9, 1.0, kDivMT(2), 40, dQ(3), 16, 0.0, _tmp4, 8, offset_kDivMT, offset_dQ + 1, offset__tmp4, num_elements);
-    }
-    {
-    unsigned offset__tmp4 = 72;
-    unsigned offset_star = star_offset(2);
-    unsigned offset_dQ = dQ_offset(4);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 9, 1.0, _tmp4, 8, star(2), 9, 1.0, dQ(4), 8, offset__tmp4, offset_star, offset_dQ, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 144);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m4_48_n9_16_k7_nps_dff4b53(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m4_16_n9_9_k9_spp_b787603(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(4), ExtraOffset_dQ(4), NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m4_48_n9_16_k8_nps_7c6bd3e(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(4), ExtraOffset_dQ(4), NumElements);
+    _tmp4 = _buffer0;
+
+    sgemm_NT_NT_m4_48_n9_16_k9_nps_83bc4d7(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp4, 0, NumElements);
+
+    sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(4), ExtraOffset_dQ(4), NumElements);
     device.api->popStackMemory();
   }
   void kernel::derivative::execute5() {
@@ -3052,61 +1618,25 @@ namespace device_gen_code {
     assert(star(2) != nullptr);
     assert(star(0) != nullptr);
     assert(star(1) != nullptr);
-    assert(kernel::derivative::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float *d_buffer0 = (float*)device.api->getStackMemory(72 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(4);
-    unsigned offset__tmp0 = 72;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 1, 1.0, kDivMT(0), 40, dQ(4), 8, 0.0, _tmp0, 8, offset_kDivMT, offset_dQ + 1, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 72;
-    unsigned offset_star = star_offset(0);
-    unsigned offset_dQ = dQ_offset(5);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 9, 1.0, _tmp0, 8, star(0), 9, 0.0, dQ(5), 8, offset__tmp0, offset_star, offset_dQ, num_elements);
-    }
-    _tmp2 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(4);
-    unsigned offset__tmp2 = 72;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 2, 1.0, kDivMT(1), 40, dQ(4), 8, 0.0, _tmp2, 8, offset_kDivMT, offset_dQ + 1, offset__tmp2, num_elements);
-    }
-    {
-    unsigned offset__tmp2 = 72;
-    unsigned offset_star = star_offset(1);
-    unsigned offset_dQ = dQ_offset(5);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 9, 1.0, _tmp2, 8, star(1), 9, 1.0, dQ(5), 8, offset__tmp2, offset_star, offset_dQ, num_elements);
-    }
-    _tmp4 = d_buffer0;
-    {
-    unsigned offset_kDivMT = 0;
-    unsigned offset_dQ = dQ_offset(4);
-    unsigned offset__tmp4 = 72;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 3, 1.0, kDivMT(2), 40, dQ(4), 8, 0.0, _tmp4, 8, offset_kDivMT, offset_dQ + 1, offset__tmp4, num_elements);
-    }
-    {
-    unsigned offset__tmp4 = 72;
-    unsigned offset_star = star_offset(2);
-    unsigned offset_dQ = dQ_offset(5);
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 8, 9, 9, 1.0, _tmp4, 8, star(2), 9, 1.0, dQ(5), 8, offset__tmp4, offset_star, offset_dQ, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 144);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m1_48_n9_16_k1_nps_7a8cc39(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m1_16_n9_9_k9_spp_8da6d94(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(5), ExtraOffset_dQ(5), NumElements);
+    _tmp2 = _buffer0;
+
+    sgemm_NT_NT_m1_48_n9_16_k2_nps_04350e1(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp2, 0, NumElements);
+
+    sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(5), ExtraOffset_dQ(5), NumElements);
+    _tmp4 = _buffer0;
+
+    sgemm_NT_NT_m1_48_n9_16_k3_nps_c033cdc(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp4, 0, NumElements);
+
+    sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(5), ExtraOffset_dQ(5), NumElements);
     device.api->popStackMemory();
   }
   constexpr unsigned long const kernel::godunovState::NonZeroFlops[];
@@ -3117,27 +1647,15 @@ namespace device_gen_code {
     assert(V3mTo2n(0,0) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(0,0), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 0.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(0,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute1() {
@@ -3145,27 +1663,15 @@ namespace device_gen_code {
     assert(V3mTo2n(1,0) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(1,0), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 0.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(1,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute2() {
@@ -3173,27 +1679,15 @@ namespace device_gen_code {
     assert(V3mTo2n(2,0) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(2,0), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 0.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(2,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute3() {
@@ -3201,27 +1695,15 @@ namespace device_gen_code {
     assert(V3mTo2n(3,0) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(3,0), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 0.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(3,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute4() {
@@ -3229,27 +1711,15 @@ namespace device_gen_code {
     assert(V3mTo2n(0,1) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(0,1), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(0,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute5() {
@@ -3257,27 +1727,15 @@ namespace device_gen_code {
     assert(V3mTo2n(1,1) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(1,1), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(1,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute6() {
@@ -3285,27 +1743,15 @@ namespace device_gen_code {
     assert(V3mTo2n(2,1) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(2,1), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(2,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute7() {
@@ -3313,27 +1759,15 @@ namespace device_gen_code {
     assert(V3mTo2n(3,1) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(3,1), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(3,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute8() {
@@ -3341,27 +1775,15 @@ namespace device_gen_code {
     assert(V3mTo2n(0,2) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(0,2), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(0,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute9() {
@@ -3369,27 +1791,15 @@ namespace device_gen_code {
     assert(V3mTo2n(1,2) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(1,2), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(1,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute10() {
@@ -3397,27 +1807,15 @@ namespace device_gen_code {
     assert(V3mTo2n(2,2) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(2,2), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(2,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute11() {
@@ -3425,27 +1823,15 @@ namespace device_gen_code {
     assert(V3mTo2n(3,2) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(3,2), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(3,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute12() {
@@ -3453,27 +1839,15 @@ namespace device_gen_code {
     assert(V3mTo2n(0,3) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(0,3), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(0,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute13() {
@@ -3481,27 +1855,15 @@ namespace device_gen_code {
     assert(V3mTo2n(1,3) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(1,3), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(1,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute14() {
@@ -3509,27 +1871,15 @@ namespace device_gen_code {
     assert(V3mTo2n(2,3) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(2,3), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(2,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute15() {
@@ -3537,27 +1887,15 @@ namespace device_gen_code {
     assert(V3mTo2n(3,3) != nullptr);
     assert(godunovMatrix != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::godunovState::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_V3mTo2n = 0;
-    unsigned offset_Q = Q_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 56, 1.0, V3mTo2n(3,3), 56, Q, 56, 0.0, _tmp0, 56, offset_V3mTo2n, offset_Q, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset__tmp0 = 504;
-    unsigned offset_godunovMatrix = godunovMatrix_offset;
-    unsigned offset_godunovState = godunovState_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, _tmp0, 56, godunovMatrix, 9, 1.0, godunovState, 56, offset__tmp0, offset_godunovMatrix, offset_godunovState, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(3,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   constexpr unsigned long const kernel::nodalFlux::NonZeroFlops[];
@@ -3568,27 +1906,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(0,0) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(0,0), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(0,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute1() {
@@ -3596,27 +1922,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(1,0) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(1,0), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(1,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute2() {
@@ -3624,27 +1938,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(2,0) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(2,0), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(2,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute3() {
@@ -3652,27 +1954,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(3,0) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(3,0), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(3,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute4() {
@@ -3680,27 +1970,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(0,1) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(0,1), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(0,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute5() {
@@ -3708,27 +1986,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(1,1) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(1,1), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(1,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute6() {
@@ -3736,27 +2002,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(2,1) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(2,1), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(2,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute7() {
@@ -3764,27 +2018,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(3,1) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(3,1), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(3,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute8() {
@@ -3792,27 +2034,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(0,2) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(0,2), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(0,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute9() {
@@ -3820,27 +2050,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(1,2) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(1,2), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(1,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute10() {
@@ -3848,27 +2066,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(2,2) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(2,2), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(2,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute11() {
@@ -3876,27 +2082,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(3,2) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(3,2), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(3,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute12() {
@@ -3904,27 +2098,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(0,3) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(0,3), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(0,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute13() {
@@ -3932,27 +2114,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(1,3) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(1,3), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(1,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute14() {
@@ -3960,27 +2130,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(2,3) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(2,3), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(2,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute15() {
@@ -3988,27 +2146,15 @@ namespace device_gen_code {
     assert(V3mTo2nTWDivM(3,3) != nullptr);
     assert(fluxSolver != nullptr);
     assert(godunovState != nullptr);
-    assert(kernel::nodalFlux::num_elements != 0);
+    assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float *d_buffer0 = (float*)device.api->getStackMemory(504 * num_elements * sizeof(float));
-    _tmp0 = d_buffer0;
-    {
-    unsigned offset_godunovState = godunovState_offset;
-    unsigned offset_fluxSolver = fluxSolver_offset;
-    unsigned offset__tmp0 = 504;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 9, 1.0, godunovState, 56, fluxSolver, 9, 0.0, _tmp0, 56, offset_godunovState, offset_fluxSolver, offset__tmp0, num_elements);
-    }
-    {
-    unsigned offset_V3mTo2nTWDivM = 0;
-    unsigned offset__tmp0 = 504;
-    unsigned offset_Q = Q_offset;
-    
-    
-    device.gemm(device::ColMajor, device::NoTrans, device::NoTrans, 56, 9, 49, 1.0, V3mTo2nTWDivM(3,3), 56, _tmp0, 56, 1.0, Q, 56, offset_V3mTo2nTWDivM, offset__tmp0, offset_Q, num_elements);
-    }
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    _tmp0 = _buffer0;
+
+    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+
+    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(3,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
 }

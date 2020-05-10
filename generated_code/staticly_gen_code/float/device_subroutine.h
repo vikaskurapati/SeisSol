@@ -1,3 +1,51 @@
-#ifndef DEVICE_GEN_CODE_DEVICE_SUBROUTINE_H_
-#define DEVICE_GEN_CODE_DEVICE_SUBROUTINE_H_
+#ifndef DEVICE_GEN_CODE_SUBROUTINE_H_
+#define DEVICE_GEN_CODE_SUBROUTINE_H_
+void sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m53_64_n9_48_k35_nsp_49df72e(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m54_64_n9_48_k35_nsp_13f0270(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m55_64_n9_48_k35_nsp_6daa8d7(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_T_NT_m9_9_n9_9_k9_ppp_db79476(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_T_m9_9_n9_9_k9_ppp_0c970c0(float fluxScale, const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m56_64_n6_64_k56_npp_968d18f(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m56_64_n6_64_k56_npp_3250429(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void scopyAddScale_m56_64_n9_64_pp_1869608(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements);
+void scopyAddScale_m35_64_n9_64_pp_8aadec7(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements);
+void scopyAddScale_m20_64_n9_64_pp_f68fa48(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements);
+void scopyAddScale_m10_64_n9_64_pp_5f5bfb7(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements);
+void scopyAddScale_m4_64_n9_64_pp_8b6c4ec(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements);
+void scopyAddScale_m1_64_n9_64_pp_ddfc1ea(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements);
+void sgemm_NT_NT_m35_48_n9_64_k53_nps_7539a56(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m35_48_n9_9_k9_spp_bcf4f26(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m35_48_n9_64_k54_nps_bfcf3fd(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m35_48_n9_64_k55_nps_72bd187(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m20_48_n9_48_k32_nps_c879df6(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m20_32_n9_9_k9_spp_7cafb26(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m20_48_n9_48_k33_nps_34e9903(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m20_48_n9_48_k34_nps_c44f1e3(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m10_48_n9_32_k17_nps_eeac906(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m10_16_n9_9_k9_spp_afbfa38(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m10_48_n9_32_k18_nps_2125e35(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m10_16_n9_9_k9_spp_fe81cdb(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m10_48_n9_32_k19_nps_63bce85(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m4_48_n9_16_k7_nps_dff4b53(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m4_16_n9_9_k9_spp_b787603(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m4_48_n9_16_k8_nps_7c6bd3e(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m4_48_n9_16_k9_nps_83bc4d7(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m1_48_n9_16_k1_nps_7a8cc39(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m1_16_n9_9_k9_spp_8da6d94(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m1_48_n9_16_k2_nps_04350e1(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m1_48_n9_16_k3_nps_c033cdc(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements);
+void sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements);
 #endif

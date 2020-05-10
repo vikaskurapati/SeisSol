@@ -194,15 +194,15 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
 
     PointersTable &entry = table[key];
 
-    derivativesKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
-    intKrnl.num_elements = (entry.m_Container[*VariableID::dofs])->getSize();
+    derivativesKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
+    intKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
 
     intKrnl.I = (entry.m_Container[*VariableID::idofs])->getPointers();
 
     unsigned star_offset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
       derivativesKrnl.star(i) = const_cast<const real **>((entry.m_Container[*VariableID::star])->getPointers());
-      derivativesKrnl.star_offset(i) = star_offset;
+      derivativesKrnl.ExtraOffset_star(i) = star_offset;
       star_offset += tensor::star::size(i);
     }
 
@@ -211,8 +211,8 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
       derivativesKrnl.dQ(i) = (entry.m_Container[*VariableID::derivatives])->getPointers();
       intKrnl.dQ(i) = const_cast<const real **>((entry.m_Container[*VariableID::derivatives])->getPointers());
 
-      derivativesKrnl.dQ_offset(i) = derivatives_offset;
-      intKrnl.dQ_offset(i) = derivatives_offset;
+      derivativesKrnl.ExtraOffset_dQ(i) = derivatives_offset;
+      intKrnl.ExtraOffset_dQ(i) = derivatives_offset;
 
       derivatives_offset += tensor::dQ::size(i);
     }
@@ -221,7 +221,7 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
     m_Device.api->streamBatchedData((entry.m_Container[*VariableID::dofs])->getPointers(),
                                     (entry.m_Container[*VariableID::derivatives])->getPointers(),
                                     tensor::Q::Size,
-                                    derivativesKrnl.num_elements);
+                                    derivativesKrnl.NumElements);
 
     intKrnl.power = i_timeStepWidth;
     intKrnl.execute0();
@@ -242,7 +242,7 @@ void seissol::kernels::Time::computeIntegralWithinWorkItem(double i_expansionPoi
                                                            double i_integrationEnd,
                                                            const real** i_timeDerivatives,
                                                            real ** o_timeIntegratedDofs,
-                                                           unsigned num_elements) {
+                                                           unsigned NumElements) {
 
   // assert that this is a forwared integration in time
   assert( i_integrationStart + (real) 1.E-10 > i_expansionPoint   );
@@ -262,14 +262,14 @@ void seissol::kernels::Time::computeIntegralWithinWorkItem(double i_expansionPoi
   real l_factorial  = (real) 1;
 
   device_gen_code::kernel::derivativeTaylorExpansion intKrnl;
-  intKrnl.num_elements = num_elements;
+  intKrnl.NumElements = NumElements;
 
   intKrnl.I = o_timeIntegratedDofs;
 
   unsigned derivatives_offset = 0;
   for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
     intKrnl.dQ(i) = i_timeDerivatives;
-    intKrnl.dQ_offset(i) = derivatives_offset;
+    intKrnl.ExtraOffset_dQ(i) = derivatives_offset;
     derivatives_offset += tensor::dQ::size(i);
   }
 

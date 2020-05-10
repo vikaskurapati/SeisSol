@@ -182,7 +182,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
     m2nKrnl.v = Global->vandermondeMatrix;
     m2nKrnl.QStress = const_cast<const real**>(ModalStressTensors);
     m2nKrnl.QStressNodal = NodalStressTensors;
-    m2nKrnl.num_elements = NumElements;
+    m2nKrnl.NumElements = NumElements;
     m2nKrnl.execute();
 
     int *Indices = reinterpret_cast<int*>(device.api->getStackMemory(NumElements * sizeof(int)));

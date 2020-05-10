@@ -202,11 +202,31 @@ if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/NeighbIntegrationRecorder.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/PlasticityRecorder.cpp
           ${CMAKE_BINARY_DIR}/src/generated_code/device_kernel.cpp
-          ${CMAKE_BINARY_DIR}/src/generated_code/device_subroutine.cpp
           )
   target_include_directories(SeisSol-lib PUBLIC
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording
           ${CMAKE_BINARY_DIR}/src/generated_code
-          ${CMAKE_BINARY_DIR}/src/generated_code
           )
+
+  find_package(CUDA REQUIRED)
+  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};
+          -std=c++11;
+          -arch=sm_61;
+          -O3;)
+
+  set(DEVICE_SRC ${CMAKE_BINARY_DIR}/src/generated_code/device_subroutine.cpp)
+  set_source_files_properties(${DEVICE_SRC} PROPERTIES CUDA_SOURCE_PROPERTY_FORMAT OBJ)
+
+  execute_process(COMMAND python -c "import gemmforge; gemmforge.print_cmake_path()"
+                  OUTPUT_VARIABLE GEMMFORGE_PATH)
+
+  set(CMAKE_MODULE_PATH "${GEMMFORGE_PATH}" ${CMAKE_MODULE_PATH})
+  find_package(GemmGen REQUIRED)
+  set(DEVICE_SRC ${DEVICE_SRC} ${GemmForge_SOURCES})
+
+  cuda_add_library(Seissol-device-lib STATIC ${DEVICE_SRC})
+  target_include_directories(Seissol-device-lib PUBLIC ${GemmForge_INCLUDE_DIRS}
+                                                       ${CMAKE_BINARY_DIR}/src/generated_code)
+
+  target_link_libraries(SeisSol-lib PUBLIC Seissol-device-lib)
 endif()

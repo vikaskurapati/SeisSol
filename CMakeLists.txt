@@ -13,7 +13,7 @@ message(WARNING "We do not provide support for CMake currently. Please use scons
 #       switches: HDF5, NETCDF, METIS, MPI, OPENMP, ASAGI, SIONLIB, MEMKIND
 #
 #       user's input: ORDER, NUMBER_OF_MECHANISMS, EQUATIONS,
-#                     ARCH, PRECISION, DYNAMIC_RUPTURE_METHOD,
+#                     HOST_ARCH, COMPUTE_ARCH, PRECISION, DYNAMIC_RUPTURE_METHOD,
 #                     PLASTICITY, NUMBER_OF_FUSED_SIMULATIONS,
 #                     MEMORY_LAYOUT, COMMTHREAD, LOG_LEVEL,
 #                     LOG_LEVEL_MASTER, ACCELERATOR_TYPE, 
@@ -79,7 +79,8 @@ add_custom_command(
      "--equations" ${EQUATIONS}
      "--matricesDir" ${CMAKE_CURRENT_SOURCE_DIR}/generated_code/matrices
      "--outputDir" ${CMAKE_CURRENT_BINARY_DIR}/src/generated_code
-     "--arch" ${ARCH_STRING}
+     "--host_arch" ${HOST_ARCH_STR}
+     "--compute_arch" ${COMPUTE_ARCH_STR}
      "--order" ${ORDER}
      "--numberOfMechanisms" ${NUMBER_OF_MECHANISMS}
      "--memLayout" ${MEMORY_LAYOUT}
@@ -106,6 +107,7 @@ add_custom_command(
     OUTPUT src/generated_code/subroutine.h
        src/generated_code/tensor.cpp
        src/generated_code/subroutine.cpp
+       src/generated_code/gpulike_subroutine.cpp
        src/generated_code/tensor.h
        src/generated_code/init.cpp
        src/generated_code/init.h
@@ -128,7 +130,7 @@ endif()
 # and the target compiler
 # 'get_arch_specific_flags' returns: CPU_ARCH_FLAGS
 include(cmake/cpu_arch_flags.cmake)
-get_arch_flags(${ARCH} ${CMAKE_CXX_COMPILER_ID})
+get_arch_flags(${HOST_ARCH} ${CMAKE_CXX_COMPILER_ID})
 
 # set hardware/compiler specific definitions and flags
 target_compile_definitions(SeisSol-lib PUBLIC ${HARDWARE_DEFINITIONS})
@@ -277,7 +279,7 @@ set_source_files_properties(src/generated_code/subroutine.cpp PROPERTIES COMPILE
 add_executable(SeisSol-bin src/main.cpp)
 target_link_libraries(SeisSol-bin PUBLIC SeisSol-lib)
 
-set_target_properties(SeisSol-bin PROPERTIES OUTPUT_NAME "SeisSol_${CMAKE_BUILD_TYPE}_${ARCH_STRING}_${EQUATIONS}_${ORDER}")
+set_target_properties(SeisSol-bin PROPERTIES OUTPUT_NAME "SeisSol_${CMAKE_BUILD_TYPE}_${COMPUTE_ARCH_STR}_${EQUATIONS}_${ORDER}")
 
 # Testing
 find_package(CxxTest)

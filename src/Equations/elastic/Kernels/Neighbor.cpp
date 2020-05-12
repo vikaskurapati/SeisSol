@@ -176,9 +176,9 @@ void seissol::kernels::Neighbor::computeNeighborsIntegral(  NeighborData&       
 
 #ifdef ACL_DEVICE
 void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditional_table_t &table) {
-  device_gen_code::kernel::neighboringFlux nfKrnl = m_deviceNfKrnlPrototype;
-  device_gen_code::kernel::nodalFlux drKrnl = m_deviceDrKrnlPrototype;
-  device_gen_code::kernel::localFlux lfKrnl = m_deviceLfKrnlPrototype;
+  kernel::gpu_neighboringFlux nfKrnl = m_deviceNfKrnlPrototype;
+  kernel::gpu_nodalFlux drKrnl = m_deviceDrKrnlPrototype;
+  kernel::gpu_localFlux lfKrnl = m_deviceLfKrnlPrototype;
 
   for(unsigned int face = 0; face < 4; face++) {
 

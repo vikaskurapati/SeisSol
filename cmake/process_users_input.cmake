@@ -24,10 +24,12 @@ set(EQUATIONS_OPTIONS elastic viscoelastic viscoelastic2)
 set_property(CACHE EQUATIONS PROPERTY STRINGS ${EQUATIONS_OPTIONS})
 
 
-set(ARCH "hsw" CACHE STRING "Type of the target architecture")
-set(ARCH_OPTIONS noarch wsm snb hsw knc knl skx)
-set(ARCH_ALIGNMENT   16  16  32  32  64  64  64)  # size of a vector registers in bytes for a given architecture
-set_property(CACHE ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
+set(HOST_ARCH "hsw" CACHE STRING "Type of the target architecture")
+set(COMPUTE_ARCH "hsw" CACHE STRING "Type of the target architecture")
+set(ARCH_OPTIONS noarch wsm snb hsw knc knl skx nvidia)
+set(ARCH_ALIGNMENT   16  16  32  32  64  64  64     64)  # size of a vector registers in bytes for a given architecture
+set_property(CACHE HOST_ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
+set_property(CACHE COMPUTE_ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
 
 
 set(PRECISION "double" CACHE STRING "type of floating point precision, namely: double/float")
@@ -70,7 +72,7 @@ set_property(CACHE DEVICE_BACKEND PROPERTY STRINGS ${DEVICE_BACKEDNS})
 
 
 set(GEMM_TOOLS_LIST "LIBXSMM,PSpaMM" CACHE STRING "choose a gemm tool(s) for the code generator")
-set(GEMM_TOOLS_OPTIONS "LIBXSMM,PSpaMM" "LIBXSMM" "MKL" "OpenBLAS" "BLIS" "OpenBLAS,ACL_DEVICE_BLAS" "LIBXSMM,PSpaMM,ACL_DEVICE_BLAS")
+set(GEMM_TOOLS_OPTIONS "LIBXSMM,PSpaMM" "LIBXSMM" "MKL" "OpenBLAS" "BLIS" "OpenBLAS,GemmForge" "LIBXSMM,PSpaMM,GemmForge")
 set_property(CACHE GEMM_TOOLS_LIST PROPERTY STRINGS ${GEMM_TOOLS_OPTIONS})
 
 
@@ -92,7 +94,8 @@ endfunction()
 
 
 check_parameter("ORDER" ${ORDER} "${ORDER_OPTIONS}")
-check_parameter("ARCH" ${ARCH} "${ARCH_OPTIONS}")
+check_parameter("HOST_ARCH" ${HOST_ARCH} "${ARCH_OPTIONS}")
+check_parameter("COMPUTE_ARCH" ${COMPUTE_ARCH} "${ARCH_OPTIONS}")
 check_parameter("EQUATIONS" ${EQUATIONS} "${EQUATIONS_OPTIONS}")
 check_parameter("PRECISION" ${PRECISION} "${PRECISION_OPTIONS}")
 check_parameter("DYNAMIC_RUPTURE_METHOD" ${DYNAMIC_RUPTURE_METHOD} "${RUPTURE_OPTIONS}")
@@ -122,7 +125,7 @@ endif()
 
 
 # compute alignment
-list(FIND ARCH_OPTIONS ${ARCH} INDEX)
+list(FIND ARCH_OPTIONS ${COMPUTE_ARCH} INDEX)
 list(GET ARCH_ALIGNMENT ${INDEX} ALIGNMENT)
 
 
@@ -144,9 +147,11 @@ MATH(EXPR NUMBER_OF_QUANTITIES "9 + 6 * ${NUMBER_OF_MECHANISMS}" )
 # generate an internal representation of an architecture type which is used in seissol
 string(SUBSTRING ${PRECISION} 0 1 PRECISION_PREFIX)
 if (${PRECISION} STREQUAL "double")
-    set(ARCH_STRING "d${ARCH}")
+    set(COMPUTE_ARCH_STR "s${COMPUTE_ARCH}")
+    set(HOST_ARCH_STR "s${HOST_ARCH}")
 elseif(${PRECISION} STREQUAL "float")
-    set(ARCH_STRING "s${ARCH}")
+    set(COMPUTE_ARCH_STR "s${COMPUTE_ARCH}")
+    set(HOST_ARCH_STR "s${HOST_ARCH}")
 endif()
 
 

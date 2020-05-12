@@ -19,22 +19,22 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 432);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 360);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(0)), ExtraOffset_star(0), _tmp0, 0, NumElements);
+    sgemm_NT_NT_m35_56_n9_9_k9_pps_47bd4ea(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(0)), ExtraOffset_star(0), _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m53_64_n9_48_k35_nsp_49df72e(const_cast<const float *>(kDivM(0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m53_56_n9_40_k35_nsp_41d708c(const_cast<const float *>(kDivM(0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(1)), ExtraOffset_star(1), _tmp2, 0, NumElements);
+    sgemm_NT_NT_m35_56_n9_9_k9_pps_47bd4ea(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(1)), ExtraOffset_star(1), _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m54_64_n9_48_k35_nsp_13f0270(const_cast<const float *>(kDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m54_56_n9_40_k35_nsp_b4599dc(const_cast<const float *>(kDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     _tmp4 = _buffer0;
 
-    sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(2)), ExtraOffset_star(2), _tmp4, 0, NumElements);
+    sgemm_NT_NT_m35_56_n9_9_k9_pps_47bd4ea(const_cast<const float **>(I), ExtraOffset_I, const_cast<const float **>(star(2)), ExtraOffset_star(2), _tmp4, 0, NumElements);
 
-    sgemm_NT_NT_m55_64_n9_48_k35_nsp_6daa8d7(const_cast<const float *>(kDivM(2)), 0, const_cast<const float *>(_tmp4), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m55_56_n9_40_k35_nsp_e7d889b(const_cast<const float *>(kDivM(2)), 0, const_cast<const float *>(_tmp4), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   constexpr unsigned long const kernel::rotateGodunovStateLocal::NonZeroFlops;
@@ -80,7 +80,7 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
 
-    sgemm_NT_NT_m56_64_n6_64_k56_npp_968d18f(const_cast<const float *>(v), 0, const_cast<const float **>(QStress), ExtraOffset_QStress, QStressNodal, ExtraOffset_QStressNodal, NumElements);
+    sgemm_NT_NT_m56_56_n6_56_k56_npp_87cf7c3(const_cast<const float *>(v), 0, const_cast<const float **>(QStress), ExtraOffset_QStress, QStressNodal, ExtraOffset_QStressNodal, NumElements);
   }
   constexpr unsigned long const kernel::plConvertToModal::NonZeroFlops;
   constexpr unsigned long const kernel::plConvertToModal::HardwareFlops;
@@ -91,7 +91,7 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
 
-    sgemm_NT_NT_m56_64_n6_64_k56_npp_3250429(const_cast<const float *>(vInv), 0, const_cast<const float **>(QStressNodal), ExtraOffset_QStressNodal, QStress, ExtraOffset_QStress, NumElements);
+    sgemm_NT_NT_m56_56_n6_56_k56_npp_da40531(const_cast<const float *>(vInv), 0, const_cast<const float **>(QStressNodal), ExtraOffset_QStressNodal, QStress, ExtraOffset_QStress, NumElements);
   }
   constexpr unsigned long const kernel::localFlux::NonZeroFlops[];
   constexpr unsigned long const kernel::localFlux::HardwareFlops[];
@@ -105,16 +105,16 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(fMrT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(fMrT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -127,16 +127,16 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(fMrT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(fMrT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -149,16 +149,16 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(fMrT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(fMrT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -171,16 +171,16 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(fMrT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(fMrT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(AplusT), ExtraOffset_AplusT, _tmp1, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp1), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -197,19 +197,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -223,19 +223,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -249,19 +249,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -275,19 +275,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -301,19 +301,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -327,19 +327,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -353,19 +353,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -379,19 +379,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -405,19 +405,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -431,19 +431,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -457,19 +457,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -483,19 +483,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(0)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -509,19 +509,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -535,19 +535,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -561,19 +561,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -587,19 +587,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -613,19 +613,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -639,19 +639,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -665,19 +665,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -691,19 +691,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -717,19 +717,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -743,19 +743,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -769,19 +769,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -795,19 +795,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(1)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -821,19 +821,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -847,19 +847,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -873,19 +873,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -899,19 +899,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -925,19 +925,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -951,19 +951,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -977,19 +977,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1003,19 +1003,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1029,19 +1029,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1055,19 +1055,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1081,19 +1081,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1107,19 +1107,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(2)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1133,19 +1133,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1159,19 +1159,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1185,19 +1185,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(0)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1211,19 +1211,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1237,19 +1237,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1263,19 +1263,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(1)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1289,19 +1289,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1315,19 +1315,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1341,19 +1341,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(2)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1367,19 +1367,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(0)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1393,19 +1393,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(1)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1419,19 +1419,19 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp1, *_tmp2;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
-    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
+    float* _buffer1 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const_cast<const float *>(rT(3)), 0, const_cast<const float **>(I), ExtraOffset_I, _tmp0, 0, NumElements);
     _tmp1 = _buffer1;
 
-    sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const_cast<const float *>(fP(2)), 0, const_cast<const float *>(_tmp0), 0, _tmp1, 0, NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
+    sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const_cast<const float *>(_tmp1), 0, const_cast<const float **>(AminusT), ExtraOffset_AminusT, _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const_cast<const float *>(rDivM(3)), 0, const_cast<const float *>(_tmp2), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
     device.api->popStackMemory();
   }
@@ -1444,7 +1444,7 @@ namespace device_gen_code {
     assert(dQ(0) != nullptr);
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    scopyAddScale_m56_64_n9_64_pp_1869608(power, dQ(0), ExtraOffset_dQ(0), I, ExtraOffset_I, NumElements);
+    device.copyAddScale(56, 9, power, dQ(0) + 0, 56, 0.0, I + 0, 56, ExtraOffset_dQ(0), ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute1() {
     assert(!std::isnan(power));
@@ -1452,7 +1452,7 @@ namespace device_gen_code {
     assert(dQ(1) != nullptr);
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    scopyAddScale_m35_64_n9_64_pp_8aadec7(power, dQ(1), ExtraOffset_dQ(1), I, ExtraOffset_I, NumElements);
+    device.copyAddScale(35, 9, power, dQ(1) + 0, 40, 1.0, I + 0, 56, ExtraOffset_dQ(1), ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute2() {
     assert(!std::isnan(power));
@@ -1460,7 +1460,7 @@ namespace device_gen_code {
     assert(dQ(2) != nullptr);
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    scopyAddScale_m20_64_n9_64_pp_f68fa48(power, dQ(2), ExtraOffset_dQ(2), I, ExtraOffset_I, NumElements);
+    device.copyAddScale(20, 9, power, dQ(2) + 0, 24, 1.0, I + 0, 56, ExtraOffset_dQ(2), ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute3() {
     assert(!std::isnan(power));
@@ -1468,7 +1468,7 @@ namespace device_gen_code {
     assert(dQ(3) != nullptr);
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    scopyAddScale_m10_64_n9_64_pp_5f5bfb7(power, dQ(3), ExtraOffset_dQ(3), I, ExtraOffset_I, NumElements);
+    device.copyAddScale(10, 9, power, dQ(3) + 0, 16, 1.0, I + 0, 56, ExtraOffset_dQ(3), ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute4() {
     assert(!std::isnan(power));
@@ -1476,7 +1476,7 @@ namespace device_gen_code {
     assert(dQ(4) != nullptr);
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    scopyAddScale_m4_64_n9_64_pp_8b6c4ec(power, dQ(4), ExtraOffset_dQ(4), I, ExtraOffset_I, NumElements);
+    device.copyAddScale(4, 9, power, dQ(4) + 0, 8, 1.0, I + 0, 56, ExtraOffset_dQ(4), ExtraOffset_I, NumElements);
   }
   void kernel::derivativeTaylorExpansion::execute5() {
     assert(!std::isnan(power));
@@ -1484,7 +1484,7 @@ namespace device_gen_code {
     assert(dQ(5) != nullptr);
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
-    scopyAddScale_m1_64_n9_64_pp_ddfc1ea(power, dQ(5), ExtraOffset_dQ(5), I, ExtraOffset_I, NumElements);
+    device.copyAddScale(1, 9, power, dQ(5) + 0, 8, 1.0, I + 0, 56, ExtraOffset_dQ(5), ExtraOffset_I, NumElements);
   }
   constexpr unsigned long const kernel::derivative::NonZeroFlops[];
   constexpr unsigned long const kernel::derivative::HardwareFlops[];
@@ -1501,22 +1501,22 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 432);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 360);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m35_48_n9_64_k53_nps_7539a56(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp0, 0, NumElements);
+    sgemm_NT_NT_m35_40_n9_56_k53_nps_960fd76(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m35_48_n9_9_k9_spp_bcf4f26(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(1), ExtraOffset_dQ(1), NumElements);
+    sgemm_NT_NT_m35_40_n9_9_k9_spp_36989d0(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(1), ExtraOffset_dQ(1), NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m35_48_n9_64_k54_nps_bfcf3fd(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp2, 0, NumElements);
+    sgemm_NT_NT_m35_40_n9_56_k54_nps_2269f5e(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(1), ExtraOffset_dQ(1), NumElements);
+    sgemm_NT_NT_m35_40_n9_9_k9_spp_9d7d789(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(1), ExtraOffset_dQ(1), NumElements);
     _tmp4 = _buffer0;
 
-    sgemm_NT_NT_m35_48_n9_64_k55_nps_72bd187(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp4, 0, NumElements);
+    sgemm_NT_NT_m35_40_n9_56_k55_nps_5d71d3c(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(0)), ExtraOffset_dQ(0), _tmp4, 0, NumElements);
 
-    sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(1), ExtraOffset_dQ(1), NumElements);
+    sgemm_NT_NT_m35_40_n9_9_k9_spp_9d7d789(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(1), ExtraOffset_dQ(1), NumElements);
     device.api->popStackMemory();
   }
   void kernel::derivative::execute2() {
@@ -1531,22 +1531,22 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 288);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 216);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m20_48_n9_48_k32_nps_c879df6(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp0, 0, NumElements);
+    sgemm_NT_NT_m20_40_n9_40_k32_nps_c33eb71(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m20_32_n9_9_k9_spp_7cafb26(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(2), ExtraOffset_dQ(2), NumElements);
+    sgemm_NT_NT_m20_24_n9_9_k9_spp_0ba88dd(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(2), ExtraOffset_dQ(2), NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m20_48_n9_48_k33_nps_34e9903(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp2, 0, NumElements);
+    sgemm_NT_NT_m20_40_n9_40_k33_nps_c9310c2(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(2), ExtraOffset_dQ(2), NumElements);
+    sgemm_NT_NT_m20_24_n9_9_k9_spp_88ab2d4(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(2), ExtraOffset_dQ(2), NumElements);
     _tmp4 = _buffer0;
 
-    sgemm_NT_NT_m20_48_n9_48_k34_nps_c44f1e3(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp4, 0, NumElements);
+    sgemm_NT_NT_m20_40_n9_40_k34_nps_4344487(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(1)), ExtraOffset_dQ(1), _tmp4, 0, NumElements);
 
-    sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(2), ExtraOffset_dQ(2), NumElements);
+    sgemm_NT_NT_m20_24_n9_9_k9_spp_88ab2d4(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(2), ExtraOffset_dQ(2), NumElements);
     device.api->popStackMemory();
   }
   void kernel::derivative::execute3() {
@@ -1564,17 +1564,17 @@ namespace device_gen_code {
     float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 144);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m10_48_n9_32_k17_nps_eeac906(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp0, 0, NumElements);
+    sgemm_NT_NT_m10_40_n9_24_k17_nps_41e96ee(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp0, 0, NumElements);
 
     sgemm_NT_NT_m10_16_n9_9_k9_spp_afbfa38(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(3), ExtraOffset_dQ(3), NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m10_48_n9_32_k18_nps_2125e35(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp2, 0, NumElements);
+    sgemm_NT_NT_m10_40_n9_24_k18_nps_20ec594(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp2, 0, NumElements);
 
     sgemm_NT_NT_m10_16_n9_9_k9_spp_fe81cdb(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(3), ExtraOffset_dQ(3), NumElements);
     _tmp4 = _buffer0;
 
-    sgemm_NT_NT_m10_48_n9_32_k19_nps_63bce85(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp4, 0, NumElements);
+    sgemm_NT_NT_m10_40_n9_24_k19_nps_277801b(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(2)), ExtraOffset_dQ(2), _tmp4, 0, NumElements);
 
     sgemm_NT_NT_m10_16_n9_9_k9_spp_fe81cdb(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(3), ExtraOffset_dQ(3), NumElements);
     device.api->popStackMemory();
@@ -1591,22 +1591,22 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 144);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 72);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m4_48_n9_16_k7_nps_dff4b53(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp0, 0, NumElements);
+    sgemm_NT_NT_m4_40_n9_16_k7_nps_625feb0(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m4_16_n9_9_k9_spp_b787603(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(4), ExtraOffset_dQ(4), NumElements);
+    sgemm_NT_NT_m4_8_n9_9_k9_spp_67deb58(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(4), ExtraOffset_dQ(4), NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m4_48_n9_16_k8_nps_7c6bd3e(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp2, 0, NumElements);
+    sgemm_NT_NT_m4_40_n9_16_k8_nps_8f843c2(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(4), ExtraOffset_dQ(4), NumElements);
+    sgemm_NT_NT_m4_8_n9_9_k9_spp_784eae3(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(4), ExtraOffset_dQ(4), NumElements);
     _tmp4 = _buffer0;
 
-    sgemm_NT_NT_m4_48_n9_16_k9_nps_83bc4d7(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp4, 0, NumElements);
+    sgemm_NT_NT_m4_40_n9_16_k9_nps_d74565c(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(3)), ExtraOffset_dQ(3), _tmp4, 0, NumElements);
 
-    sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(4), ExtraOffset_dQ(4), NumElements);
+    sgemm_NT_NT_m4_8_n9_9_k9_spp_784eae3(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(4), ExtraOffset_dQ(4), NumElements);
     device.api->popStackMemory();
   }
   void kernel::derivative::execute5() {
@@ -1621,22 +1621,22 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0, *_tmp2, *_tmp4;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 144);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 72);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m1_48_n9_16_k1_nps_7a8cc39(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp0, 0, NumElements);
+    sgemm_NT_NT_m1_40_n9_8_k1_nps_2533254(const_cast<const float *>(kDivMT(0)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m1_16_n9_9_k9_spp_8da6d94(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(5), ExtraOffset_dQ(5), NumElements);
+    sgemm_NT_NT_m1_8_n9_9_k9_spp_5c45fb8(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(star(0)), ExtraOffset_star(0), dQ(5), ExtraOffset_dQ(5), NumElements);
     _tmp2 = _buffer0;
 
-    sgemm_NT_NT_m1_48_n9_16_k2_nps_04350e1(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp2, 0, NumElements);
+    sgemm_NT_NT_m1_40_n9_8_k2_nps_a20e3a8(const_cast<const float *>(kDivMT(1)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp2, 0, NumElements);
 
-    sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(5), ExtraOffset_dQ(5), NumElements);
+    sgemm_NT_NT_m1_8_n9_9_k9_spp_7cd43db(const_cast<const float *>(_tmp2), 0, const_cast<const float **>(star(1)), ExtraOffset_star(1), dQ(5), ExtraOffset_dQ(5), NumElements);
     _tmp4 = _buffer0;
 
-    sgemm_NT_NT_m1_48_n9_16_k3_nps_c033cdc(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp4, 0, NumElements);
+    sgemm_NT_NT_m1_40_n9_8_k3_nps_cd5eaf9(const_cast<const float *>(kDivMT(2)), 0, const_cast<const float **>(dQ(4)), ExtraOffset_dQ(4), _tmp4, 0, NumElements);
 
-    sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(5), ExtraOffset_dQ(5), NumElements);
+    sgemm_NT_NT_m1_8_n9_9_k9_spp_7cd43db(const_cast<const float *>(_tmp4), 0, const_cast<const float **>(star(2)), ExtraOffset_star(2), dQ(5), ExtraOffset_dQ(5), NumElements);
     device.api->popStackMemory();
   }
   constexpr unsigned long const kernel::godunovState::NonZeroFlops[];
@@ -1650,12 +1650,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(0,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(0,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_539b719(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute1() {
@@ -1666,12 +1666,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(1,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(1,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_539b719(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute2() {
@@ -1682,12 +1682,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(2,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(2,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_539b719(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute3() {
@@ -1698,12 +1698,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(3,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(3,0)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_539b719(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute4() {
@@ -1714,12 +1714,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(0,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(0,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute5() {
@@ -1730,12 +1730,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(1,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(1,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute6() {
@@ -1746,12 +1746,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(2,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(2,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute7() {
@@ -1762,12 +1762,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(3,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(3,1)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute8() {
@@ -1778,12 +1778,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(0,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(0,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute9() {
@@ -1794,12 +1794,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(1,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(1,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute10() {
@@ -1810,12 +1810,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(2,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(2,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute11() {
@@ -1826,12 +1826,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(3,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(3,2)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute12() {
@@ -1842,12 +1842,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(0,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(0,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute13() {
@@ -1858,12 +1858,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(1,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(1,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute14() {
@@ -1874,12 +1874,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(2,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(2,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   void kernel::godunovState::execute15() {
@@ -1890,12 +1890,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const_cast<const float *>(V3mTo2n(3,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const_cast<const float *>(V3mTo2n(3,3)), 0, const_cast<const float **>(Q), ExtraOffset_Q, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const_cast<const float *>(_tmp0), 0, const_cast<const float **>(godunovMatrix), ExtraOffset_godunovMatrix, godunovState, ExtraOffset_godunovState, NumElements);
     device.api->popStackMemory();
   }
   constexpr unsigned long const kernel::nodalFlux::NonZeroFlops[];
@@ -1909,12 +1909,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(0,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(0,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute1() {
@@ -1925,12 +1925,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(1,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(1,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute2() {
@@ -1941,12 +1941,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(2,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(2,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute3() {
@@ -1957,12 +1957,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(3,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(3,0)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute4() {
@@ -1973,12 +1973,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(0,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(0,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute5() {
@@ -1989,12 +1989,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(1,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(1,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute6() {
@@ -2005,12 +2005,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(2,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(2,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute7() {
@@ -2021,12 +2021,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(3,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(3,1)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute8() {
@@ -2037,12 +2037,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(0,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(0,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute9() {
@@ -2053,12 +2053,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(1,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(1,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute10() {
@@ -2069,12 +2069,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(2,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(2,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute11() {
@@ -2085,12 +2085,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(3,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(3,2)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute12() {
@@ -2101,12 +2101,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(0,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(0,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute13() {
@@ -2117,12 +2117,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(1,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(1,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute14() {
@@ -2133,12 +2133,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(2,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(2,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
   void kernel::nodalFlux::execute15() {
@@ -2149,12 +2149,12 @@ namespace device_gen_code {
     assert(NumElements != 0);
     device::DeviceInstance& device = device::DeviceInstance::getInstance();
     float *_tmp0;
-    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 576);
+    float* _buffer0 = (float*)device.api->getStackMemory(sizeof(float) * NumElements * 504);
     _tmp0 = _buffer0;
 
-    sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
+    sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const_cast<const float **>(godunovState), ExtraOffset_godunovState, const_cast<const float **>(fluxSolver), ExtraOffset_fluxSolver, _tmp0, 0, NumElements);
 
-    sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const_cast<const float *>(V3mTo2nTWDivM(3,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
+    sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const_cast<const float *>(V3mTo2nTWDivM(3,3)), 0, const_cast<const float *>(_tmp0), 0, Q, ExtraOffset_Q, NumElements);
     device.api->popStackMemory();
   }
 }

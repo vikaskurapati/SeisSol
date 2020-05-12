@@ -1,11 +1,11 @@
 #include "gemmgen_aux.h"
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m35_56_n9_9_k9_pps_47bd4ea(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetC];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetC];
     __shared__ float Scratch[81];
     float* ShrMatB = &Scratch[threadIdx.y * 81];
 
@@ -22,7 +22,7 @@ kernel_sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const float ** A, int ExtraOffsetA
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -32,34 +32,34 @@ kernel_sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const float ** A, int ExtraOffsetA
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 48 * n] = Results[n];
+        GlobMatC[threadIdx.x + 40 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m35_56_n9_9_k9_pps_47bd4ea(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m35_64_n9_9_k9_pps_91656fc<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m35_56_n9_9_k9_pps_47bd4ea<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m53_64_n9_48_k35_nsp_49df72e(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m53_56_n9_40_k35_nsp_41d708c(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[1 + ExtraOffsetA];
-    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetB];
+    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetC];
-    __shared__ float Scratch[419];
-    float* ShrMatB = &Scratch[threadIdx.y * 419];
+    __shared__ float Scratch[355];
+    float* ShrMatB = &Scratch[threadIdx.y * 355];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 5; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
     if (threadIdx.x < 35) {
-      ShrMatB[threadIdx.x + 384] = GlobMatB[threadIdx.x + 384];
+      ShrMatB[threadIdx.x + 320] = GlobMatB[threadIdx.x + 320];
     }
     __syncthreads();
 
@@ -69,44 +69,44 @@ kernel_sgemm_NT_NT_m53_64_n9_48_k35_nsp_49df72e(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 35; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 48 * n];
+          Results[n] += Value * ShrMatB[k + 40 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n] + GlobMatC[threadIdx.x + 64 * n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n] + GlobMatC[threadIdx.x + 56 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m53_64_n9_48_k35_nsp_49df72e(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m53_56_n9_40_k35_nsp_41d708c(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m53_64_n9_48_k35_nsp_49df72e<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m53_56_n9_40_k35_nsp_41d708c<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m54_64_n9_48_k35_nsp_13f0270(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m54_56_n9_40_k35_nsp_b4599dc(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[1 + ExtraOffsetA];
-    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetB];
+    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetC];
-    __shared__ float Scratch[419];
-    float* ShrMatB = &Scratch[threadIdx.y * 419];
+    __shared__ float Scratch[355];
+    float* ShrMatB = &Scratch[threadIdx.y * 355];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 5; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
     if (threadIdx.x < 35) {
-      ShrMatB[threadIdx.x + 384] = GlobMatB[threadIdx.x + 384];
+      ShrMatB[threadIdx.x + 320] = GlobMatB[threadIdx.x + 320];
     }
     __syncthreads();
 
@@ -116,44 +116,44 @@ kernel_sgemm_NT_NT_m54_64_n9_48_k35_nsp_13f0270(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 35; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 48 * n];
+          Results[n] += Value * ShrMatB[k + 40 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n] + GlobMatC[threadIdx.x + 64 * n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n] + GlobMatC[threadIdx.x + 56 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m54_64_n9_48_k35_nsp_13f0270(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m54_56_n9_40_k35_nsp_b4599dc(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m54_64_n9_48_k35_nsp_13f0270<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m54_56_n9_40_k35_nsp_b4599dc<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m55_64_n9_48_k35_nsp_6daa8d7(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m55_56_n9_40_k35_nsp_e7d889b(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[1 + ExtraOffsetA];
-    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetB];
+    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetC];
-    __shared__ float Scratch[419];
-    float* ShrMatB = &Scratch[threadIdx.y * 419];
+    __shared__ float Scratch[355];
+    float* ShrMatB = &Scratch[threadIdx.y * 355];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 5; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
     if (threadIdx.x < 35) {
-      ShrMatB[threadIdx.x + 384] = GlobMatB[threadIdx.x + 384];
+      ShrMatB[threadIdx.x + 320] = GlobMatB[threadIdx.x + 320];
     }
     __syncthreads();
 
@@ -163,25 +163,25 @@ kernel_sgemm_NT_NT_m55_64_n9_48_k35_nsp_6daa8d7(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 35; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 48 * n];
+          Results[n] += Value * ShrMatB[k + 40 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n] + GlobMatC[threadIdx.x + 64 * n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n] + GlobMatC[threadIdx.x + 56 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m55_64_n9_48_k35_nsp_6daa8d7(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m55_56_n9_40_k35_nsp_e7d889b(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m55_64_n9_48_k35_nsp_6daa8d7<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m55_56_n9_40_k35_nsp_e7d889b<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
@@ -290,20 +290,20 @@ void sgemm_NT_T_m9_9_n9_9_k9_ppp_0c970c0(float fluxScale, const float ** A, int 
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m56_64_n6_64_k56_npp_968d18f(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m56_56_n6_56_k56_npp_87cf7c3(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
-    __shared__ float Scratch[376];
-    float* ShrMatB = &Scratch[threadIdx.y * 376];
+    __shared__ float Scratch[336];
+    float* ShrMatB = &Scratch[threadIdx.y * 336];
 
     // using ExtendedPatchLoader
 #pragma unroll
     for (int i = 0; i < 5; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
-    if (threadIdx.x < 56) {
+    if (threadIdx.x < 16) {
       ShrMatB[threadIdx.x + 320] = GlobMatB[threadIdx.x + 320];
     }
     __syncthreads();
@@ -314,43 +314,43 @@ kernel_sgemm_NT_NT_m56_64_n6_64_k56_npp_968d18f(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 56; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 6; ++n) {
-          Results[n] += Value * ShrMatB[k + 64 * n];
+          Results[n] += Value * ShrMatB[k + 56 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 6; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m56_64_n6_64_k56_npp_968d18f(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m56_56_n6_56_k56_npp_87cf7c3(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m56_64_n6_64_k56_npp_968d18f<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m56_56_n6_56_k56_npp_87cf7c3<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m56_64_n6_64_k56_npp_3250429(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m56_56_n6_56_k56_npp_da40531(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
-    __shared__ float Scratch[376];
-    float* ShrMatB = &Scratch[threadIdx.y * 376];
+    __shared__ float Scratch[336];
+    float* ShrMatB = &Scratch[threadIdx.y * 336];
 
     // using ExtendedPatchLoader
 #pragma unroll
     for (int i = 0; i < 5; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
-    if (threadIdx.x < 56) {
+    if (threadIdx.x < 16) {
       ShrMatB[threadIdx.x + 320] = GlobMatB[threadIdx.x + 320];
     }
     __syncthreads();
@@ -361,44 +361,44 @@ kernel_sgemm_NT_NT_m56_64_n6_64_k56_npp_3250429(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 56; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 6; ++n) {
-          Results[n] += Value * ShrMatB[k + 64 * n];
+          Results[n] += Value * ShrMatB[k + 56 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 6; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n] + GlobMatC[threadIdx.x + 64 * n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n] + GlobMatC[threadIdx.x + 56 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m56_64_n6_64_k56_npp_3250429(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m56_56_n6_56_k56_npp_da40531(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m56_64_n6_64_k56_npp_3250429<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m56_56_n6_56_k56_npp_da40531<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(32)
-kernel_sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[568];
-    float* ShrMatB = &Scratch[threadIdx.y * 568];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[504];
+    float* ShrMatB = &Scratch[threadIdx.y * 504];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 17; ++i) {
+    for (int i = 0; i < 15; ++i) {
       ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
     }
     if (threadIdx.x < 24) {
-      ShrMatB[threadIdx.x + 544] = GlobMatB[threadIdx.x + 544];
+      ShrMatB[threadIdx.x + 480] = GlobMatB[threadIdx.x + 480];
     }
     __syncthreads();
 
@@ -408,34 +408,34 @@ kernel_sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 56; ++k) {
-        Value = GlobMatA[threadIdx.x + 32 * k];
+        Value = GlobMatA[threadIdx.x + 24 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 64 * n];
+          Results[n] += Value * ShrMatB[k + 56 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 32 * n] = Results[n];
+        GlobMatC[threadIdx.x + 24 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m21_32_n9_64_k56_nps_3c76782<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m21_24_n9_56_k56_nps_dd17eae<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetC];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetC];
     __shared__ float Scratch[162];
     float* ShrMatB = &Scratch[threadIdx.y * 81];
 
@@ -453,7 +453,7 @@ kernel_sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const float * A, int ExtraOffsetA,
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 32 * k];
+        Value = GlobMatA[threadIdx.x + 24 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -463,34 +463,33 @@ kernel_sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const float * A, int ExtraOffsetA,
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 32 * n] = Results[n];
+        GlobMatC[threadIdx.x + 24 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 2, 1);
   dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
-  kernel_sgemm_NT_NT_m21_32_n9_9_k9_sps_97c1866<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m21_24_n9_9_k9_sps_899f278<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[0 + ExtraOffsetA];
-    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetB];
+    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
-    __shared__ float Scratch[277];
-    float* ShrMatB = &Scratch[threadIdx.y * 277];
+    __shared__ float Scratch[213];
+    float* ShrMatB = &Scratch[threadIdx.y * 213];
 
     // using ExtendedPatchLoader
-#pragma unroll
-    for (int i = 0; i < 4; ++i) {
-      ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
-    }
+    ShrMatB[threadIdx.x + 0] = GlobMatB[threadIdx.x + 0];
+    ShrMatB[threadIdx.x + 64] = GlobMatB[threadIdx.x + 64];
+    ShrMatB[threadIdx.x + 128] = GlobMatB[threadIdx.x + 128];
     if (threadIdx.x < 21) {
-      ShrMatB[threadIdx.x + 256] = GlobMatB[threadIdx.x + 256];
+      ShrMatB[threadIdx.x + 192] = GlobMatB[threadIdx.x + 192];
     }
     __syncthreads();
 
@@ -500,44 +499,44 @@ kernel_sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 21; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 32 * n];
+          Results[n] += Value * ShrMatB[k + 24 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n] + GlobMatC[threadIdx.x + 64 * n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n] + GlobMatC[threadIdx.x + 56 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m56_64_n9_32_k21_nsp_0e604b1<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m56_56_n9_24_k21_nsp_41f2e57<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[0 + ExtraOffsetA];
-    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[554];
-    float* ShrMatB = &Scratch[threadIdx.y * 277];
+    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetB];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[426];
+    float* ShrMatB = &Scratch[threadIdx.y * 213];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 6; ++i) {
       ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
     }
     if (threadIdx.x < 21) {
-      ShrMatB[threadIdx.x + 256] = GlobMatB[threadIdx.x + 256];
+      ShrMatB[threadIdx.x + 192] = GlobMatB[threadIdx.x + 192];
     }
     __syncthreads();
 
@@ -547,146 +546,163 @@ kernel_sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 21; ++k) {
-        Value = GlobMatA[threadIdx.x + 32 * k];
+        Value = GlobMatA[threadIdx.x + 24 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 32 * n];
+          Results[n] += Value * ShrMatB[k + 24 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 32 * n] = Results[n];
+        GlobMatC[threadIdx.x + 24 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 2, 1);
   dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
-  kernel_sgemm_NT_NT_m21_32_n9_32_k21_nss_3b271a8<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m21_24_n9_24_k21_nss_5830167<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(576)
-kernel_scopyAddScale_m56_64_n9_64_pp_1869608(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+kernel_scopyAddScale_m56_56_n9_56_pp_88237f4(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   if ((threadIdx.z + blockDim.z * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 64];
-    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 64];
+    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 56];
+    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 56];
     if (threadIdx.x < 56) {
       GlobMatB[threadIdx.x] = Scale * GlobMatA[threadIdx.x];
     }
   }
 }
-void scopyAddScale_m56_64_n9_64_pp_1869608(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+__global__ void
+    __launch_bounds__(576)
+kernel_initialize_m56_56_p_8eacdf4(float ** A, int ExtraOffsetA, unsigned NumElements) {
+  if ((threadIdx.z + blockDim.z * blockIdx.x) < NumElements) {
+    float* GlobA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 56];
+    if (threadIdx.x < 56) {
+      GlobA[threadIdx.x] = 0.0;
+    }
+  }
+}
+void initialize_m56_56_p_8eacdf4(float ** A, int ExtraOffsetA, unsigned NumElements) {
   dim3 Block(64, 9, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_scopyAddScale_m56_64_n9_64_pp_1869608<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
+  kernel_initialize_m56_56_p_8eacdf4<<<Grid,Block>>>(A, ExtraOffsetA, NumElements);
+  CHECK_ERR;
+}
+void scopyAddScale_m56_56_n9_56_pp_88237f4(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+  initialize_m56_56_p_8eacdf4(B, ExtraOffsetB, NumElements);
+  dim3 Block(64, 9, 1);
+  dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
+  kernel_scopyAddScale_m56_56_n9_56_pp_88237f4<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(576)
-kernel_scopyAddScale_m35_64_n9_64_pp_8aadec7(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+kernel_scopyAddScale_m35_56_n9_56_pp_07aaceb(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   if ((threadIdx.z + blockDim.z * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 48];
-    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 64];
+    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 40];
+    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 56];
     if (threadIdx.x < 35) {
       GlobMatB[threadIdx.x] += Scale * GlobMatA[threadIdx.x];
     }
   }
 }
-void scopyAddScale_m35_64_n9_64_pp_8aadec7(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+void scopyAddScale_m35_56_n9_56_pp_07aaceb(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   dim3 Block(64, 9, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_scopyAddScale_m35_64_n9_64_pp_8aadec7<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
+  kernel_scopyAddScale_m35_56_n9_56_pp_07aaceb<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(288)
-kernel_scopyAddScale_m20_64_n9_64_pp_f68fa48(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+kernel_scopyAddScale_m20_56_n9_56_pp_6eb2445(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   if ((threadIdx.z + blockDim.z * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 32];
-    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 64];
+    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 24];
+    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 56];
     if (threadIdx.x < 20) {
       GlobMatB[threadIdx.x] += Scale * GlobMatA[threadIdx.x];
     }
   }
 }
-void scopyAddScale_m20_64_n9_64_pp_f68fa48(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+void scopyAddScale_m20_56_n9_56_pp_6eb2445(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   dim3 Block(32, 9, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_scopyAddScale_m20_64_n9_64_pp_f68fa48<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
+  kernel_scopyAddScale_m20_56_n9_56_pp_6eb2445<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(288)
-kernel_scopyAddScale_m10_64_n9_64_pp_5f5bfb7(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+kernel_scopyAddScale_m10_56_n9_56_pp_afcc802(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   if ((threadIdx.z + blockDim.z * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 16];
-    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 64];
+    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 56];
     if (threadIdx.x < 10) {
       GlobMatB[threadIdx.x] += Scale * GlobMatA[threadIdx.x];
     }
   }
 }
-void scopyAddScale_m10_64_n9_64_pp_5f5bfb7(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+void scopyAddScale_m10_56_n9_56_pp_afcc802(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   dim3 Block(32, 9, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_scopyAddScale_m10_64_n9_64_pp_5f5bfb7<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
+  kernel_scopyAddScale_m10_56_n9_56_pp_afcc802<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(288)
-kernel_scopyAddScale_m4_64_n9_64_pp_8b6c4ec(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+kernel_scopyAddScale_m4_56_n9_56_pp_c707c5f(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   if ((threadIdx.z + blockDim.z * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 16];
-    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 64];
+    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 8];
+    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 56];
     if (threadIdx.x < 4) {
       GlobMatB[threadIdx.x] += Scale * GlobMatA[threadIdx.x];
     }
   }
 }
-void scopyAddScale_m4_64_n9_64_pp_8b6c4ec(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+void scopyAddScale_m4_56_n9_56_pp_c707c5f(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   dim3 Block(32, 9, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_scopyAddScale_m4_64_n9_64_pp_8b6c4ec<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
+  kernel_scopyAddScale_m4_56_n9_56_pp_c707c5f<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(288)
-kernel_scopyAddScale_m1_64_n9_64_pp_ddfc1ea(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+kernel_scopyAddScale_m1_56_n9_56_pp_96cca66(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   if ((threadIdx.z + blockDim.z * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 16];
-    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 64];
+    const float* GlobMatA = &A[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetA + 0 + threadIdx.y * 8];
+    float* GlobMatB = &B[(threadIdx.z + blockDim.z * blockIdx.x)][ExtraOffsetB + 0 + threadIdx.y * 56];
     if (threadIdx.x < 1) {
       GlobMatB[threadIdx.x] += Scale * GlobMatA[threadIdx.x];
     }
   }
 }
-void scopyAddScale_m1_64_n9_64_pp_ddfc1ea(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
+void scopyAddScale_m1_56_n9_56_pp_96cca66(float Scale, const float ** A, int ExtraOffsetA, float ** B, int ExtraOffsetB, unsigned NumElements) {
   dim3 Block(32, 9, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_scopyAddScale_m1_64_n9_64_pp_ddfc1ea<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
+  kernel_scopyAddScale_m1_56_n9_56_pp_96cca66<<<Grid,Block>>>(Scale, A, ExtraOffsetA, B, ExtraOffsetB, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m35_48_n9_64_k53_nps_7539a56(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m35_40_n9_56_k53_nps_960fd76(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[565];
-    float* ShrMatB = &Scratch[threadIdx.y * 565];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[501];
+    float* ShrMatB = &Scratch[threadIdx.y * 501];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 7; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
     if (threadIdx.x < 53) {
-      ShrMatB[threadIdx.x + 512] = GlobMatB[threadIdx.x + 512];
+      ShrMatB[threadIdx.x + 448] = GlobMatB[threadIdx.x + 448];
     }
     __syncthreads();
 
@@ -696,32 +712,32 @@ kernel_sgemm_NT_NT_m35_48_n9_64_k53_nps_7539a56(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 53; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 64 * n];
+          Results[n] += Value * ShrMatB[k + 56 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 48 * n] = Results[n];
+        GlobMatC[threadIdx.x + 40 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m35_48_n9_64_k53_nps_7539a56(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m35_40_n9_56_k53_nps_960fd76(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m35_48_n9_64_k53_nps_7539a56<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m35_40_n9_56_k53_nps_960fd76<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m35_48_n9_9_k9_spp_bcf4f26(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m35_40_n9_9_k9_spp_36989d0(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[81];
@@ -740,7 +756,7 @@ kernel_sgemm_NT_NT_m35_48_n9_9_k9_spp_bcf4f26(const float * A, int ExtraOffsetA,
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -750,34 +766,34 @@ kernel_sgemm_NT_NT_m35_48_n9_9_k9_spp_bcf4f26(const float * A, int ExtraOffsetA,
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 48 * n] = Results[n];
+        GlobMatC[threadIdx.x + 40 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m35_48_n9_9_k9_spp_bcf4f26(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m35_40_n9_9_k9_spp_36989d0(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m35_48_n9_9_k9_spp_bcf4f26<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m35_40_n9_9_k9_spp_36989d0<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m35_48_n9_64_k54_nps_bfcf3fd(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m35_40_n9_56_k54_nps_2269f5e(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[566];
-    float* ShrMatB = &Scratch[threadIdx.y * 566];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[502];
+    float* ShrMatB = &Scratch[threadIdx.y * 502];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 7; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
     if (threadIdx.x < 54) {
-      ShrMatB[threadIdx.x + 512] = GlobMatB[threadIdx.x + 512];
+      ShrMatB[threadIdx.x + 448] = GlobMatB[threadIdx.x + 448];
     }
     __syncthreads();
 
@@ -787,32 +803,32 @@ kernel_sgemm_NT_NT_m35_48_n9_64_k54_nps_bfcf3fd(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 54; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 64 * n];
+          Results[n] += Value * ShrMatB[k + 56 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 48 * n] = Results[n];
+        GlobMatC[threadIdx.x + 40 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m35_48_n9_64_k54_nps_bfcf3fd(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m35_40_n9_56_k54_nps_2269f5e(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m35_48_n9_64_k54_nps_bfcf3fd<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m35_40_n9_56_k54_nps_2269f5e<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m35_40_n9_9_k9_spp_9d7d789(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[81];
@@ -831,7 +847,7 @@ kernel_sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const float * A, int ExtraOffsetA,
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -841,34 +857,34 @@ kernel_sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const float * A, int ExtraOffsetA,
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 48 * n] = Results[n] + GlobMatC[threadIdx.x + 48 * n];
+        GlobMatC[threadIdx.x + 40 * n] = Results[n] + GlobMatC[threadIdx.x + 40 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m35_40_n9_9_k9_spp_9d7d789(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m35_48_n9_9_k9_spp_d135d69<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m35_40_n9_9_k9_spp_9d7d789<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m35_48_n9_64_k55_nps_72bd187(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m35_40_n9_56_k55_nps_5d71d3c(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 432 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[567];
-    float* ShrMatB = &Scratch[threadIdx.y * 567];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 360 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[503];
+    float* ShrMatB = &Scratch[threadIdx.y * 503];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 7; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
     if (threadIdx.x < 55) {
-      ShrMatB[threadIdx.x + 512] = GlobMatB[threadIdx.x + 512];
+      ShrMatB[threadIdx.x + 448] = GlobMatB[threadIdx.x + 448];
     }
     __syncthreads();
 
@@ -878,41 +894,41 @@ kernel_sgemm_NT_NT_m35_48_n9_64_k55_nps_72bd187(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 55; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 64 * n];
+          Results[n] += Value * ShrMatB[k + 56 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 48 * n] = Results[n];
+        GlobMatC[threadIdx.x + 40 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m35_48_n9_64_k55_nps_72bd187(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m35_40_n9_56_k55_nps_5d71d3c(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m35_48_n9_64_k55_nps_72bd187<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m35_40_n9_56_k55_nps_5d71d3c<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m20_48_n9_48_k32_nps_c879df6(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m20_40_n9_40_k32_nps_c33eb71(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetC];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetC];
     __shared__ float Scratch[576];
     float* ShrMatB = &Scratch[threadIdx.y * 288];
 
     // using ExactPatchLoader
 #pragma unroll
     for (int i = 0; i < 9; ++i) {
-      ShrMatB[threadIdx.x + 0 + i * 32] = GlobMatB[threadIdx.x + 0 + i * 48];
+      ShrMatB[threadIdx.x + 0 + i * 32] = GlobMatB[threadIdx.x + 0 + i * 40];
     }
     __syncthreads();
 
@@ -922,7 +938,7 @@ kernel_sgemm_NT_NT_m20_48_n9_48_k32_nps_c879df6(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 32; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -932,22 +948,22 @@ kernel_sgemm_NT_NT_m20_48_n9_48_k32_nps_c879df6(const float * __restrict__ A, in
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 32 * n] = Results[n];
+        GlobMatC[threadIdx.x + 24 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m20_48_n9_48_k32_nps_c879df6(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m20_40_n9_40_k32_nps_c33eb71(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 2, 1);
   dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
-  kernel_sgemm_NT_NT_m20_48_n9_48_k32_nps_c879df6<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m20_40_n9_40_k32_nps_c33eb71<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m20_32_n9_9_k9_spp_7cafb26(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m20_24_n9_9_k9_spp_0ba88dd(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[162];
@@ -967,7 +983,7 @@ kernel_sgemm_NT_NT_m20_32_n9_9_k9_spp_7cafb26(const float * A, int ExtraOffsetA,
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 32 * k];
+        Value = GlobMatA[threadIdx.x + 24 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -977,34 +993,34 @@ kernel_sgemm_NT_NT_m20_32_n9_9_k9_spp_7cafb26(const float * A, int ExtraOffsetA,
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 32 * n] = Results[n];
+        GlobMatC[threadIdx.x + 24 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m20_32_n9_9_k9_spp_7cafb26(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m20_24_n9_9_k9_spp_0ba88dd(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 2, 1);
   dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
-  kernel_sgemm_NT_NT_m20_32_n9_9_k9_spp_7cafb26<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m20_24_n9_9_k9_spp_0ba88dd<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
-    __launch_bounds__(32)
-kernel_sgemm_NT_NT_m20_48_n9_48_k33_nps_34e9903(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+    __launch_bounds__(64)
+kernel_sgemm_NT_NT_m20_40_n9_40_k33_nps_c9310c2(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[417];
-    float* ShrMatB = &Scratch[threadIdx.y * 417];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[706];
+    float* ShrMatB = &Scratch[threadIdx.y * 353];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 13; ++i) {
+    for (int i = 0; i < 11; ++i) {
       ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
     }
     if (threadIdx.x < 1) {
-      ShrMatB[threadIdx.x + 416] = GlobMatB[threadIdx.x + 416];
+      ShrMatB[threadIdx.x + 352] = GlobMatB[threadIdx.x + 352];
     }
     __syncthreads();
 
@@ -1014,32 +1030,32 @@ kernel_sgemm_NT_NT_m20_48_n9_48_k33_nps_34e9903(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 33; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 48 * n];
+          Results[n] += Value * ShrMatB[k + 40 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 32 * n] = Results[n];
+        GlobMatC[threadIdx.x + 24 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m20_48_n9_48_k33_nps_34e9903(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
-  dim3 Block(32, 1, 1);
-  dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m20_48_n9_48_k33_nps_34e9903<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+void sgemm_NT_NT_m20_40_n9_40_k33_nps_c9310c2(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+  dim3 Block(32, 2, 1);
+  dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
+  kernel_sgemm_NT_NT_m20_40_n9_40_k33_nps_c9310c2<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m20_24_n9_9_k9_spp_88ab2d4(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[162];
@@ -1059,7 +1075,7 @@ kernel_sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const float * A, int ExtraOffsetA,
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 32 * k];
+        Value = GlobMatA[threadIdx.x + 24 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1069,34 +1085,34 @@ kernel_sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const float * A, int ExtraOffsetA,
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 32 * n] = Results[n] + GlobMatC[threadIdx.x + 32 * n];
+        GlobMatC[threadIdx.x + 24 * n] = Results[n] + GlobMatC[threadIdx.x + 24 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m20_24_n9_9_k9_spp_88ab2d4(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 2, 1);
   dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
-  kernel_sgemm_NT_NT_m20_32_n9_9_k9_spp_51f73de<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m20_24_n9_9_k9_spp_88ab2d4<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
-    __launch_bounds__(32)
-kernel_sgemm_NT_NT_m20_48_n9_48_k34_nps_c44f1e3(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+    __launch_bounds__(64)
+kernel_sgemm_NT_NT_m20_40_n9_40_k34_nps_4344487(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 288 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[418];
-    float* ShrMatB = &Scratch[threadIdx.y * 418];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 216 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[708];
+    float* ShrMatB = &Scratch[threadIdx.y * 354];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 13; ++i) {
+    for (int i = 0; i < 11; ++i) {
       ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
     }
     if (threadIdx.x < 2) {
-      ShrMatB[threadIdx.x + 416] = GlobMatB[threadIdx.x + 416];
+      ShrMatB[threadIdx.x + 352] = GlobMatB[threadIdx.x + 352];
     }
     __syncthreads();
 
@@ -1106,44 +1122,44 @@ kernel_sgemm_NT_NT_m20_48_n9_48_k34_nps_c44f1e3(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 34; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 48 * n];
+          Results[n] += Value * ShrMatB[k + 40 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 32 * n] = Results[n];
+        GlobMatC[threadIdx.x + 24 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m20_48_n9_48_k34_nps_c44f1e3(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
-  dim3 Block(32, 1, 1);
-  dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m20_48_n9_48_k34_nps_c44f1e3<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+void sgemm_NT_NT_m20_40_n9_40_k34_nps_4344487(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+  dim3 Block(32, 2, 1);
+  dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
+  kernel_sgemm_NT_NT_m20_40_n9_40_k34_nps_4344487<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
-    __launch_bounds__(64)
-kernel_sgemm_NT_NT_m10_48_n9_32_k17_nps_eeac906(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+    __launch_bounds__(96)
+kernel_sgemm_NT_NT_m10_40_n9_24_k17_nps_41e96ee(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[546];
-    float* ShrMatB = &Scratch[threadIdx.y * 273];
+    __shared__ float Scratch[627];
+    float* ShrMatB = &Scratch[threadIdx.y * 209];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 6; ++i) {
       ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
     }
     if (threadIdx.x < 17) {
-      ShrMatB[threadIdx.x + 256] = GlobMatB[threadIdx.x + 256];
+      ShrMatB[threadIdx.x + 192] = GlobMatB[threadIdx.x + 192];
     }
     __syncthreads();
 
@@ -1153,11 +1169,11 @@ kernel_sgemm_NT_NT_m10_48_n9_32_k17_nps_eeac906(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 17; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 32 * n];
+          Results[n] += Value * ShrMatB[k + 24 * n];
         }
       }
 
@@ -1168,10 +1184,10 @@ kernel_sgemm_NT_NT_m10_48_n9_32_k17_nps_eeac906(const float * __restrict__ A, in
     }
   }
 }
-void sgemm_NT_NT_m10_48_n9_32_k17_nps_eeac906(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
-  dim3 Block(32, 2, 1);
-  dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
-  kernel_sgemm_NT_NT_m10_48_n9_32_k17_nps_eeac906<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+void sgemm_NT_NT_m10_40_n9_24_k17_nps_41e96ee(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+  dim3 Block(32, 3, 1);
+  dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
+  kernel_sgemm_NT_NT_m10_40_n9_24_k17_nps_41e96ee<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
@@ -1220,22 +1236,22 @@ void sgemm_NT_NT_m10_16_n9_9_k9_spp_afbfa38(const float * A, int ExtraOffsetA, c
   CHECK_ERR;
 }
 __global__ void
-    __launch_bounds__(64)
-kernel_sgemm_NT_NT_m10_48_n9_32_k18_nps_2125e35(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+    __launch_bounds__(96)
+kernel_sgemm_NT_NT_m10_40_n9_24_k18_nps_20ec594(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[548];
-    float* ShrMatB = &Scratch[threadIdx.y * 274];
+    __shared__ float Scratch[630];
+    float* ShrMatB = &Scratch[threadIdx.y * 210];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 6; ++i) {
       ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
     }
     if (threadIdx.x < 18) {
-      ShrMatB[threadIdx.x + 256] = GlobMatB[threadIdx.x + 256];
+      ShrMatB[threadIdx.x + 192] = GlobMatB[threadIdx.x + 192];
     }
     __syncthreads();
 
@@ -1245,11 +1261,11 @@ kernel_sgemm_NT_NT_m10_48_n9_32_k18_nps_2125e35(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 18; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 32 * n];
+          Results[n] += Value * ShrMatB[k + 24 * n];
         }
       }
 
@@ -1260,10 +1276,10 @@ kernel_sgemm_NT_NT_m10_48_n9_32_k18_nps_2125e35(const float * __restrict__ A, in
     }
   }
 }
-void sgemm_NT_NT_m10_48_n9_32_k18_nps_2125e35(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
-  dim3 Block(32, 2, 1);
-  dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
-  kernel_sgemm_NT_NT_m10_48_n9_32_k18_nps_2125e35<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+void sgemm_NT_NT_m10_40_n9_24_k18_nps_20ec594(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+  dim3 Block(32, 3, 1);
+  dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
+  kernel_sgemm_NT_NT_m10_40_n9_24_k18_nps_20ec594<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
@@ -1312,22 +1328,22 @@ void sgemm_NT_NT_m10_16_n9_9_k9_spp_fe81cdb(const float * A, int ExtraOffsetA, c
   CHECK_ERR;
 }
 __global__ void
-    __launch_bounds__(64)
-kernel_sgemm_NT_NT_m10_48_n9_32_k19_nps_63bce85(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+    __launch_bounds__(96)
+kernel_sgemm_NT_NT_m10_40_n9_24_k19_nps_277801b(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[550];
-    float* ShrMatB = &Scratch[threadIdx.y * 275];
+    __shared__ float Scratch[633];
+    float* ShrMatB = &Scratch[threadIdx.y * 211];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 6; ++i) {
       ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
     }
     if (threadIdx.x < 19) {
-      ShrMatB[threadIdx.x + 256] = GlobMatB[threadIdx.x + 256];
+      ShrMatB[threadIdx.x + 192] = GlobMatB[threadIdx.x + 192];
     }
     __syncthreads();
 
@@ -1337,11 +1353,11 @@ kernel_sgemm_NT_NT_m10_48_n9_32_k19_nps_63bce85(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 19; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 32 * n];
+          Results[n] += Value * ShrMatB[k + 24 * n];
         }
       }
 
@@ -1352,19 +1368,19 @@ kernel_sgemm_NT_NT_m10_48_n9_32_k19_nps_63bce85(const float * __restrict__ A, in
     }
   }
 }
-void sgemm_NT_NT_m10_48_n9_32_k19_nps_63bce85(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
-  dim3 Block(32, 2, 1);
-  dim3 Grid((NumElements + 2 - 1) / 2, 1, 1);
-  kernel_sgemm_NT_NT_m10_48_n9_32_k19_nps_63bce85<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+void sgemm_NT_NT_m10_40_n9_24_k19_nps_277801b(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+  dim3 Block(32, 3, 1);
+  dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
+  kernel_sgemm_NT_NT_m10_40_n9_24_k19_nps_277801b<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m4_48_n9_16_k7_nps_dff4b53(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m4_40_n9_16_k7_nps_625feb0(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetC];
     __shared__ float Scratch[405];
     float* ShrMatB = &Scratch[threadIdx.y * 135];
 
@@ -1384,7 +1400,7 @@ kernel_sgemm_NT_NT_m4_48_n9_16_k7_nps_dff4b53(const float * __restrict__ A, int 
       float Value;
 
       for (int k = 0; k < 7; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1394,22 +1410,22 @@ kernel_sgemm_NT_NT_m4_48_n9_16_k7_nps_dff4b53(const float * __restrict__ A, int 
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m4_48_n9_16_k7_nps_dff4b53(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m4_40_n9_16_k7_nps_625feb0(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m4_48_n9_16_k7_nps_dff4b53<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m4_40_n9_16_k7_nps_625feb0<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m4_16_n9_9_k9_spp_b787603(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m4_8_n9_9_k9_spp_67deb58(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[243];
@@ -1429,7 +1445,7 @@ kernel_sgemm_NT_NT_m4_16_n9_9_k9_spp_b787603(const float * A, int ExtraOffsetA, 
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 16 * k];
+        Value = GlobMatA[threadIdx.x + 8 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1439,24 +1455,24 @@ kernel_sgemm_NT_NT_m4_16_n9_9_k9_spp_b787603(const float * A, int ExtraOffsetA, 
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m4_16_n9_9_k9_spp_b787603(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m4_8_n9_9_k9_spp_67deb58(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m4_16_n9_9_k9_spp_b787603<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m4_8_n9_9_k9_spp_67deb58<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m4_48_n9_16_k8_nps_7c6bd3e(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m4_40_n9_16_k8_nps_8f843c2(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetC];
     __shared__ float Scratch[408];
     float* ShrMatB = &Scratch[threadIdx.y * 136];
 
@@ -1476,7 +1492,7 @@ kernel_sgemm_NT_NT_m4_48_n9_16_k8_nps_7c6bd3e(const float * __restrict__ A, int 
       float Value;
 
       for (int k = 0; k < 8; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1486,22 +1502,22 @@ kernel_sgemm_NT_NT_m4_48_n9_16_k8_nps_7c6bd3e(const float * __restrict__ A, int 
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m4_48_n9_16_k8_nps_7c6bd3e(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m4_40_n9_16_k8_nps_8f843c2(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m4_48_n9_16_k8_nps_7c6bd3e<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m4_40_n9_16_k8_nps_8f843c2<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m4_8_n9_9_k9_spp_784eae3(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[243];
@@ -1521,7 +1537,7 @@ kernel_sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const float * A, int ExtraOffsetA, 
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 16 * k];
+        Value = GlobMatA[threadIdx.x + 8 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1531,24 +1547,24 @@ kernel_sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const float * A, int ExtraOffsetA, 
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n] + GlobMatC[threadIdx.x + 16 * n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n] + GlobMatC[threadIdx.x + 8 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m4_8_n9_9_k9_spp_784eae3(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m4_16_n9_9_k9_spp_fbdc4fe<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m4_8_n9_9_k9_spp_784eae3<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m4_48_n9_16_k9_nps_83bc4d7(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m4_40_n9_16_k9_nps_d74565c(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetC];
     __shared__ float Scratch[411];
     float* ShrMatB = &Scratch[threadIdx.y * 137];
 
@@ -1568,7 +1584,7 @@ kernel_sgemm_NT_NT_m4_48_n9_16_k9_nps_83bc4d7(const float * __restrict__ A, int 
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1578,34 +1594,32 @@ kernel_sgemm_NT_NT_m4_48_n9_16_k9_nps_83bc4d7(const float * __restrict__ A, int 
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m4_48_n9_16_k9_nps_83bc4d7(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m4_40_n9_16_k9_nps_d74565c(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m4_48_n9_16_k9_nps_83bc4d7<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m4_40_n9_16_k9_nps_d74565c<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m1_48_n9_16_k1_nps_7a8cc39(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m1_40_n9_8_k1_nps_2533254(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[387];
-    float* ShrMatB = &Scratch[threadIdx.y * 129];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[195];
+    float* ShrMatB = &Scratch[threadIdx.y * 65];
 
     // using ExtendedPatchLoader
-#pragma unroll
-    for (int i = 0; i < 4; ++i) {
-      ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
-    }
+    ShrMatB[threadIdx.x + 0] = GlobMatB[threadIdx.x + 0];
+    ShrMatB[threadIdx.x + 32] = GlobMatB[threadIdx.x + 32];
     if (threadIdx.x < 1) {
-      ShrMatB[threadIdx.x + 128] = GlobMatB[threadIdx.x + 128];
+      ShrMatB[threadIdx.x + 64] = GlobMatB[threadIdx.x + 64];
     }
     __syncthreads();
 
@@ -1615,32 +1629,32 @@ kernel_sgemm_NT_NT_m1_48_n9_16_k1_nps_7a8cc39(const float * __restrict__ A, int 
       float Value;
 
       for (int k = 0; k < 1; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 16 * n];
+          Results[n] += Value * ShrMatB[k + 8 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m1_48_n9_16_k1_nps_7a8cc39(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m1_40_n9_8_k1_nps_2533254(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m1_48_n9_16_k1_nps_7a8cc39<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m1_40_n9_8_k1_nps_2533254<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m1_16_n9_9_k9_spp_8da6d94(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m1_8_n9_9_k9_spp_5c45fb8(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[243];
@@ -1660,7 +1674,7 @@ kernel_sgemm_NT_NT_m1_16_n9_9_k9_spp_8da6d94(const float * A, int ExtraOffsetA, 
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 16 * k];
+        Value = GlobMatA[threadIdx.x + 8 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1670,34 +1684,32 @@ kernel_sgemm_NT_NT_m1_16_n9_9_k9_spp_8da6d94(const float * A, int ExtraOffsetA, 
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m1_16_n9_9_k9_spp_8da6d94(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m1_8_n9_9_k9_spp_5c45fb8(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m1_16_n9_9_k9_spp_8da6d94<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m1_8_n9_9_k9_spp_5c45fb8<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m1_48_n9_16_k2_nps_04350e1(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m1_40_n9_8_k2_nps_a20e3a8(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[390];
-    float* ShrMatB = &Scratch[threadIdx.y * 130];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[198];
+    float* ShrMatB = &Scratch[threadIdx.y * 66];
 
     // using ExtendedPatchLoader
-#pragma unroll
-    for (int i = 0; i < 4; ++i) {
-      ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
-    }
+    ShrMatB[threadIdx.x + 0] = GlobMatB[threadIdx.x + 0];
+    ShrMatB[threadIdx.x + 32] = GlobMatB[threadIdx.x + 32];
     if (threadIdx.x < 2) {
-      ShrMatB[threadIdx.x + 128] = GlobMatB[threadIdx.x + 128];
+      ShrMatB[threadIdx.x + 64] = GlobMatB[threadIdx.x + 64];
     }
     __syncthreads();
 
@@ -1707,32 +1719,32 @@ kernel_sgemm_NT_NT_m1_48_n9_16_k2_nps_04350e1(const float * __restrict__ A, int 
       float Value;
 
       for (int k = 0; k < 2; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 16 * n];
+          Results[n] += Value * ShrMatB[k + 8 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m1_48_n9_16_k2_nps_04350e1(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m1_40_n9_8_k2_nps_a20e3a8(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m1_48_n9_16_k2_nps_04350e1<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m1_40_n9_8_k2_nps_a20e3a8<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m1_8_n9_9_k9_spp_7cd43db(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[243];
@@ -1752,7 +1764,7 @@ kernel_sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const float * A, int ExtraOffsetA, 
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 16 * k];
+        Value = GlobMatA[threadIdx.x + 8 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1762,34 +1774,32 @@ kernel_sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const float * A, int ExtraOffsetA, 
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n] + GlobMatC[threadIdx.x + 16 * n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n] + GlobMatC[threadIdx.x + 8 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m1_8_n9_9_k9_spp_7cd43db(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m1_16_n9_9_k9_spp_fe6bf6f<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m1_8_n9_9_k9_spp_7cd43db<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(96)
-kernel_sgemm_NT_NT_m1_48_n9_16_k3_nps_c033cdc(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m1_40_n9_8_k3_nps_cd5eaf9(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[48 + ExtraOffsetA];
+    const float* GlobMatA = &A[40 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][1 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 144 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[393];
-    float* ShrMatB = &Scratch[threadIdx.y * 131];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 72 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[201];
+    float* ShrMatB = &Scratch[threadIdx.y * 67];
 
     // using ExtendedPatchLoader
-#pragma unroll
-    for (int i = 0; i < 4; ++i) {
-      ShrMatB[threadIdx.x + i * 32] = GlobMatB[threadIdx.x + i * 32];
-    }
+    ShrMatB[threadIdx.x + 0] = GlobMatB[threadIdx.x + 0];
+    ShrMatB[threadIdx.x + 32] = GlobMatB[threadIdx.x + 32];
     if (threadIdx.x < 3) {
-      ShrMatB[threadIdx.x + 128] = GlobMatB[threadIdx.x + 128];
+      ShrMatB[threadIdx.x + 64] = GlobMatB[threadIdx.x + 64];
     }
     __syncthreads();
 
@@ -1799,44 +1809,44 @@ kernel_sgemm_NT_NT_m1_48_n9_16_k3_nps_c033cdc(const float * __restrict__ A, int 
       float Value;
 
       for (int k = 0; k < 3; ++k) {
-        Value = GlobMatA[threadIdx.x + 48 * k];
+        Value = GlobMatA[threadIdx.x + 40 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 16 * n];
+          Results[n] += Value * ShrMatB[k + 8 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 16 * n] = Results[n];
+        GlobMatC[threadIdx.x + 8 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m1_48_n9_16_k3_nps_c033cdc(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m1_40_n9_8_k3_nps_cd5eaf9(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(32, 3, 1);
   dim3 Grid((NumElements + 3 - 1) / 3, 1, 1);
-  kernel_sgemm_NT_NT_m1_48_n9_16_k3_nps_c033cdc<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m1_40_n9_8_k3_nps_cd5eaf9<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 576 + 0 + ExtraOffsetC];
-    __shared__ float Scratch[568];
-    float* ShrMatB = &Scratch[threadIdx.y * 568];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 504 + 0 + ExtraOffsetC];
+    __shared__ float Scratch[504];
+    float* ShrMatB = &Scratch[threadIdx.y * 504];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 7; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
     if (threadIdx.x < 56) {
-      ShrMatB[threadIdx.x + 512] = GlobMatB[threadIdx.x + 512];
+      ShrMatB[threadIdx.x + 448] = GlobMatB[threadIdx.x + 448];
     }
     __syncthreads();
 
@@ -1846,32 +1856,32 @@ kernel_sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 56; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 64 * n];
+          Results[n] += Value * ShrMatB[k + 56 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d(const float * __restrict__ A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m49_64_n9_64_k56_nps_29706f6<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m49_56_n9_56_k56_nps_4ae838d<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m49_56_n9_9_k9_spp_539b719(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 576 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 504 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[81];
@@ -1890,7 +1900,7 @@ kernel_sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const float * A, int ExtraOffsetA,
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1900,22 +1910,22 @@ kernel_sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const float * A, int ExtraOffsetA,
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m49_56_n9_9_k9_spp_539b719(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m49_64_n9_9_k9_spp_43ea6a7<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m49_56_n9_9_k9_spp_539b719<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
-    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 576 + 0 + ExtraOffsetA];
+    const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x) * 504 + 0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
     __shared__ float Scratch[81];
@@ -1934,7 +1944,7 @@ kernel_sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const float * A, int ExtraOffsetA,
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1944,24 +1954,24 @@ kernel_sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const float * A, int ExtraOffsetA,
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n] + GlobMatC[threadIdx.x + 64 * n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n] + GlobMatC[threadIdx.x + 56 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417(const float * A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m49_64_n9_9_k9_spp_b4ee274<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m49_56_n9_9_k9_spp_082a417<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetA];
     const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetB];
-    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 576 + 0 + ExtraOffsetC];
+    float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x) * 504 + 0 + ExtraOffsetC];
     __shared__ float Scratch[81];
     float* ShrMatB = &Scratch[threadIdx.y * 81];
 
@@ -1978,7 +1988,7 @@ kernel_sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const float ** A, int ExtraOffsetA
       float Value;
 
       for (int k = 0; k < 9; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
@@ -1988,34 +1998,34 @@ kernel_sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const float ** A, int ExtraOffsetA
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n];
       }
     }
   }
 }
-void sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01(const float ** A, int ExtraOffsetA, const float ** B, int ExtraOffsetB, float * C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m49_64_n9_9_k9_pps_4046c83<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m49_56_n9_9_k9_pps_834df01<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }
 __global__ void
     __launch_bounds__(64)
-kernel_sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+kernel_sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   if ((threadIdx.y + blockDim.y * blockIdx.x) < NumElements) {
     const float* GlobMatA = &A[0 + ExtraOffsetA];
-    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 576 + 0 + ExtraOffsetB];
+    const float* GlobMatB = &B[(threadIdx.y + blockDim.y * blockIdx.x) * 504 + 0 + ExtraOffsetB];
     float* GlobMatC = &C[(threadIdx.y + blockDim.y * blockIdx.x)][0 + ExtraOffsetC];
-    __shared__ float Scratch[561];
-    float* ShrMatB = &Scratch[threadIdx.y * 561];
+    __shared__ float Scratch[497];
+    float* ShrMatB = &Scratch[threadIdx.y * 497];
 
     // using ExtendedPatchLoader
 #pragma unroll
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 7; ++i) {
       ShrMatB[threadIdx.x + i * 64] = GlobMatB[threadIdx.x + i * 64];
     }
     if (threadIdx.x < 49) {
-      ShrMatB[threadIdx.x + 512] = GlobMatB[threadIdx.x + 512];
+      ShrMatB[threadIdx.x + 448] = GlobMatB[threadIdx.x + 448];
     }
     __syncthreads();
 
@@ -2025,24 +2035,24 @@ kernel_sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const float * __restrict__ A, in
       float Value;
 
       for (int k = 0; k < 49; ++k) {
-        Value = GlobMatA[threadIdx.x + 64 * k];
+        Value = GlobMatA[threadIdx.x + 56 * k];
 
 #pragma unroll
         for (int n = 0; n < 9; ++n) {
-          Results[n] += Value * ShrMatB[k + 64 * n];
+          Results[n] += Value * ShrMatB[k + 56 * n];
         }
       }
 
 #pragma unroll
       for (int n = 0; n < 9; ++n) {
-        GlobMatC[threadIdx.x + 64 * n] = Results[n] + GlobMatC[threadIdx.x + 64 * n];
+        GlobMatC[threadIdx.x + 56 * n] = Results[n] + GlobMatC[threadIdx.x + 56 * n];
       }
     }
   }
 }
-void sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
+void sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194(const float * __restrict__ A, int ExtraOffsetA, const float * B, int ExtraOffsetB, float ** C, int ExtraOffsetC, unsigned NumElements) {
   dim3 Block(64, 1, 1);
   dim3 Grid((NumElements + 1 - 1) / 1, 1, 1);
-  kernel_sgemm_NT_NT_m56_64_n9_64_k49_nsp_01c641c<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
+  kernel_sgemm_NT_NT_m56_56_n9_56_k49_nsp_572e194<<<Grid,Block>>>(A, ExtraOffsetA, B, ExtraOffsetB, C, ExtraOffsetC, NumElements);
   CHECK_ERR;
 }

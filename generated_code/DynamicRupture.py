@@ -42,7 +42,7 @@ from yateto import Tensor, Scalar, simpleParameterSpace
 from yateto.input import parseJSONMatrixFile
 from multSim import OptionalDimTensor
 
-def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod):
+def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod, platforms):
   if dynamicRuptureMethod == 'quadrature':
     numberOfPoints = (aderdg.order+1)**2
   elif dynamicRuptureMethod == 'cellaverage':
@@ -65,11 +65,17 @@ def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod):
   gShape = (numberOfPoints, aderdg.numberOfQuantities())
   godunovState = OptionalDimTensor('godunovState', aderdg.Q.optName(), aderdg.Q.optSize(), aderdg.Q.optPos(), gShape, alignStride=True)
 
-  generator.add('rotateGodunovStateLocal', godunovMatrix['qp'] <= aderdg.Tinv['kq'] * aderdg.QgodLocal['kp'])
-  generator.add('rotateGodunovStateNeighbor', godunovMatrix['qp'] <= aderdg.Tinv['kq'] * aderdg.QgodNeighbor['kp'])
+  generator.add('rotateGodunovStateLocal',
+                godunovMatrix['qp'] <= aderdg.Tinv['kq'] * aderdg.QgodLocal['kp'],
+                platform='cpu')
+  generator.add('rotateGodunovStateNeighbor',
+                godunovMatrix['qp'] <= aderdg.Tinv['kq'] * aderdg.QgodNeighbor['kp'],
+                platform='cpu')
 
   fluxScale = Scalar('fluxScale')
-  generator.add('rotateFluxMatrix', fluxSolver['qp'] <= fluxScale * aderdg.starMatrix(0)['qk'] * aderdg.T['pk'])
+  generator.add('rotateFluxMatrix',
+                fluxSolver['qp'] <= fluxScale * aderdg.starMatrix(0)['qk'] * aderdg.T['pk'],
+                platform='cpu')
 
   def godunovStateGenerator(i,h):
     target = godunovState['kp']
@@ -78,8 +84,19 @@ def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod):
       return target <= term
     return target <= target + term
   godunovStatePrefetch = lambda i,h: godunovState
-  generator.addFamily('godunovState', simpleParameterSpace(4,4), godunovStateGenerator, godunovStatePrefetch)
+  generator.addFamily('godunovState',
+                      simpleParameterSpace(4,4),
+                      godunovStateGenerator,
+                      godunovStatePrefetch,
+                      platform='cpu')
 
   nodalFluxGenerator = lambda i,h: aderdg.extendedQTensor()['kp'] <= aderdg.extendedQTensor()['kp'] + db.V3mTo2nTWDivM[i,h][aderdg.t('kl')] * godunovState['lq'] * fluxSolver['qp']
   nodalFluxPrefetch = lambda i,h: aderdg.I
-  generator.addFamily('nodalFlux', simpleParameterSpace(4,4), nodalFluxGenerator, nodalFluxPrefetch)
+
+  for platform in platforms:
+    name_prefix = f'{platform}_' if platform == 'gpu' else ''
+    generator.addFamily(f'{name_prefix}nodalFlux',
+                        simpleParameterSpace(4,4),
+                        nodalFluxGenerator,
+                        nodalFluxPrefetch,
+                        platform=platform)

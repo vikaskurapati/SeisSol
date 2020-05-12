@@ -9,7 +9,7 @@ namespace device_gen_code {
   namespace kernel {
     struct volume {
       constexpr static unsigned long const NonZeroFlops = 34839;
-      constexpr static unsigned long const HardwareFlops = 144288;
+      constexpr static unsigned long const HardwareFlops = 125280;
 
       float const** I{};
       float** Q{};
@@ -80,7 +80,7 @@ namespace device_gen_code {
   namespace kernel {
     struct plConvertToNodal {
       constexpr static unsigned long const NonZeroFlops = 33048;
-      constexpr static unsigned long const HardwareFlops = 43008;
+      constexpr static unsigned long const HardwareFlops = 37632;
 
       float const** QStress{};
       float** QStressNodal{};
@@ -97,7 +97,7 @@ namespace device_gen_code {
   namespace kernel {
     struct plConvertToModal {
       constexpr static unsigned long const NonZeroFlops = 31476;
-      constexpr static unsigned long const HardwareFlops = 43008;
+      constexpr static unsigned long const HardwareFlops = 37632;
 
       float** QStress{};
       float const** QStressNodal{};
@@ -114,7 +114,7 @@ namespace device_gen_code {
   namespace kernel {
     struct localFlux {
       constexpr static unsigned long const NonZeroFlops[] = {9936, 10080, 31968, 27216};
-      constexpr static unsigned long const HardwareFlops[] = {61632, 61632, 61632, 61632};
+      constexpr static unsigned long const HardwareFlops[] = {49248, 49248, 49248, 49248};
 
       float const** AplusT{};
       float const** I{};
@@ -158,7 +158,7 @@ namespace device_gen_code {
   namespace kernel {
     struct neighboringFlux {
       constexpr static unsigned long const NonZeroFlops[] = {11349, 10125, 11349, 11421, 10197, 11421, 22365, 21141, 22365, 19989, 18765, 19989, 11421, 10197, 11421, 11493, 10269, 11493, 22437, 21213, 22437, 20061, 18837, 20061, 22365, 21141, 22365, 22437, 21213, 22437, 33381, 32157, 33381, 31005, 29781, 31005, 19989, 18765, 19989, 20061, 18837, 20061, 31005, 29781, 31005, 28629, 27405, 28629};
-      constexpr static unsigned long const HardwareFlops[] = {73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728, 73728};
+      constexpr static unsigned long const HardwareFlops[] = {58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320, 58320};
 
       float const** AminusT{};
       float const** I{};
@@ -282,7 +282,7 @@ namespace device_gen_code {
   namespace kernel {
     struct derivative {
       constexpr static unsigned long const NonZeroFlops[] = {0, 34524, 13806, 4716, 1260, 216};
-      constexpr static unsigned long const HardwareFlops[] = {0, 163296, 72576, 23328, 14688, 9504};
+      constexpr static unsigned long const HardwareFlops[] = {0, 136080, 54432, 23328, 7344, 4752};
 
       tensor::dQ::Container<float**> dQ;
       tensor::kDivMT::Container<float const*> kDivMT;
@@ -317,7 +317,7 @@ namespace device_gen_code {
   namespace kernel {
     struct godunovState {
       constexpr static unsigned long const NonZeroFlops[] = {53676, 56448, 56448, 56448, 56889, 54117, 56889, 56889, 56889, 56889, 56889, 56889, 54117, 56889, 56889, 56889};
-      constexpr static unsigned long const HardwareFlops[] = {74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880, 74880};
+      constexpr static unsigned long const HardwareFlops[] = {65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520, 65520};
 
       float const** Q{};
       tensor::V3mTo2n::Container<float const*> V3mTo2n;
@@ -370,7 +370,7 @@ namespace device_gen_code {
   namespace kernel {
     struct nodalFlux {
       constexpr static unsigned long const NonZeroFlops[] = {54117, 56889, 56889, 56889, 56889, 54117, 56889, 56889, 56889, 56889, 56889, 56889, 54117, 56889, 56889, 56889};
-      constexpr static unsigned long const HardwareFlops[] = {66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816, 66816};
+      constexpr static unsigned long const HardwareFlops[] = {58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464, 58464};
 
       float** Q{};
       tensor::V3mTo2nTWDivM::Container<float const*> V3mTo2nTWDivM;

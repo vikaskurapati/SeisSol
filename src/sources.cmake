@@ -182,7 +182,7 @@ elseif ("${EQUATIONS}" STREQUAL "viscoelastic2")
 endif()
 
 if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
-
+  #[[
   if (${REAL_SIZE_IN_BYTES} EQUAL 8)
     configure_file(generated_code/staticly_gen_code/double/device_kernel.cpp src/generated_code/device_kernel.cpp COPYONLY)
     configure_file(generated_code/staticly_gen_code/double/device_kernel.h src/generated_code/device_kernel.h COPYONLY)
@@ -196,16 +196,16 @@ if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
     configure_file(generated_code/staticly_gen_code/float/device_subroutine.cpp src/generated_code/device_subroutine.cpp COPYONLY)
     configure_file(generated_code/staticly_gen_code/float/device_subroutine.h src/generated_code/device_subroutine.h COPYONLY)
   endif()
-
+  ]]
   target_sources(SeisSol-lib PUBLIC
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/LocalIntegrationRecorder.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/NeighbIntegrationRecorder.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/PlasticityRecorder.cpp
-          ${CMAKE_BINARY_DIR}/src/generated_code/device_kernel.cpp
+          #${CMAKE_BINARY_DIR}/src/generated_code/device_kernel.cpp
           )
   target_include_directories(SeisSol-lib PUBLIC
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording
-          ${CMAKE_BINARY_DIR}/src/generated_code
+          #${CMAKE_BINARY_DIR}/src/generated_code
           )
 
   find_package(CUDA REQUIRED)
@@ -214,7 +214,7 @@ if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
           -arch=sm_61;
           -O3;)
 
-  set(DEVICE_SRC ${CMAKE_BINARY_DIR}/src/generated_code/device_subroutine.cpp)
+  set(DEVICE_SRC ${CMAKE_BINARY_DIR}/src/generated_code/gpulike_subroutine.cpp)
   set_source_files_properties(${DEVICE_SRC} PROPERTIES CUDA_SOURCE_PROPERTY_FORMAT OBJ)
 
   execute_process(COMMAND python -c "import gemmforge; gemmforge.print_cmake_path()"

@@ -73,9 +73,11 @@
 
 #include <generated_code/kernel.h>
 
+/*
 #ifdef ACL_DEVICE
 #include <generated_code/device_kernel.h>
 #endif
+*/
 
 namespace seissol {
   namespace kernels {
@@ -90,9 +92,9 @@ class seissol::kernels::NeighborBase {
     kernel::nodalFlux m_drKrnlPrototype;
 
 #ifdef ACL_DEVICE
-    device_gen_code::kernel::localFlux m_deviceLfKrnlPrototype;
-    device_gen_code::kernel::neighboringFlux m_deviceNfKrnlPrototype;
-    device_gen_code::kernel::nodalFlux m_deviceDrKrnlPrototype;
+    kernel::gpu_localFlux m_deviceLfKrnlPrototype;
+    kernel::gpu_neighboringFlux m_deviceNfKrnlPrototype;
+    kernel::gpu_nodalFlux m_deviceDrKrnlPrototype;
 #endif
 };
 

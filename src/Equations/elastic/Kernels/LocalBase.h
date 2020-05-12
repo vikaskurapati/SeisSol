@@ -44,7 +44,7 @@
 #include <generated_code/kernel.h>
 
 #ifdef ACL_DEVICE
-#include <generated_code/device_kernel.h>
+//#include <generated_code/device_kernel.h>
 #endif
 
 namespace seissol {
@@ -59,8 +59,8 @@ class seissol::kernels::LocalBase {
     kernel::localFlux m_localFluxKernelPrototype;
 
 #ifdef ACL_DEVICE
-  device_gen_code::kernel::volume m_deviceVolumeKernelPrototype;
-  device_gen_code::kernel::localFlux m_deviceLocalFluxKernelPrototype;
+  kernel::gpu_volume m_deviceVolumeKernelPrototype;
+  kernel::gpu_localFlux m_deviceLocalFluxKernelPrototype;
 #endif
 };
 

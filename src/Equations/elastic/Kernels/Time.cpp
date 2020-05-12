@@ -122,6 +122,7 @@ void seissol::kernels::Time::setGlobalDataOnDevice(GlobalData const* global) {
 }
 #endif
 
+
 void seissol::kernels::Time::computeAder( double                      i_timeStepWidth,
                                           LocalData&                  data,
                                           LocalTmp&                   tmp,
@@ -186,8 +187,8 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
                                                        LocalTmp& tmp,
                                                        conditional_table_t &table) {
 
-  device_gen_code::kernel::derivative derivativesKrnl = m_DeviceKrnlPrototype;
-  device_gen_code::kernel::derivativeTaylorExpansion intKrnl;
+  kernel::gpu_derivative derivativesKrnl = m_DeviceKrnlPrototype;
+  kernel::gpu_derivativeTaylorExpansion intKrnl;
 
   ConditionalKey key(KernelNames::time || KernelNames::volume);
   if(table.find(key) != table.end()) {
@@ -261,7 +262,7 @@ void seissol::kernels::Time::computeIntegralWithinWorkItem(double i_expansionPoi
   real l_secondTerm = (real) 1;
   real l_factorial  = (real) 1;
 
-  device_gen_code::kernel::derivativeTaylorExpansion intKrnl;
+  kernel::gpu_derivativeTaylorExpansion intKrnl;
   intKrnl.NumElements = NumElements;
 
   intKrnl.I = o_timeIntegratedDofs;
@@ -285,8 +286,7 @@ void seissol::kernels::Time::computeIntegralWithinWorkItem(double i_expansionPoi
     intKrnl.execute(der);
   }
 }
-
-#endif
+#endif //ACL_DEVICE
 
 void seissol::kernels::Time::flopsAder( unsigned int        &o_nonZeroFlops,
                                         unsigned int        &o_hardwareFlops ) {
@@ -322,6 +322,7 @@ unsigned seissol::kernels::Time::bytesAder()
 
   return reals * sizeof(real);
 }
+
 
 void seissol::kernels::Time::computeIntegral( double                            i_expansionPoint,
                                               double                            i_integrationStart,
@@ -369,6 +370,7 @@ void seissol::kernels::Time::computeIntegral( double                            
     intKrnl.execute(der);
   }
 }
+
 
 void seissol::kernels::Time::computeTaylorExpansion( real         time,
                                                      real         expansionPoint,

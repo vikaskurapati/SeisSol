@@ -46,9 +46,9 @@ foreach(component ${_GEMM_TOOLS_LIST})
     elseif ("${component}" STREQUAL "BLIS")
         find_package(BLIS REQUIRED)
 
-    elseif ("${component}" STREQUAL "ACL_DEVICE_BLAS")
+    elseif ("${component}" STREQUAL "GemmForge")
         if (NOT DEFINED DEVICE_BACKEND)
-            message(FATAL_ERROR "ACL_DEVICE_BLAS option was chosen but DEVICE_BACKEND wasn't. \
+            message(FATAL_ERROR "GemmForge option was chosen but DEVICE_BACKEND wasn't. \
                     Please, refer to the documentation")
         endif()
 

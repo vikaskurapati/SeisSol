@@ -50,7 +50,7 @@
 #ifdef ACL_DEVICE
 #include <kernels/cuda/Plasticity.h>
 #include "device.h"
-#include "generated_code/device_kernel.h"
+//#include "generated_code/device_kernel.h"
 #include <iostream>
 using namespace device;
 #endif
@@ -154,7 +154,8 @@ unsigned seissol::kernels::Plasticity::computePlasticity(double                 
   return 0;
 }
 
-#ifdef ACL_DEVICE
+#if 0
+//#ifdef ACL_DEVICE
 unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double RelaxTime,
                                                                        double TimeStepWidth,
                                                                        GlobalData const* Global,
@@ -178,7 +179,7 @@ unsigned seissol::kernels::Plasticity::computePlasticityWithinWorkItem(double Re
                                               NumElements);
 
     // Convert Modal to Nodal Stresses
-    device_gen_code::kernel::plConvertToNodal m2nKrnl;
+    kernel::plConvertToNodal m2nKrnl;
     m2nKrnl.v = Global->vandermondeMatrix;
     m2nKrnl.QStress = const_cast<const real**>(ModalStressTensors);
     m2nKrnl.QStressNodal = NodalStressTensors;

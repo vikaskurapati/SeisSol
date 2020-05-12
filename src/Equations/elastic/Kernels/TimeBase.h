@@ -73,7 +73,7 @@
 
 #include <generated_code/kernel.h>
 #ifdef ACL_DEVICE
-#include <generated_code/device_kernel.h>
+//#include <generated_code/device_kernel.h>
 #include <device.h>
 using namespace device;
 #endif
@@ -99,8 +99,9 @@ class seissol::kernels::TimeBase {
     
     kernel::derivative m_krnlPrototype;
 
+
 #ifdef ACL_DEVICE
-    device_gen_code::kernel::derivative m_DeviceKrnlPrototype;
+    kernel::gpu_derivative m_DeviceKrnlPrototype;
     DeviceInstance& m_Device = DeviceInstance::getInstance();
 #endif
 

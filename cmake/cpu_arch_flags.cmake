@@ -1,14 +1,14 @@
 function(get_arch_flags architecture compiler)
     # Westmere cpu architecture
-    if ("${ARCH}" STREQUAL "wsm")
+    if ("${HOST_ARCH}" STREQUAL "wsm")
         set(CPU_ARCH_FLAGS "-msse3" PARENT_SCOPE)
     
     # Sandy Bridge cpu architecture
-    elseif ("${ARCH}" STREQUAL "snb")
+    elseif ("${HOST_ARCH}" STREQUAL "snb")
         set(CPU_ARCH_FLAGS "-mavx" PARENT_SCOPE)
     
     # Haswell cpu architecture
-    elseif ("${ARCH}" STREQUAL "hsw")
+    elseif ("${HOST_ARCH}" STREQUAL "hsw")
         if (compiler STREQUAL "Intel")
             set(CPU_ARCH_FLAGS "-xCORE-AVX2" "-fma" PARENT_SCOPE)
         elseif(compiler STREQUAL "GNU")
@@ -17,11 +17,11 @@ function(get_arch_flags architecture compiler)
         endif()
 
     # Knights Corner (Xeon Phi)
-    elseif ("${ARCH}" STREQUAL "knc")
+    elseif ("${HOST_ARCH}" STREQUAL "knc")
         set(CPU_ARCH_FLAGS "-mmic" "-fma" PARENT_SCOPE)
     
     # Knight Landing (Xeon Phi)
-    elseif ("${ARCH}" STREQUAL "knl")
+    elseif ("${HOST_ARCH}" STREQUAL "knl")
         if (compiler STREQUAL "Intel")
             set(CPU_ARCH_FLAGS "-xMIC-AVX512" "-fma" PARENT_SCOPE)
         elseif(compiler STREQUAL "GNU")
@@ -29,7 +29,7 @@ function(get_arch_flags architecture compiler)
         endif()
     
     # Skylake cpu architecture
-    elseif ("${ARCH}" STREQUAL "skx")
+    elseif ("${HOST_ARCH}" STREQUAL "skx")
         if (compiler STREQUAL "Intel")
             set(CPU_ARCH_FLAGS "-xMIC-AVX512" "-fma" PARENT_SCOPE)
         elseif(compiler STREQUAL "GNU")

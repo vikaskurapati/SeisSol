@@ -45,7 +45,8 @@ import inspect
 
 from yateto import useArchitectureIdentifiedBy, Generator
 from yateto import gemm_configuration
-from yateto.gemm_configuration import GeneratorCollection, LIBXSMM, PSpaMM, MKL, BLIS, OpenBLAS
+from yateto.gemm_configuration import GeneratorCollection, LIBXSMM, PSpaMM, GemmForge
+from yateto.gemm_configuration import GeneratorCollection, MKL, BLIS, OpenBLAS
 
 import DynamicRupture
 import Plasticity
@@ -57,7 +58,8 @@ cmdLineParser = argparse.ArgumentParser()
 cmdLineParser.add_argument('--equations')
 cmdLineParser.add_argument('--matricesDir')
 cmdLineParser.add_argument('--outputDir')
-cmdLineParser.add_argument('--arch')
+cmdLineParser.add_argument('--host_arch')
+cmdLineParser.add_argument('--compute_arch', default=None)
 cmdLineParser.add_argument('--order', type=int)
 cmdLineParser.add_argument('--numberOfMechanisms', type=int)
 cmdLineParser.add_argument('--memLayout')
@@ -80,7 +82,7 @@ else:
   mem_layout = cmdLineArgs.memLayout
   
 
-arch = useArchitectureIdentifiedBy(cmdLineArgs.arch)
+arch = useArchitectureIdentifiedBy(cmdLineArgs.host_arch, cmdLineArgs.compute_arch)
 
 equationsSpec = importlib.util.find_spec(cmdLineArgs.equations)
 try:
@@ -88,50 +90,46 @@ try:
 except:
   raise RuntimeError('Could not find kernels for ' + cmdLineArgs.equations)
 
+gpu_platforms = ['nvidia']
+platforms = ['gpu', 'cpu'] if cmdLineArgs.compute_arch[1:] in gpu_platforms else ['cpu']
+
 adgArgs = inspect.getargspec(equations.ADERDG.__init__).args[1:]
 cmdArgsDict = vars(cmdLineArgs)
 cmdArgsDict['memLayout'] = mem_layout
 args = [cmdArgsDict[key] for key in adgArgs]
 adg = equations.ADERDG(*args)
 
-g = Generator(arch)
+
+compiler = Generator(arch)
 
 # Equation-specific kernels
-adg.addInit(g)
-adg.addLocal(g)
-adg.addNeighbor(g)
-adg.addTime(g)
+adg.addInit(compiler)
+adg.addLocal(compiler, platforms)
+adg.addNeighbor(compiler, platforms)
+adg.addTime(compiler, platforms)
 
 # Common kernels
-DynamicRupture.addKernels(g, adg, cmdLineArgs.matricesDir, cmdLineArgs.dynamicRuptureMethod) 
-Plasticity.addKernels(g, adg, cmdLineArgs.matricesDir, cmdLineArgs.PlasticityMethod)
-SurfaceDisplacement.addKernels(g, adg)
-Point.addKernels(g, adg)
+DynamicRupture.addKernels(compiler,
+                          adg,
+                          cmdLineArgs.matricesDir,
+                          cmdLineArgs.dynamicRuptureMethod,
+                          platforms)
 
+Plasticity.addKernels(compiler, adg, cmdLineArgs.matricesDir, cmdLineArgs.PlasticityMethod)
+SurfaceDisplacement.addKernels(compiler, adg)
+Point.addKernels(compiler, adg)
 
-#TODO: implement a defaule type where cmdLineArgs.gemm_tools is an empty string
-#      to not break scons
-# process the user's input and create a collection of GEMM tools
-# initialized with the target compute architecture parameters
 gemm_tool_list = cmdLineArgs.gemm_tools.replace(" ", "").split(",")
 generators = []
-
 for tool in gemm_tool_list:
-  # a patch for acl_device_blas
-  if tool == "ACL_DEVICE_BLAS":
-      continue
-
   if hasattr(gemm_configuration, tool):
     specific_gemm_class = getattr(gemm_configuration, tool)
     generators.append(specific_gemm_class(arch))
   else:
-    print("YATETO::ERROR: unknown \"{}\" GEMM tool. "
-          "Please, refer to the documentation".format(tool))
-    sys.exit("failure")
+    raise RuntimeError(f'YATETO::ERROR: unknown \"{tool}\" GEMM tool. '
+                       f'Please, refer to the documentation')
 
-# gemmTools = GeneratorCollection([LIBXSMM(arch), PSpaMM(arch)])
 gemmTools = GeneratorCollection(generators)
 
-
 # Generate code
-g.generate(cmdLineArgs.outputDir, 'seissol', gemmTools)
+compiler.generate(cmdLineArgs.outputDir, 'seissol', gemmTools)

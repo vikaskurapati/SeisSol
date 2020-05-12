@@ -120,13 +120,14 @@ void seissol::kernels::Local::computeIntegral(  real       i_timeIntegratedDegre
     }
   }
 }
-#ifdef ACL_DEVICE
+
+#ifdef  ACL_DEVICE
 void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t &table,
                                                             LocalTmp& ) {
 
   // Volume integral
   ConditionalKey key(KernelNames::time || KernelNames::volume);
-  device_gen_code::kernel::volume volKrnl = m_deviceVolumeKernelPrototype;
+  kernel::gpu_volume volKrnl = m_deviceVolumeKernelPrototype;
 
   if (table.find(key) != table.end()) {
     PointersTable &entry = table[key];
@@ -146,7 +147,7 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t 
   }
 
   // Local Flux Integral
-  device_gen_code::kernel::localFlux lfKrnl = m_deviceLocalFluxKernelPrototype;
+  kernel::gpu_localFlux lfKrnl = m_deviceLocalFluxKernelPrototype;
   for (unsigned face = 0; face < 4; ++face) {
     key = ConditionalKey(*KernelNames::local_flux, !FaceKinds::dynamicRupture, face);
 

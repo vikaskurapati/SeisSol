@@ -46,6 +46,7 @@ from yateto.input import parseXMLMatrixFile
 from yateto.ast.node import Add
 from yateto.ast.transformer import DeduceIndices, EquivalentSparsityPattern
 from multSim import OptionalDimTensor
+from common import *
 
 class ADERDGBase(ABC):
   def __init__(self, order, multipleSimulations, matricesDir):
@@ -174,7 +175,7 @@ class LinearADERDG(ADERDGBase):
 
   def addLocal(self, generator, platforms):
     for platform in platforms:
-      name_prefix = f'{platform}_' if platform == 'gpu' else ''
+      name_prefix = generate_kernename_prefix(platform)
       volumeSum = self.Q['kp']
       for i in range(3):
         volumeSum += self.db.kDivM[i][self.t('kl')] * self.I['lq'] * self.starMatrix(i)['qp']
@@ -193,7 +194,7 @@ class LinearADERDG(ADERDGBase):
 
   def addNeighbor(self, generator, platforms):
     for platform in platforms:
-      name_prefix = f'{platform}_' if platform == 'gpu' else ''
+      name_prefix = generate_kernename_prefix(platform)
 
       neighbourFlux = lambda h,j,i: self.Q['kp'] <= self.Q['kp'] + self.db.rDivM[i][self.t('km')] * self.db.fP[h][self.t('mn')] * self.db.rT[j][self.t('nl')] * self.I['lq'] * self.AminusT['qp']
       neighbourFluxPrefetch = lambda h,j,i: self.I
@@ -205,7 +206,7 @@ class LinearADERDG(ADERDGBase):
 
   def addTime(self, generator, platforms):
     for platform in platforms:
-      name_prefix = f'{platform}_' if platform == 'gpu' else ''
+      name_prefix = generate_kernename_prefix(platform)
 
       qShape = (self.numberOf3DBasisFunctions(), self.numberOfQuantities())
       dQ0 = OptionalDimTensor('dQ(0)', self.Q.optName(), self.Q.optSize(), self.Q.optPos(), qShape, alignStride=True)

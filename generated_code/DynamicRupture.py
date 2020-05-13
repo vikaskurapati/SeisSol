@@ -41,6 +41,7 @@
 from yateto import Tensor, Scalar, simpleParameterSpace
 from yateto.input import parseJSONMatrixFile
 from multSim import OptionalDimTensor
+from common import generate_kernename_prefix
 
 def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod, platforms):
   if dynamicRuptureMethod == 'quadrature':
@@ -94,7 +95,7 @@ def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod, platforms):
   nodalFluxPrefetch = lambda i,h: aderdg.I
 
   for platform in platforms:
-    name_prefix = f'{platform}_' if platform == 'gpu' else ''
+    name_prefix = generate_kernename_prefix(platform)
     generator.addFamily(f'{name_prefix}nodalFlux',
                         simpleParameterSpace(4,4),
                         nodalFluxGenerator,

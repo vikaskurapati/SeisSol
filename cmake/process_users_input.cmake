@@ -27,7 +27,7 @@ set_property(CACHE EQUATIONS PROPERTY STRINGS ${EQUATIONS_OPTIONS})
 set(HOST_ARCH "hsw" CACHE STRING "Type of the target architecture")
 set(COMPUTE_ARCH "hsw" CACHE STRING "Type of the target architecture")
 set(ARCH_OPTIONS noarch wsm snb hsw knc knl skx nvidia)
-set(ARCH_ALIGNMENT   16  16  32  32  64  64  64     64)  # size of a vector registers in bytes for a given architecture
+set(ARCH_ALIGNMENT   16  16  32  32  64  64  64     32)  # size of a vector registers in bytes for a given architecture
 set_property(CACHE HOST_ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
 set_property(CACHE COMPUTE_ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
 
@@ -147,8 +147,8 @@ MATH(EXPR NUMBER_OF_QUANTITIES "9 + 6 * ${NUMBER_OF_MECHANISMS}" )
 # generate an internal representation of an architecture type which is used in seissol
 string(SUBSTRING ${PRECISION} 0 1 PRECISION_PREFIX)
 if (${PRECISION} STREQUAL "double")
-    set(COMPUTE_ARCH_STR "s${COMPUTE_ARCH}")
-    set(HOST_ARCH_STR "s${HOST_ARCH}")
+    set(COMPUTE_ARCH_STR "d${COMPUTE_ARCH}")
+    set(HOST_ARCH_STR "d${HOST_ARCH}")
 elseif(${PRECISION} STREQUAL "float")
     set(COMPUTE_ARCH_STR "s${COMPUTE_ARCH}")
     set(HOST_ARCH_STR "s${HOST_ARCH}")

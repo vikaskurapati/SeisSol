@@ -45,6 +45,9 @@ foreach(component ${_GEMM_TOOLS_LIST})
 
     elseif ("${component}" STREQUAL "BLIS")
         find_package(BLIS REQUIRED)
+    
+    elseif ("${component}" STREQUAL "Eigen")
+        find_package(Eigen3 REQUIRED)
 
     elseif ("${component}" STREQUAL "GemmForge")
         if (NOT DEFINED DEVICE_BACKEND)

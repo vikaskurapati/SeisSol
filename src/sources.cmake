@@ -221,7 +221,7 @@ if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
                   OUTPUT_VARIABLE GEMMFORGE_PATH)
 
   set(CMAKE_MODULE_PATH "${GEMMFORGE_PATH}" ${CMAKE_MODULE_PATH})
-  find_package(GemmGen REQUIRED)
+  find_package(GemmForge REQUIRED)
   set(DEVICE_SRC ${DEVICE_SRC} ${GemmForge_SOURCES})
 
   cuda_add_library(Seissol-device-lib STATIC ${DEVICE_SRC})

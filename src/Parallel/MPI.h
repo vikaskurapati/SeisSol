@@ -190,8 +190,10 @@ public:
         }
       }
 #else
-      device::query::setDevice(m_deviceId);
+      DevReference.api->setDevice(m_deviceId);
 #endif
+
+      DevReference.api->allocateStackMem();
     }
     int getDeviceID() { return m_deviceId; }
 #endif // ACL_DEVICE

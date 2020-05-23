@@ -26,9 +26,8 @@ set_property(CACHE EQUATIONS PROPERTY STRINGS ${EQUATIONS_OPTIONS})
 
 set(HOST_ARCH "hsw" CACHE STRING "Type of the target architecture")
 set(COMPUTE_ARCH "hsw" CACHE STRING "Type of the target architecture")
-set(ARCH_OPTIONS noarch wsm power9 snb hsw knc knl skx nvidia amd_gpu)
-# size of a vector registers in bytes for a given architecture
-set(ARCH_ALIGNMENT   16  16     16  32  32  64  64  64    128     256)  
+set(ARCH_OPTIONS noarch wsm snb hsw knc knl skx nvidia)
+set(ARCH_ALIGNMENT   16  16  32  32  64  64  64     64)  # size of a vector registers in bytes for a given architecture
 set_property(CACHE HOST_ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
 set_property(CACHE COMPUTE_ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
 

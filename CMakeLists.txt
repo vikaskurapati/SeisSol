@@ -274,9 +274,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "CRAY")
 endif()
 
 # Generated code does only work without red-zone.
-if (NOT ${HOST_ARCH} STREQUAL "power9")
-    set_source_files_properties(src/generated_code/subroutine.cpp PROPERTIES COMPILE_FLAGS -mno-red-zone)
-endif()
+set_source_files_properties(src/generated_code/subroutine.cpp PROPERTIES COMPILE_FLAGS -mno-red-zone)
 
 add_executable(SeisSol-bin src/main.cpp)
 target_link_libraries(SeisSol-bin PUBLIC SeisSol-lib)

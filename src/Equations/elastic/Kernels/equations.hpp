@@ -56,7 +56,7 @@ constexpr unsigned numberOfAlignedDerBasisFunctions(unsigned O) {
 #define NUMBER_OF_ALIGNED_BASIS_FUNCTIONS 120
 #endif
 
-#elif ( ALIGNMENT == 64 && defined(DOUBLE_PRECISION) ) || ( ALIGNMENT == 32 && defined(SINGLE_PRECISION) )
+#elif (( ALIGNMENT == 64 && defined(DOUBLE_PRECISION) ) || ( ALIGNMENT == 32 && defined(SINGLE_PRECISION) ) && !(defined(ACL_DEVICE)))
 
 #if CONVERGENCE_ORDER == 2
 #define NUMBER_OF_ALIGNED_BASIS_FUNCTIONS 8
@@ -74,7 +74,7 @@ constexpr unsigned numberOfAlignedDerBasisFunctions(unsigned O) {
 #define NUMBER_OF_ALIGNED_BASIS_FUNCTIONS 120
 #endif
 
-#elif ALIGNMENT == 64 && defined(SINGLE_PRECISION)
+#elif ALIGNMENT == 64 && (defined(SINGLE_PRECISION) || defined(ACL_DEVICE))
 
 #if CONVERGENCE_ORDER == 2
 #define NUMBER_OF_ALIGNED_BASIS_FUNCTIONS 16

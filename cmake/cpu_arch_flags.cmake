@@ -35,6 +35,11 @@ function(get_arch_flags architecture compiler)
         elseif(compiler STREQUAL "GNU")
             set(CPU_ARCH_FLAGS "-march=skylake-avx512" PARENT_SCOPE)
         endif()
+
+    # IBM power
+    elseif ("${HOST_ARCH}" STREQUAL "power9")
+        set(CPU_ARCH_FLAGS "-mtune=power9" PARENT_SCOPE)
+
     endif()
 
 endfunction()

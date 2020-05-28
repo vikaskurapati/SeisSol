@@ -35,10 +35,9 @@ namespace kernels = seissol::kernels;
 namespace proxy {
   namespace device {
 
-    const DeviceInstance &Device = DeviceInstance::getInstance();
-
     void computeAderIntegration() {
-      auto& layer = m_ltsTree.child(0).child<Interior>();
+      const DeviceInstance &Device = DeviceInstance::getInstance();
+      auto& layer = m_ltsTree->child(0).child<Interior>();
 
       kernels::LocalData::Loader loader;
       loader.load(m_lts, layer);
@@ -52,7 +51,8 @@ namespace proxy {
     }
 
     void computeLocalWithoutAderIntegration() {
-      auto& layer = m_ltsTree.child(0).child<Interior>();
+      const DeviceInstance &Device = DeviceInstance::getInstance();
+      auto& layer = m_ltsTree->child(0).child<Interior>();
 
       kernels::LocalData::Loader loader;
       loader.load(m_lts, layer);
@@ -66,7 +66,8 @@ namespace proxy {
     }
 
     void computeLocalIntegration() {
-      auto& layer = m_ltsTree.child(0).child<Interior>();
+      const DeviceInstance &Device = DeviceInstance::getInstance();
+      auto& layer = m_ltsTree->child(0).child<Interior>();
 
       kernels::LocalData::Loader loader;
       loader.load(m_lts, layer);
@@ -81,7 +82,8 @@ namespace proxy {
     }
 
     void computeNeighboringIntegration() {
-      auto& layer = m_ltsTree.child(0).child<Interior>();
+      const DeviceInstance &Device = DeviceInstance::getInstance();
+      auto& layer = m_ltsTree->child(0).child<Interior>();
 
       kernels::NeighborData::Loader loader;
       loader.load(m_lts, layer);

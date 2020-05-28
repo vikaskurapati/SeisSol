@@ -406,10 +406,6 @@ void seissol::Interoperability::initializeClusteredLts( int i_clustering, bool e
 
   // get backward coupling
   m_globalData = seissol::SeisSol::main.getMemoryManager().getGlobalData();
-
-//#ifdef ACL_DEVICE
-//  seissol::SeisSol::main.getMemoryManager().initConditionalOffsets();
-//#endif
 }
 
 #if defined(USE_NETCDF) && !defined(NETCDF_PASSIVE)

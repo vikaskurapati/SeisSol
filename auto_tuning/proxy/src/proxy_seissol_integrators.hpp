@@ -34,7 +34,7 @@ namespace proxy {
   namespace cpu {
 
     void computeAderIntegration() {
-      auto&                 layer           = m_ltsTree.child(0).child<Interior>();
+      auto&                 layer           = m_ltsTree->child(0).child<Interior>();
       unsigned              nrOfCells       = layer.getNumberOfCells();
       real**                buffers                       = layer.var(m_lts.buffers);
       real**                derivatives                   = layer.var(m_lts.derivatives);
@@ -62,7 +62,7 @@ namespace proxy {
     }
 
     void computeLocalWithoutAderIntegration() {
-      auto&                 layer           = m_ltsTree.child(0).child<Interior>();
+      auto&                 layer           = m_ltsTree->child(0).child<Interior>();
       unsigned              nrOfCells       = layer.getNumberOfCells();
       real**                buffers                       = layer.var(m_lts.buffers);
 
@@ -87,7 +87,7 @@ namespace proxy {
     }
 
     void computeLocalIntegration() {
-      auto&                 layer           = m_ltsTree.child(0).child<Interior>();
+      auto&                 layer           = m_ltsTree->child(0).child<Interior>();
       unsigned              nrOfCells       = layer.getNumberOfCells();
       real**                buffers                       = layer.var(m_lts.buffers);
       real**                derivatives                   = layer.var(m_lts.derivatives);
@@ -119,7 +119,7 @@ namespace proxy {
     }
 
     void computeNeighboringIntegration() {
-      auto&                     layer                           = m_ltsTree.child(0).child<Interior>();
+      auto&                     layer                           = m_ltsTree->child(0).child<Interior>();
       unsigned                  nrOfCells                       = layer.getNumberOfCells();
       real*                     (*faceNeighbors)[4]             = layer.var(m_lts.faceNeighbors);
       CellDRMapping             (*drMapping)[4]                 = layer.var(m_lts.drMapping);
@@ -188,7 +188,7 @@ namespace proxy {
 
     void computeDynRupGodunovState()
     {
-      seissol::initializers::Layer& layerData = m_dynRupTree.child(0).child<Interior>();
+      seissol::initializers::Layer& layerData = m_dynRupTree->child(0).child<Interior>();
       DRFaceInformation* faceInformation = layerData.var(m_dynRup.faceInformation);
       DRGodunovData* godunovData = layerData.var(m_dynRup.godunovData);
       real** timeDerivativePlus = layerData.var(m_dynRup.timeDerivativePlus);

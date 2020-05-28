@@ -195,6 +195,9 @@ int main(int argc, char* argv[]) {
   Device.api->allocateStackMem();
 #endif
 
+  m_ltsTree = new seissol::initializers::LTSTree;
+  m_dynRupTree = new seissol::initializers::LTSTree;
+
   print_hostname();
 
   printf("Allocating fake data...\n");
@@ -290,14 +293,16 @@ int main(int argc, char* argv[]) {
   printf("\n");
 
 #ifdef ACL_DEVICE
-  m_ltsTree.freeDeviceVariablesExplicitly();
-  m_dynRupTree.freeDeviceVariablesExplicitly();
-  m_ltsTree.freeLeavesContainersExplicitly();
-  for (auto address: m_globalDataOnDevice.address_registry) {
-    m_allocator.deallocateMemory((void*)address, seissol::memory::DeviceGlobalMemory);
+  m_ltsTree->freeDeviceVariablesExplicitly();
+  m_dynRupTree->freeDeviceVariablesExplicitly();
+  m_ltsTree->freeLeavesContainersExplicitly();
+  for (auto Address: m_globalDataOnDevice.address_registry) {
+    m_allocator.deallocateMemory((void*)Address, seissol::memory::DeviceGlobalMemory);
   };
-  Device.api->finalize();
+  Device.finalize();
 #endif
+
+  delete m_ltsTree;
+  delete m_dynRupTree;
   return 0;
 }
-

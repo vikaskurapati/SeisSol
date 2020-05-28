@@ -56,6 +56,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * POSSIBILITY OF SUCH DAMAGE.
  **/
 
+#ifdef ACL_DEVICE
+#include <device.h>
+#include <unordered_set>
+#include <Initializer/recording/Recorder.h>
+#endif
+
 #include <Initializer/tree/LTSTree.hpp>
 #include <Initializer/DynamicRupture.h>
 #include <Initializer/GlobalData.h>
@@ -68,6 +74,10 @@ seissol::initializers::LTSTree               m_dynRupTree;
 seissol::initializers::DynamicRupture        m_dynRup;
 
 GlobalData m_globalData;
+
+#ifdef ACL_DEVICE
+GlobalDataOnDevice m_globalDataOnDevice;
+#endif
 
 real* m_fakeDerivatives = nullptr;
 
@@ -176,3 +186,89 @@ unsigned int init_data_structures(unsigned int i_cells, bool enableDynamicRuptur
   
   return i_cells;
 }
+
+#ifdef ACL_DEVICE
+unsigned int initDataStructuresOnDevice(unsigned int NumCells, const DeviceInstance& Device)
+{
+  // init RNG
+  srand48(NumCells);
+
+  seissol::initializers::initializeGlobalDataOnDevice(m_globalDataOnDevice, m_allocator);
+  m_timeKernel.setGlobalDataOnDevice(&m_globalDataOnDevice);
+  m_localKernel.setGlobalDataOnDevice(&m_globalDataOnDevice);
+  m_neighborKernel.setGlobalDataOnDevice(&m_globalDataOnDevice);
+
+  m_lts.addTo(m_ltsTree);
+  m_ltsTree.setNumberOfTimeClusters(1);
+  m_ltsTree.fixate();
+
+  seissol::initializers::TimeCluster& cluster = m_ltsTree.child(0);
+  cluster.child<Ghost>().setNumberOfCells(0);
+  cluster.child<Copy>().setNumberOfCells(0);
+  cluster.child<Interior>().setNumberOfCells(NumCells);
+
+  seissol::initializers::Layer& Layer = cluster.child<Interior>();
+  Layer.setBucketSize(m_lts.buffersDerivatives, sizeof(real) * tensor::I::size() * Layer.getNumberOfCells());
+
+  m_ltsTree.allocateVariables();
+  m_ltsTree.touchVariables();
+  m_ltsTree.allocateBuckets();
+
+  /* cell information and integration data*/
+  seissol::fakeData(m_lts, Layer, regular);
+
+  // estimate sizes required for scratch pads
+  constexpr unsigned TotalDerivativesSize = yateto::computeFamilySize<tensor::dQ>();
+  unsigned DerivativesCounter = 0;
+  unsigned IDofsCounter = 0;
+
+  CellLocalInformation* CellInformation = Layer.var(m_lts.cellInformation);
+  real *(*FaceNeighbors)[4] = Layer.var(m_lts.faceNeighbors);
+  std::unordered_set<real *> Registry{};
+
+  for (unsigned Cell = 0; Cell < Layer.getNumberOfCells(); ++Cell) {
+    bool NeedsScratchMemForDerivatives = (CellInformation[Cell].ltsSetup >> 9) % 2 == 0;
+    if (NeedsScratchMemForDerivatives) {
+      ++DerivativesCounter;
+    }
+    ++IDofsCounter;
+
+    // include data provided by ghost layers
+    for (unsigned Face = 0; Face < 4; ++Face) {
+      real *NeighbourBuffer = FaceNeighbors[Cell][Face];
+
+      // check whether a neighbour element idofs has not been counted twice
+      if ((Registry.find(NeighbourBuffer) == Registry.end())) {
+
+        // maybe, because of BCs, a pointer can be a nullptr, i.e. skip it
+        if (NeighbourBuffer != nullptr) {
+          if (CellInformation[Cell].faceTypes[Face] != outflow && CellInformation[Cell].faceTypes[Face] != dynamicRupture) {
+
+            bool IsNeighbProvidesDerivatives = ((CellInformation[Cell].ltsSetup >> Face) % 2) == 1;
+            if (IsNeighbProvidesDerivatives) {
+              ++IDofsCounter;
+            }
+            Registry.insert(NeighbourBuffer);
+          }
+        }
+      }
+    }
+  }
+
+  Layer.setScratchPadSize(m_lts.idofs_scratch, IDofsCounter * tensor::I::size() * sizeof(real));
+  Layer.setScratchPadSize(m_lts.derivatives_scratch, DerivativesCounter * TotalDerivativesSize * sizeof(real));
+  m_ltsTree.allocateScratchPads();
+
+
+  seissol::initializers::recording::CompositeRecorder Recorder;
+  Recorder.addRecorder(new seissol::initializers::recording::LocalIntegrationRecorder);
+  Recorder.addRecorder(new seissol::initializers::recording::NeighbIntegrationRecorder);
+
+#ifdef USE_PLASTICITY
+  Recorder.addRecorder(new seissol::initializers::recording::PlasticityRecorder);
+#endif
+  Recorder.record(m_lts, Layer);
+
+  return NumCells;
+}
+#endif

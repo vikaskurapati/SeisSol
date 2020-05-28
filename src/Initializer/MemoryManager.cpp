@@ -491,7 +491,7 @@ void seissol::initializers::MemoryManager::deriveScratchPadMemoryRequired() {
 
   for (auto Layer = m_ltsTree.beginLeaf(Ghost); Layer != m_ltsTree.endLeaf(); ++Layer) {
     CellLocalInformation* CellInformation = Layer->var(m_lts.cellInformation);
-    std::unordered_set<real *> Registery{};
+    std::unordered_set<real *> Registry{};
     real *(*FaceNeighbors)[4] = Layer->var(m_lts.faceNeighbors);
 
     unsigned DerivativesCounter = 0;
@@ -508,7 +508,7 @@ void seissol::initializers::MemoryManager::deriveScratchPadMemoryRequired() {
         real *NeighbourBuffer = FaceNeighbors[Cell][Face];
 
         // check whether a neighbour element idofs has not been counted twice
-        if ((Registery.find(NeighbourBuffer) == Registery.end())) {
+        if ((Registry.find(NeighbourBuffer) == Registry.end())) {
 
           // maybe, because of BCs, a pointer can be a nullptr, i.e. skip it
           if (NeighbourBuffer != nullptr) {
@@ -518,7 +518,7 @@ void seissol::initializers::MemoryManager::deriveScratchPadMemoryRequired() {
               if (IsNeighbProvidesDerivatives) {
                 ++IDofsCounter;
               }
-              Registery.insert(NeighbourBuffer);
+              Registry.insert(NeighbourBuffer);
             }
           }
         }
@@ -669,7 +669,6 @@ void seissol::initializers::MemoryManager::recordExecutionPaths() {
 void seissol::initializers::MemoryManager::freeVariablesOnDevice() {
     m_ltsTree.freeDeviceVariablesExplicitly();
     m_dynRupTree.freeDeviceVariablesExplicitly();
-
     m_ltsTree.freeLeavesContainersExplicitly();
 
     for (auto address: m_deviceGlobalData.address_registry) {

@@ -54,10 +54,6 @@ namespace seissol {
     void initializeGlobalDataOnDevice(GlobalDataOnDevice& globalData,
                                       memory::ManagedAllocator& memoryAllocator);
     void compareGlobalData(const GlobalData &host, const GlobalDataOnDevice &device);
-        /*
-        void prepareDeviceData(seissol::initializers::LTSTree &tree,
-                               memory::ManagedAllocator& memoryAllocator);
-        */
 #endif
 
   }

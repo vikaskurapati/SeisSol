@@ -64,6 +64,10 @@ extern long long pspamm_num_total_flops;
 #include <omp.h>
 #endif
 
+#ifdef ACL_DEVICE
+#include <device.h>
+#endif
+
 #ifdef USE_MEMKIND
 #include <hbwmalloc.h>
 #endif
@@ -73,6 +77,7 @@ extern long long pspamm_num_total_flops;
 #ifdef __MIC__
 #define __USE_RDTSC
 #endif
+
 
 #include <Kernels/TimeCommon.h>
 #include <Kernels/Time.h>
@@ -86,6 +91,15 @@ extern long long pspamm_num_total_flops;
 #include "proxy_seissol_flops.hpp"
 #include "proxy_seissol_bytes.hpp"
 #include "proxy_seissol_integrators.hpp"
+#ifdef ACL_DEVICE
+#include "proxy_seissol_device_integrators.hpp"
+#endif
+
+#ifdef ACL_DEVICE
+#define COMPUTE_NAMESPACE proxy::device
+#else
+#define COMPUTE_NAMESPACE proxy::cpu
+#endif
 
 
 enum Kernel { all = 0, local, neigh, ader, localwoader, neigh_dr, godunov_dr };
@@ -96,35 +110,39 @@ void testKernel(unsigned kernel, unsigned timesteps) {
   switch (kernel) {
     case all:
       for (; t < timesteps; ++t) {
-        computeLocalIntegration();
-        computeNeighboringIntegration();
+        COMPUTE_NAMESPACE::computeLocalIntegration();
+        COMPUTE_NAMESPACE::computeNeighboringIntegration();
       }
       break;
     case local:
       for (; t < timesteps; ++t) {
-        computeLocalIntegration();
+        COMPUTE_NAMESPACE::computeLocalIntegration();
       }
       break;
     case neigh:
     case neigh_dr:
       for (; t < timesteps; ++t) {
-        computeNeighboringIntegration();
+        COMPUTE_NAMESPACE::computeNeighboringIntegration();
       }
       break;
     case ader:
       for (; t < timesteps; ++t) {
-        computeAderIntegration();
+        COMPUTE_NAMESPACE::computeAderIntegration();
       }
       break;
     case localwoader:
       for (; t < timesteps; ++t) {
-        computeLocalWithoutAderIntegration();
+        COMPUTE_NAMESPACE::computeLocalWithoutAderIntegration();
       }
       break;    
     case godunov_dr:
+#ifdef ACL_DEVICE
+      printf("godunov_dr hasnot been implemented for acl. device");
+#else
       for (; t < timesteps; ++t) {
-        computeDynRupGodunovState();
+        COMPUTE_NAMESPACE::computeDynRupGodunovState();
       }
+#endif
       break;
     default:
       break;
@@ -164,12 +182,27 @@ int main(int argc, char* argv[]) {
   bool enableDynamicRupture = false;
   if (kernel == neigh_dr || kernel == godunov_dr) {
     enableDynamicRupture = true;
+#ifdef ACL_DEVICE
+    printf("currently proxy doesn't support dynamic rupture with any acl. device\n");
+    return 0;
+#endif
   }
+
+#ifdef ACL_DEVICE
+  DeviceInstance &Device = DeviceInstance::getInstance();
+  Device.api->initialize();
+  Device.api->setDevice(0);
+  Device.api->allocateStackMem();
+#endif
 
   print_hostname();
 
   printf("Allocating fake data...\n");
+#ifdef ACL_DEVICE
+  cells = initDataStructuresOnDevice(cells, Device);
+#else
   cells = init_data_structures(cells, enableDynamicRupture);
+#endif
   printf("...done\n\n");
 
   struct timeval start_time, end_time;
@@ -255,7 +288,16 @@ int main(int argc, char* argv[]) {
   printf("GiB/s (estimate) for seissol proxy  : %f\n", (bytes_estimate/(1024.0*1024.0*1024.0))/total);
   printf("=================================================\n");
   printf("\n");
-  
+
+#ifdef ACL_DEVICE
+  m_ltsTree.freeDeviceVariablesExplicitly();
+  m_dynRupTree.freeDeviceVariablesExplicitly();
+  m_ltsTree.freeLeavesContainersExplicitly();
+  for (auto address: m_globalDataOnDevice.address_registry) {
+    m_allocator.deallocateMemory((void*)address, seissol::memory::DeviceGlobalMemory);
+  };
+  Device.api->finalize();
+#endif
   return 0;
 }
 

@@ -266,7 +266,6 @@ public:
   }
 
 #ifdef ACL_DEVICE
-  // DEBUGGING::RAVIL
   LayerContainer& getLayerContainer() {
       return m_cotanier;
   }

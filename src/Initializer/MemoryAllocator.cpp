@@ -175,30 +175,25 @@ void seissol::memory::printMemoryAlignment( std::vector< std::vector<unsigned lo
 }
 
 
-seissol::memory::ManagedAllocator::~ManagedAllocator()
-{
+seissol::memory::ManagedAllocator::~ManagedAllocator() {
   for (AddressVector::const_iterator it = m_dataMemoryAddresses.begin(); it != m_dataMemoryAddresses.end(); ++it) {
-      if (it->first == seissol::memory::DeviceGlobalMemory) {
-        logError() << "Premature deallocation of device global mem. in ~ManagedAllocator. "
-                   << "Dangerous, device driver might be disconnected";
-        throw;
-      }
+    if (it->first == seissol::memory::DeviceGlobalMemory) {
+      logError() << "Premature deallocation of device global mem. in ~ManagedAllocator. "
+                 << "Dangerous, device driver might be disconnected";
+      throw;
+    }
 
+    if (it->first == seissol::memory::DeviceUnifiedMemory) {
+      logError() << "Premature deallocation of device uniformed mem. in ~ManagedAllocator. "
+                 << "Dangerous, device driver might be disconnected";
+      throw;
+    }
 
-      if (it->first == seissol::memory::DeviceUnifiedMemory) {
-        logError() << "Premature deallocation of device uniformed mem. in ~ManagedAllocator. "
-                   << "Dangerous, device driver might be disconnected";
-        throw;
-      }
-
-      seissol::memory::free(it->second, it->first);
+    seissol::memory::free(it->second, it->first);
   }
-
-  // reset memory vectors
-  m_dataMemoryAddresses.clear();
 }
 
-void* seissol::memory::ManagedAllocator::allocateMemory( size_t i_size, size_t i_alignment, enum Memkind i_memkind )
+void* seissol::memory::ManagedAllocator::allocateMemory(size_t i_size, size_t i_alignment, enum Memkind i_memkind )
 {
   void* l_ptrBuffer = seissol::memory::allocate(i_size, i_alignment, i_memkind);
   m_dataMemoryAddresses.push_back( Address(i_memkind, l_ptrBuffer) );

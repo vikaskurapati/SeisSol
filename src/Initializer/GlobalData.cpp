@@ -244,7 +244,7 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
   unsigned plasticityGlobalMatrixMemSize = 0;
 
 
-  plasticityGlobalMatrixMemSize += yateto::alignedUpper(tensor::v::size(),    yateto::alignedReals<real>(DEVICE_ALIGNMENT));
+  plasticityGlobalMatrixMemSize += yateto::alignedUpper(tensor::v::size(), yateto::alignedReals<real>(DEVICE_ALIGNMENT));
   plasticityGlobalMatrixMemSize += yateto::alignedUpper(tensor::vInv::size(), yateto::alignedReals<real>(DEVICE_ALIGNMENT));
 
   real* plasticityGlobalMatrixMem = static_cast<real*>(memoryAllocator.allocateMemory(plasticityGlobalMatrixMemSize * sizeof(real),
@@ -262,7 +262,7 @@ void seissol::initializers::initializeGlobalDataOnDevice(GlobalDataOnDevice& glo
                                                     MATRIX_ALIGNMENT);
 }
 
-
+// TODO: move it into a unit test
 void seissol::initializers::compareGlobalData(const GlobalData &HostData, const GlobalDataOnDevice &DeviceData) {
   DeviceInstance& device = DeviceInstance::getInstance();
 

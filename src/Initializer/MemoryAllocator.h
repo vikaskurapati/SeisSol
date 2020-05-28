@@ -91,7 +91,7 @@ namespace seissol {
       PinnedMemory = 5,
     };
     void* allocate(size_t i_size, size_t i_alignment = 1, enum Memkind i_memkind = Standard);
-    void free(void* i_pointer, enum Memkind i_memkind = Standard);   
+    void free(void* i_pointer, enum Memkind i_memkind = Standard);
 
     /**
      * Prints the memory alignment of in terms of relative start and ends in bytes.

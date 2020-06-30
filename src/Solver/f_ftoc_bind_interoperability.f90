@@ -314,6 +314,11 @@ module f_ftoc_bind_interoperability
     end subroutine
   end interface
 
+  interface c_interoperability_check_device_memory_status
+    subroutine c_interoperability_check_device_memory_status() bind( C, name='c_interoperability_check_device_memory_status' )
+    end subroutine
+  end interface
+
   interface c_interoperability_freeDeviceData
     subroutine c_interoperability_freeDeviceData() bind( C, name='c_interoperability_freeDeviceData' )
     end subroutine

@@ -41,6 +41,8 @@
 
 #include <cstddef>
 #include <cstring>
+#include <sstream>
+#include <stdexcept>
 
 #include "Interoperability.h"
 #include "time_stepping/TimeManager.h"
@@ -247,6 +249,10 @@ extern "C" {
   }
 
 #ifdef ACL_DEVICE
+  void c_interoperability_check_device_memory_status() {
+    e_interoperability.checkDeviceMemoryStatus();
+  }
+
   void c_interoperability_freeDeviceData() {
       e_interoperability.freeDeviceData();
   }
@@ -896,6 +902,21 @@ void seissol::Interoperability::computeMInvJInvPhisAtSources(double x, double y,
 }
 
 #ifdef ACL_DEVICE
+void seissol::Interoperability::checkDeviceMemoryStatus() {
+  device::DeviceInstance& Device = device::DeviceInstance::getInstance();
+  constexpr size_t FACTOR = 1024 * 1024 * 1024; // GB
+
+  if (Device.api->getCurrentlyOccupiedMem() > Device.api->getMaxAvailableMem()) {
+    std::stringstream Stream;
+    const auto rank = seissol::MPI::mpi.rank();
+    Stream << rank << "] Device memory is overloaded. It will results in bad performance\n";
+    Stream << rank << "] Total occupied mem.: " << Device.api->getCurrentlyOccupiedMem() / FACTOR << '\n';
+    Stream << rank << "] Unified mem. requested: " << Device.api->getCurrentlyOccupiedUnifiedMem() / FACTOR << '\n';
+    Stream << rank << "] Available mem.: " << Device.api->getMaxAvailableMem() / FACTOR << '\n';
+    logInfo(rank) << Stream.str();
+    throw std::runtime_error("Device mem. overloaded");
+  }
+}
 void seissol::Interoperability::freeDeviceData() {
     seissol::SeisSol::main.getMemoryManager().freeVariablesOnDevice();
 }

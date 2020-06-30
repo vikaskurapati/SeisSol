@@ -169,6 +169,12 @@ CONTAINS
       call c_interoperability_enableDynamicRupture()
     endif
 
+#ifdef ACL_DEVICE
+    ! check whether the (unified) memory allocated at this point
+    ! exceeds the maximum avaliable on a current device
+    call c_interoperability_check_device_memory_status()
+#endif
+
     ! do the simulation
     call c_interoperability_simulate( i_finalTime = disc%endTime );
     ! End time is currently the only supported abort criteria by GK

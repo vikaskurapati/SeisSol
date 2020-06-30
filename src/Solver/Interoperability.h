@@ -427,6 +427,7 @@ class seissol::Interoperability {
    /**
     * Finalizes Device, i.e. free all allocated data on devices
     * */
+   void checkDeviceMemoryStatus();
    void freeDeviceData();
 #endif
 };

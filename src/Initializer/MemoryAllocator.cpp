@@ -178,15 +178,17 @@ void seissol::memory::printMemoryAlignment( std::vector< std::vector<unsigned lo
 seissol::memory::ManagedAllocator::~ManagedAllocator() {
   for (AddressVector::const_iterator it = m_dataMemoryAddresses.begin(); it != m_dataMemoryAddresses.end(); ++it) {
     if (it->first == seissol::memory::DeviceGlobalMemory) {
-      logError() << "Premature deallocation of device global mem. in ~ManagedAllocator. "
+      logError() << "Premature de-allocation of device global mem. in ~ManagedAllocator. "
                  << "Dangerous, device driver might be disconnected";
-      throw;
+      // i know it is a bad to throw an exception inc the destructor
+      // it is done mainly for debugging reasons
+      throw std::runtime_error("Premature de-allocation of device global mem.");
     }
 
     if (it->first == seissol::memory::DeviceUnifiedMemory) {
-      logError() << "Premature deallocation of device uniformed mem. in ~ManagedAllocator. "
+      logError() << "Premature de-allocation of device uniformed mem. in ~ManagedAllocator. "
                  << "Dangerous, device driver might be disconnected";
-      throw;
+      throw std::runtime_error("Premature de-allocation of device global mem.");
     }
 
     seissol::memory::free(it->second, it->first);

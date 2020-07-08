@@ -211,7 +211,7 @@ if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
   find_package(CUDA REQUIRED)
   set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};
           -std=c++11;
-          -arch=sm_61;
+          -arch=${COMPUTE_SUB_ARCH};
           -O3;)
 
   set(DEVICE_SRC ${CMAKE_BINARY_DIR}/src/generated_code/gpulike_subroutine.cpp)

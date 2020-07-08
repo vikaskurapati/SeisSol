@@ -24,12 +24,16 @@ set(EQUATIONS_OPTIONS elastic viscoelastic viscoelastic2)
 set_property(CACHE EQUATIONS PROPERTY STRINGS ${EQUATIONS_OPTIONS})
 
 
-set(HOST_ARCH "hsw" CACHE STRING "Type of the target architecture")
-set(COMPUTE_ARCH "hsw" CACHE STRING "Type of the target architecture")
+set(HOST_ARCH "hsw" CACHE STRING "Type of the target host architecture")
+set(COMPUTE_ARCH "hsw" CACHE STRING "Type of the target compute architecture")
 set(ARCH_OPTIONS noarch wsm snb hsw knc knl skx nvidia power9)
 set(ARCH_ALIGNMENT   16  16  32  32  64  64  64    64     16)  # size of a vector registers in bytes for a given architecture
 set_property(CACHE HOST_ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
 set_property(CACHE COMPUTE_ARCH PROPERTY STRINGS ${ARCH_OPTIONS})
+
+set(COMPUTE_SUB_ARCH "same" CACHE STRING "Type of the target GPU architecture")
+set(COMPUTE_SUB_ARCH_OPTIONS same sm_60 sm_61 sm_70 sm_71)
+set_property(CACHE COMPUTE_SUB_ARCH PROPERTY STRINGS ${COMPUTE_SUB_ARCH_OPTIONS})
 
 
 set(PRECISION "double" CACHE STRING "type of floating point precision, namely: double/float")
@@ -96,6 +100,7 @@ endfunction()
 check_parameter("ORDER" ${ORDER} "${ORDER_OPTIONS}")
 check_parameter("HOST_ARCH" ${HOST_ARCH} "${ARCH_OPTIONS}")
 check_parameter("COMPUTE_ARCH" ${COMPUTE_ARCH} "${ARCH_OPTIONS}")
+check_parameter("COMPUTE_SUB_ARCH" ${COMPUTE_SUB_ARCH} "${COMPUTE_SUB_ARCH_OPTIONS}")
 check_parameter("EQUATIONS" ${EQUATIONS} "${EQUATIONS_OPTIONS}")
 check_parameter("PRECISION" ${PRECISION} "${PRECISION_OPTIONS}")
 check_parameter("DYNAMIC_RUPTURE_METHOD" ${DYNAMIC_RUPTURE_METHOD} "${RUPTURE_OPTIONS}")
@@ -104,6 +109,16 @@ check_parameter("DEVICE_BACKEND" ${DEVICE_BACKEND} "${DEVICE_BACKEDNS}")
 check_parameter("LOG_LEVEL" ${LOG_LEVEL} "${LOG_LEVEL_OPTIONS}")
 check_parameter("LOG_LEVEL_MASTER" ${LOG_LEVEL_MASTER} "${LOG_LEVEL_MASTER_OPTIONS}")
 
+# check compute sub architecture (relevant only for GPU)
+if (${COMPUTE_ARCH} STREQUAL "nvidia" OR ${COMPUTE_ARCH} STREQUAL "amd_gpu")
+  if (${COMPUTE_SUB_ARCH} STREQUAL "same")
+    message(FATAL_ERROR "GPU SM architecture has not been chosen. Please, provide COMPUTE_SUB_ARCH parameter")
+  endif()
+else()
+  if (NOT ${COMPUTE_SUB_ARCH} STREQUAL "same")
+    message(FATAL_ERROR "COMPUTE_SUB_ARCH must be the \"same\" as COMPUTE_ARCH")
+  endif()
+endif()
 
 
 # check NUMBER_OF_MECHANISMS

@@ -74,7 +74,7 @@ if cmdLineArgs.memLayout == 'auto':
   env = {
     'equations': cmdLineArgs.equations,
     'order': cmdLineArgs.order,
-    'arch': cmdLineArgs.arch,
+    'arch': cmdLineArgs.compute_arch,
     'multipleSimulations': cmdLineArgs.multipleSimulations
   }
   mem_layout = memlayout.guessMemoryLayout(env)

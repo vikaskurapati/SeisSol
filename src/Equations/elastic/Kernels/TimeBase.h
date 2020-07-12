@@ -73,7 +73,6 @@
 
 #include <generated_code/kernel.h>
 #ifdef ACL_DEVICE
-//#include <generated_code/device_kernel.h>
 #include <device.h>
 using namespace device;
 #endif

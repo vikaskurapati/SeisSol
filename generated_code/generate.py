@@ -60,6 +60,7 @@ cmdLineParser.add_argument('--matricesDir')
 cmdLineParser.add_argument('--outputDir')
 cmdLineParser.add_argument('--host_arch')
 cmdLineParser.add_argument('--compute_arch', default=None)
+cmdLineParser.add_argument('--compute_sub_arch', default=None)
 cmdLineParser.add_argument('--order', type=int)
 cmdLineParser.add_argument('--numberOfMechanisms', type=int)
 cmdLineParser.add_argument('--memLayout')
@@ -82,7 +83,7 @@ else:
   mem_layout = cmdLineArgs.memLayout
   
 
-arch = useArchitectureIdentifiedBy(cmdLineArgs.host_arch, cmdLineArgs.compute_arch)
+arch = useArchitectureIdentifiedBy(cmdLineArgs.host_arch, cmdLineArgs.compute_arch, cmdLineArgs.compute_sub_arch)
 
 equationsSpec = importlib.util.find_spec(cmdLineArgs.equations)
 try:

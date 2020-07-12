@@ -175,76 +175,102 @@ void seissol::kernels::Neighbor::computeNeighborsIntegral(  NeighborData&       
 
 
 #ifdef ACL_DEVICE
-void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditional_table_t &table) {
-  kernel::gpu_neighboringFlux nfKrnl = m_deviceNfKrnlPrototype;
-  kernel::gpu_nodalFlux drKrnl = m_deviceDrKrnlPrototype;
-  kernel::gpu_localFlux lfKrnl = m_deviceLfKrnlPrototype;
+void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditional_table_t &Table) {
+  kernel::gpu_neighboringFlux NeighFluxKrnl = m_deviceNfKrnlPrototype;
+  kernel::gpu_nodalFlux DrKrnl = m_deviceDrKrnlPrototype;
+  kernel::gpu_localFlux LocalFluxKrnl = m_deviceLfKrnlPrototype;
 
-  for(unsigned int face = 0; face < 4; face++) {
+  unsigned DeviceStackCount = 0;
+  real* TmpMem = nullptr;
+
+  for(unsigned int Face = 0; Face < 4; Face++) {
 
     // regular and periodic
-    for (unsigned face_relation = 0; face_relation < (*FaceRelations::Count); ++face_relation) {
+    for (unsigned FaceRelation = 0; FaceRelation < (*FaceRelations::Count); ++FaceRelation) {
 
-      ConditionalKey key(*KernelNames::neighbor_flux,
+      ConditionalKey Key(*KernelNames::neighbor_flux,
                          (FaceKinds::regular || FaceKinds::periodic),
-                         face,
-                         face_relation);
+                         Face,
+                         FaceRelation);
 
-      if(table.find(key) != table.end()) {
-        PointersTable &entry = table[key];
+      if(Table.find(Key) != Table.end()) {
+        PointersTable &Entry = Table[Key];
 
-        nfKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
+        const auto NUM_ELEMENTS = (Entry.m_Container[*VariableID::dofs])->getSize();
+        NeighFluxKrnl.NumElements = NUM_ELEMENTS;
 
-        nfKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
-        nfKrnl.I = const_cast<const real **>((entry.m_Container[*VariableID::idofs])->getPointers());
-        nfKrnl.AminusT = const_cast<const real **>((entry.m_Container[*VariableID::AminusT])->getPointers());
+        NeighFluxKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
+        NeighFluxKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
+        NeighFluxKrnl.AminusT = const_cast<const real **>((Entry.m_Container[*VariableID::AminusT])->getPointers());
 
-        int k = (face_relation / 12);
-        int j = (face_relation - 12 * k) / 4;
-        int i = face_relation - 3 * j - 12 * k;
+        /*
+        int k = (FaceRelation / 12);
+        int j = (FaceRelation - 12 * k) / 4;
+        int i = FaceRelation - 3 * j - 12 * k;
+        */
+        TmpMem = (real*)(m_Device.api->getStackMemory(NeighFluxKrnl.TmpMaxMemRequiredInBytes * NUM_ELEMENTS));
+        NeighFluxKrnl.TmpMemManager.attachMem(TmpMem);
 
-        nfKrnl.execute(i, j, k);
-        //(*(nfKrnl.ExecutePtrs[face_relation]))();
+        //NeighFluxKrnl.execute(i, j, k);
+        (NeighFluxKrnl.*NeighFluxKrnl.ExecutePtrs[FaceRelation])();
+        m_Device.api->popStackMemory();
       }
     }
 
     // free surface
-    ConditionalKey key(*KernelNames::neighbor_flux,
-                       *FaceKinds::freeSurface,
-                       face);
+    {
+      ConditionalKey Key(*KernelNames::neighbor_flux,
+                         *FaceKinds::freeSurface,
+                         Face);
 
-    if(table.find(key) != table.end()) {
-      PointersTable &entry = table[key];
+      if(Table.find(Key) != Table.end()) {
+        PointersTable &Entry = Table[Key];
 
-      lfKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
-      lfKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
-      lfKrnl.I = const_cast<const real **>((entry.m_Container[*VariableID::idofs])->getPointers());
-      lfKrnl.AplusT = const_cast<const real **>((entry.m_Container[*VariableID::AminusT])->getPointers());
+        const auto NUM_ELEMENTS = (Entry.m_Container[*VariableID::dofs])->getSize();
+        LocalFluxKrnl.NumElements = NUM_ELEMENTS;
 
-      lfKrnl.execute(face);
+        LocalFluxKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
+        LocalFluxKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
+        LocalFluxKrnl.AplusT = const_cast<const real **>((Entry.m_Container[*VariableID::AminusT])->getPointers());
+
+        TmpMem = (real*)(m_Device.api->getStackMemory(LocalFluxKrnl.TmpMaxMemRequiredInBytes * NUM_ELEMENTS));
+        LocalFluxKrnl.TmpMemManager.attachMem(TmpMem);
+
+        LocalFluxKrnl.execute(Face);
+        m_Device.api->popStackMemory();
+      }
     }
 
     // dynamic rupture
-    for (unsigned face_relation = 0; face_relation < (*DrFaceRelations::Count); ++face_relation) {
+    for (unsigned FaceRelation = 0; FaceRelation < (*DrFaceRelations::Count); ++FaceRelation) {
 
-      ConditionalKey key(*KernelNames::neighbor_flux,
+      ConditionalKey Key(*KernelNames::neighbor_flux,
                          *FaceKinds::dynamicRupture,
-                         face,
-                         face_relation);
+                         Face,
+                         FaceRelation);
 
-      if(table.find(key) != table.end()) {
-        PointersTable &entry = table[key];
+      if(Table.find(Key) != Table.end()) {
+        PointersTable &Entry = Table[Key];
 
-        drKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
-        drKrnl.fluxSolver = const_cast<const real **>((entry.m_Container[*VariableID::fluxSolver])->getPointers());
-        drKrnl.godunovState = const_cast<const real **>((entry.m_Container[*VariableID::godunov])->getPointers());
-        drKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
+        const auto NUM_ELEMENTS = (Entry.m_Container[*VariableID::dofs])->getSize();
+        DrKrnl.NumElements = NUM_ELEMENTS;
 
-        int j = (face_relation / 4);
-        int i = face_relation - 4 * j;
+        DrKrnl.fluxSolver = const_cast<const real **>((Entry.m_Container[*VariableID::fluxSolver])->getPointers());
+        DrKrnl.godunovState = const_cast<const real **>((Entry.m_Container[*VariableID::godunov])->getPointers());
+        DrKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
 
-        drKrnl.execute(i, j);
-        //drKrnl.ExecutePtrs[face_relation];
+        /*
+        int j = (FaceRelation / 4);
+        int i = FaceRelation - 4 * j;
+        */
+
+        TmpMem = (real*)(m_Device.api->getStackMemory(DrKrnl.TmpMaxMemRequiredInBytes * NUM_ELEMENTS));
+        DrKrnl.TmpMemManager.attachMem(TmpMem);
+
+        //DrKrnl.execute(i, j);
+        (DrKrnl.*DrKrnl.ExecutePtrs[FaceRelation])();
+        m_Device.api->popStackMemory();
+        //drKrnl.ExecutePtrs[FaceRelation];
       }
     }
   }

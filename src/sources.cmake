@@ -182,21 +182,6 @@ elseif ("${EQUATIONS}" STREQUAL "viscoelastic2")
 endif()
 
 if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
-  #[[
-  if (${REAL_SIZE_IN_BYTES} EQUAL 8)
-    configure_file(generated_code/staticly_gen_code/double/device_kernel.cpp src/generated_code/device_kernel.cpp COPYONLY)
-    configure_file(generated_code/staticly_gen_code/double/device_kernel.h src/generated_code/device_kernel.h COPYONLY)
-
-    configure_file(generated_code/staticly_gen_code/double/device_subroutine.cpp src/generated_code/device_subroutine.cpp COPYONLY)
-    configure_file(generated_code/staticly_gen_code/double/device_subroutine.h src/generated_code/device_subroutine.h COPYONLY)
-  elseif (${REAL_SIZE_IN_BYTES} STREQUAL 4)
-    configure_file(generated_code/staticly_gen_code/float/device_kernel.cpp src/generated_code/device_kernel.cpp COPYONLY)
-    configure_file(generated_code/staticly_gen_code/float/device_kernel.h src/generated_code/device_kernel.h COPYONLY)
-
-    configure_file(generated_code/staticly_gen_code/float/device_subroutine.cpp src/generated_code/device_subroutine.cpp COPYONLY)
-    configure_file(generated_code/staticly_gen_code/float/device_subroutine.h src/generated_code/device_subroutine.h COPYONLY)
-  endif()
-  ]]
   target_sources(SeisSol-lib PUBLIC
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/LocalIntegrationRecorder.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/src/Initializer/recording/NeighbIntegrationRecorder.cpp

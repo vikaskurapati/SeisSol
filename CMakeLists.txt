@@ -81,6 +81,7 @@ add_custom_command(
      "--outputDir" ${CMAKE_CURRENT_BINARY_DIR}/src/generated_code
      "--host_arch" ${HOST_ARCH_STR}
      "--compute_arch" ${COMPUTE_ARCH_STR}
+     "--compute_sub_arch" ${COMPUTE_SUB_ARCH}
      "--order" ${ORDER}
      "--numberOfMechanisms" ${NUMBER_OF_MECHANISMS}
      "--memLayout" ${MEMORY_LAYOUT}

@@ -122,43 +122,56 @@ void seissol::kernels::Local::computeIntegral(  real       i_timeIntegratedDegre
 }
 
 #ifdef  ACL_DEVICE
-void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t &table,
+void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t &Table,
                                                             LocalTmp& ) {
 
   // Volume integral
-  ConditionalKey key(KernelNames::time || KernelNames::volume);
-  kernel::gpu_volume volKrnl = m_deviceVolumeKernelPrototype;
+  ConditionalKey Key(KernelNames::time || KernelNames::volume);
+  kernel::gpu_volume VolKrnl = m_deviceVolumeKernelPrototype;
+  kernel::gpu_localFlux LocalFluxKrnl = m_deviceLocalFluxKernelPrototype;
 
-  if (table.find(key) != table.end()) {
-    PointersTable &entry = table[key];
+  constexpr unsigned MAX_TMP_MEM = (VolKrnl.TmpMaxMemRequiredInBytes > LocalFluxKrnl.TmpMaxMemRequiredInBytes) \
+                                   ? VolKrnl.TmpMaxMemRequiredInBytes : LocalFluxKrnl.TmpMaxMemRequiredInBytes;
+  real* TmpMem = nullptr;
 
-    volKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
-    volKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
-    volKrnl.I = const_cast<const real **>((entry.m_Container[*VariableID::idofs])->getPointers());
+  if (Table.find(Key) != Table.end()) {
+    PointersTable &Entry = Table[Key];
 
-    unsigned star_offset = 0;
+    unsigned MaxNumElements = (Entry.m_Container[*VariableID::dofs])->getSize();
+    VolKrnl.NumElements = MaxNumElements;
+
+    // volume kernel always contains more elements than any local one
+    TmpMem = (real*)(m_Device.api->getStackMemory(MAX_TMP_MEM * MaxNumElements));
+
+    VolKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
+    VolKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
+
+    unsigned StarOffset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-      volKrnl.star(i) = const_cast<const real **>((entry.m_Container[*VariableID::star])->getPointers());
-      volKrnl.ExtraOffset_star(i) = star_offset;
-      star_offset += tensor::star::size(i);
+      VolKrnl.star(i) = const_cast<const real **>((Entry.m_Container[*VariableID::star])->getPointers());
+      VolKrnl.ExtraOffset_star(i) = StarOffset;
+      StarOffset += tensor::star::size(i);
     }
-
-    volKrnl.execute();
+    VolKrnl.TmpMemManager.attachMem(TmpMem);
+    VolKrnl.execute();
   }
 
   // Local Flux Integral
-  kernel::gpu_localFlux lfKrnl = m_deviceLocalFluxKernelPrototype;
-  for (unsigned face = 0; face < 4; ++face) {
-    key = ConditionalKey(*KernelNames::local_flux, !FaceKinds::dynamicRupture, face);
+  for (unsigned Face = 0; Face < 4; ++Face) {
+    Key = ConditionalKey(*KernelNames::local_flux, !FaceKinds::dynamicRupture, Face);
 
-    if (table.find(key) != table.end()) {
-      PointersTable &entry = table[key];
-      lfKrnl.NumElements = entry.m_Container[*VariableID::dofs]->getSize();
-      lfKrnl.Q = (entry.m_Container[*VariableID::dofs])->getPointers();
-      lfKrnl.I = const_cast<const real **>((entry.m_Container[*VariableID::idofs])->getPointers());
-      lfKrnl.AplusT = const_cast<const real **>(entry.m_Container[*VariableID::AplusT]->getPointers());
-      lfKrnl.execute(face);
+    if (Table.find(Key) != Table.end()) {
+      PointersTable &Entry = Table[Key];
+      LocalFluxKrnl.NumElements = Entry.m_Container[*VariableID::dofs]->getSize();
+      LocalFluxKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
+      LocalFluxKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
+      LocalFluxKrnl.AplusT = const_cast<const real **>(Entry.m_Container[*VariableID::AplusT]->getPointers());
+      LocalFluxKrnl.TmpMemManager.attachMem(TmpMem);
+      LocalFluxKrnl.execute(Face);
     }
+  }
+  if (TmpMem != nullptr) {
+    m_Device.api->popStackMemory();
   }
 }
 #endif

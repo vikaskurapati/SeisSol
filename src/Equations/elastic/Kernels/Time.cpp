@@ -183,108 +183,119 @@ void seissol::kernels::Time::computeAder( double                      i_timeStep
 }
 
 #ifdef ACL_DEVICE
-void seissol::kernels::Time::computeAderWithinWorkItem(double i_timeStepWidth,
-                                                       LocalTmp& tmp,
-                                                       conditional_table_t &table) {
+void seissol::kernels::Time::computeAderWithinWorkItem(double TimeStepWidth,
+                                                       LocalTmp& TmpData,
+                                                       conditional_table_t &Table) {
 
-  kernel::gpu_derivative derivativesKrnl = m_DeviceKrnlPrototype;
-  kernel::gpu_derivativeTaylorExpansion intKrnl;
+  kernel::gpu_derivative DerivativesKrnl = m_DeviceKrnlPrototype;
+  kernel::gpu_derivativeTaylorExpansion IntKrnl;
 
-  ConditionalKey key(KernelNames::time || KernelNames::volume);
-  if(table.find(key) != table.end()) {
+  ConditionalKey Key(KernelNames::time || KernelNames::volume);
+  if(Table.find(Key) != Table.end()) {
 
-    PointersTable &entry = table[key];
+    PointersTable &Entry = Table[Key];
 
-    derivativesKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
-    intKrnl.NumElements = (entry.m_Container[*VariableID::dofs])->getSize();
+    const auto NUM_ELEMENTS = (Entry.m_Container[*VariableID::dofs])->getSize();
+    DerivativesKrnl.NumElements = NUM_ELEMENTS;
+    IntKrnl.NumElements = NUM_ELEMENTS;
 
-    intKrnl.I = (entry.m_Container[*VariableID::idofs])->getPointers();
+    IntKrnl.I = (Entry.m_Container[*VariableID::idofs])->getPointers();
 
-    unsigned star_offset = 0;
+    unsigned StarOffset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
-      derivativesKrnl.star(i) = const_cast<const real **>((entry.m_Container[*VariableID::star])->getPointers());
-      derivativesKrnl.ExtraOffset_star(i) = star_offset;
-      star_offset += tensor::star::size(i);
+      DerivativesKrnl.star(i) = const_cast<const real **>((Entry.m_Container[*VariableID::star])->getPointers());
+      DerivativesKrnl.ExtraOffset_star(i) = StarOffset;
+      StarOffset += tensor::star::size(i);
     }
 
-    unsigned derivatives_offset = 0;
+    unsigned DerivativesOffset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
-      derivativesKrnl.dQ(i) = (entry.m_Container[*VariableID::derivatives])->getPointers();
-      intKrnl.dQ(i) = const_cast<const real **>((entry.m_Container[*VariableID::derivatives])->getPointers());
+      DerivativesKrnl.dQ(i) = (Entry.m_Container[*VariableID::derivatives])->getPointers();
+      IntKrnl.dQ(i) = const_cast<const real **>((Entry.m_Container[*VariableID::derivatives])->getPointers());
 
-      derivativesKrnl.ExtraOffset_dQ(i) = derivatives_offset;
-      intKrnl.ExtraOffset_dQ(i) = derivatives_offset;
+      DerivativesKrnl.ExtraOffset_dQ(i) = DerivativesOffset;
+      IntKrnl.ExtraOffset_dQ(i) = DerivativesOffset;
 
-      derivatives_offset += tensor::dQ::size(i);
+      DerivativesOffset += tensor::dQ::size(i);
     }
 
     // stream dofs to the zero derivative
-    m_Device.api->streamBatchedData((entry.m_Container[*VariableID::dofs])->getPointers(),
-                                    (entry.m_Container[*VariableID::derivatives])->getPointers(),
+    m_Device.api->streamBatchedData((Entry.m_Container[*VariableID::dofs])->getPointers(),
+                                    (Entry.m_Container[*VariableID::derivatives])->getPointers(),
                                     tensor::Q::Size,
-                                    derivativesKrnl.NumElements);
+                                    DerivativesKrnl.NumElements);
 
-    intKrnl.power = i_timeStepWidth;
-    intKrnl.execute0();
+    constexpr unsigned MAX_TMP_MEM = (IntKrnl.TmpMaxMemRequiredInBytes > DerivativesKrnl.TmpMaxMemRequiredInBytes) \
+                                   ? IntKrnl.TmpMaxMemRequiredInBytes : DerivativesKrnl.TmpMaxMemRequiredInBytes;
+    real* TmpMem = (real*)(m_Device.api->getStackMemory(MAX_TMP_MEM * NUM_ELEMENTS));
 
-    for (unsigned der = 1; der < CONVERGENCE_ORDER; ++der) {
-      derivativesKrnl.execute(der);
+    IntKrnl.power = TimeStepWidth;
+    IntKrnl.TmpMemManager.attachMem(TmpMem);
+    IntKrnl.execute0();
+
+    for (unsigned Der = 1; Der < CONVERGENCE_ORDER; ++Der) {
+      DerivativesKrnl.TmpMemManager.attachMem(TmpMem);
+      DerivativesKrnl.execute(Der);
 
       // update scalar for this derivative
-      intKrnl.power *= i_timeStepWidth / real(der + 1);
-      intKrnl.execute(der);
+      IntKrnl.power *= TimeStepWidth / real(Der + 1);
+      IntKrnl.TmpMemManager.attachMem(TmpMem);
+      IntKrnl.execute(Der);
     }
+    m_Device.api->popStackMemory();
   }
 }
 
 
-void seissol::kernels::Time::computeIntegralWithinWorkItem(double i_expansionPoint,
-                                                           double i_integrationStart,
-                                                           double i_integrationEnd,
-                                                           const real** i_timeDerivatives,
-                                                           real ** o_timeIntegratedDofs,
+void seissol::kernels::Time::computeIntegralWithinWorkItem(double ExpansionPoint,
+                                                           double IntegrationStart,
+                                                           double IntegrationEnd,
+                                                           const real** TimeDerivatives,
+                                                           real ** TimeIntegratedDofs,
                                                            unsigned NumElements) {
 
   // assert that this is a forwared integration in time
-  assert( i_integrationStart + (real) 1.E-10 > i_expansionPoint   );
-  assert( i_integrationEnd                   > i_integrationStart );
+  assert( IntegrationStart + (real) 1.E-10 > ExpansionPoint   );
+  assert( IntegrationEnd                   > IntegrationStart );
 
 
   /*
   * compute time integral.
   */
   // compute lengths of integration intervals
-  real l_deltaTLower = i_integrationStart - i_expansionPoint;
-  real l_deltaTUpper = i_integrationEnd   - i_expansionPoint;
+  real DeltaTLower = IntegrationStart - ExpansionPoint;
+  real DeltaTUpper = IntegrationEnd   - ExpansionPoint;
 
   // initialization of scalars in the taylor series expansion (0th term)
-  real l_firstTerm  = (real) 1;
-  real l_secondTerm = (real) 1;
-  real l_factorial  = (real) 1;
+  real FirstTerm  = (real) 1;
+  real SecondTerm = (real) 1;
+  real Factorial  = (real) 1;
 
-  kernel::gpu_derivativeTaylorExpansion intKrnl;
-  intKrnl.NumElements = NumElements;
+  kernel::gpu_derivativeTaylorExpansion IntKrnl;
+  IntKrnl.NumElements = NumElements;
+  real* TmpMem = (real*)(m_Device.api->getStackMemory(IntKrnl.TmpMaxMemRequiredInBytes * NumElements));
 
-  intKrnl.I = o_timeIntegratedDofs;
+  IntKrnl.I = TimeIntegratedDofs;
 
-  unsigned derivatives_offset = 0;
+  unsigned DerivativesOffset = 0;
   for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
-    intKrnl.dQ(i) = i_timeDerivatives;
-    intKrnl.ExtraOffset_dQ(i) = derivatives_offset;
-    derivatives_offset += tensor::dQ::size(i);
+    IntKrnl.dQ(i) = TimeDerivatives;
+    IntKrnl.ExtraOffset_dQ(i) = DerivativesOffset;
+    DerivativesOffset += tensor::dQ::size(i);
   }
 
   // iterate over time derivatives
-  for(int der = 0; der < CONVERGENCE_ORDER; ++der ) {
-    l_firstTerm *= l_deltaTUpper;
-    l_secondTerm *= l_deltaTLower;
-    l_factorial *= (real) (der + 1);
+  for(int Der = 0; Der < CONVERGENCE_ORDER; ++Der) {
+    FirstTerm *= DeltaTUpper;
+    SecondTerm *= DeltaTLower;
+    Factorial *= (real) (Der + 1);
 
-    intKrnl.power = l_firstTerm - l_secondTerm;
-    intKrnl.power /= l_factorial;
-
-    intKrnl.execute(der);
+    IntKrnl.power = FirstTerm - SecondTerm;
+    IntKrnl.power /= Factorial;
+    IntKrnl.TmpMemManager.attachMem(TmpMem);
+    IntKrnl.execute(Der);
   }
+  m_Device.api->popStackMemory();
 }
 #endif //ACL_DEVICE
 

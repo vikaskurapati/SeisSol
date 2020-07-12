@@ -180,9 +180,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
   kernel::gpu_nodalFlux DrKrnl = m_deviceDrKrnlPrototype;
   kernel::gpu_localFlux LocalFluxKrnl = m_deviceLfKrnlPrototype;
 
-  unsigned DeviceStackCount = 0;
   real* TmpMem = nullptr;
-
   for(unsigned int Face = 0; Face < 4; Face++) {
 
     // regular and periodic
@@ -203,15 +201,9 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         NeighFluxKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
         NeighFluxKrnl.AminusT = const_cast<const real **>((Entry.m_Container[*VariableID::AminusT])->getPointers());
 
-        /*
-        int k = (FaceRelation / 12);
-        int j = (FaceRelation - 12 * k) / 4;
-        int i = FaceRelation - 3 * j - 12 * k;
-        */
         TmpMem = (real*)(m_Device.api->getStackMemory(NeighFluxKrnl.TmpMaxMemRequiredInBytes * NUM_ELEMENTS));
         NeighFluxKrnl.TmpMemManager.attachMem(TmpMem);
 
-        //NeighFluxKrnl.execute(i, j, k);
         (NeighFluxKrnl.*NeighFluxKrnl.ExecutePtrs[FaceRelation])();
         m_Device.api->popStackMemory();
       }
@@ -259,18 +251,11 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         DrKrnl.godunovState = const_cast<const real **>((Entry.m_Container[*VariableID::godunov])->getPointers());
         DrKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
 
-        /*
-        int j = (FaceRelation / 4);
-        int i = FaceRelation - 4 * j;
-        */
-
         TmpMem = (real*)(m_Device.api->getStackMemory(DrKrnl.TmpMaxMemRequiredInBytes * NUM_ELEMENTS));
         DrKrnl.TmpMemManager.attachMem(TmpMem);
 
-        //DrKrnl.execute(i, j);
         (DrKrnl.*DrKrnl.ExecutePtrs[FaceRelation])();
         m_Device.api->popStackMemory();
-        //drKrnl.ExecutePtrs[FaceRelation];
       }
     }
   }

@@ -80,8 +80,8 @@ add_custom_command(
      "--matricesDir" ${CMAKE_CURRENT_SOURCE_DIR}/generated_code/matrices
      "--outputDir" ${CMAKE_CURRENT_BINARY_DIR}/src/generated_code
      "--host_arch" ${HOST_ARCH_STR}
-     "--compute_arch" ${COMPUTE_ARCH_STR}
-     "--compute_sub_arch" ${COMPUTE_SUB_ARCH}
+     "--compute_arch" ${DEVICE_ARCH_STR}
+     "--compute_sub_arch" ${DEVICE_SUB_ARCH}
      "--order" ${ORDER}
      "--numberOfMechanisms" ${NUMBER_OF_MECHANISMS}
      "--memLayout" ${MEMORY_LAYOUT}
@@ -281,14 +281,21 @@ endif()
 add_executable(SeisSol-bin src/main.cpp)
 target_link_libraries(SeisSol-bin PUBLIC SeisSol-lib)
 
-set_target_properties(SeisSol-bin PROPERTIES OUTPUT_NAME "SeisSol_${CMAKE_BUILD_TYPE}_${COMPUTE_ARCH_STR}_${EQUATIONS}_${ORDER}")
+# adjust prefix name of executables
+if ("${COMPUTE_ARCH_STR}" STREQUAL "none")
+    set(EXE_NAME_PREFIX "${CMAKE_BUILD_TYPE}_${HOST_ARCH_STR}_${EQUATIONS}_${ORDER}")
+else()
+    set(EXE_NAME_PREFIX "${CMAKE_BUILD_TYPE}_${DEVICE_ARCH_STR}_${EQUATIONS}_${ORDER}")
+endif()
+
+set_target_properties(SeisSol-bin PROPERTIES OUTPUT_NAME "SeisSol_${EXE_NAME_PREFIX}")
 
 add_executable(SeisSol-proxy
         auto_tuning/proxy/src/proxy_seissol.cpp
         auto_tuning/proxy/src/flop_counter.cpp
         )
 target_link_libraries(SeisSol-proxy PUBLIC SeisSol-lib)
-set_target_properties(SeisSol-proxy PROPERTIES OUTPUT_NAME "SeisSol_proxy_${CMAKE_BUILD_TYPE}_${ARCH_STRING}_${EQUATIONS}_${ORDER}")
+set_target_properties(SeisSol-proxy PROPERTIES OUTPUT_NAME "SeisSol_proxy_${EXE_NAME_PREFIX}")
 
 
 # Testing

@@ -202,7 +202,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         NeighFluxKrnl.AminusT = const_cast<const real **>((Entry.m_Container[*VariableID::AminusT])->getPointers());
 
         TmpMem = (real*)(m_Device.api->getStackMemory(NeighFluxKrnl.TmpMaxMemRequiredInBytes * NUM_ELEMENTS));
-        NeighFluxKrnl.TmpMemManager.attachMem(TmpMem);
+        NeighFluxKrnl.linearAllocator.initialize(TmpMem);
 
         (NeighFluxKrnl.*NeighFluxKrnl.ExecutePtrs[FaceRelation])();
         m_Device.api->popStackMemory();
@@ -226,7 +226,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         LocalFluxKrnl.AplusT = const_cast<const real **>((Entry.m_Container[*VariableID::AminusT])->getPointers());
 
         TmpMem = (real*)(m_Device.api->getStackMemory(LocalFluxKrnl.TmpMaxMemRequiredInBytes * NUM_ELEMENTS));
-        LocalFluxKrnl.TmpMemManager.attachMem(TmpMem);
+        LocalFluxKrnl.linearAllocator.initialize(TmpMem);
 
         LocalFluxKrnl.execute(Face);
         m_Device.api->popStackMemory();
@@ -252,7 +252,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         DrKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
 
         TmpMem = (real*)(m_Device.api->getStackMemory(DrKrnl.TmpMaxMemRequiredInBytes * NUM_ELEMENTS));
-        DrKrnl.TmpMemManager.attachMem(TmpMem);
+        DrKrnl.linearAllocator.initialize(TmpMem);
 
         (DrKrnl.*DrKrnl.ExecutePtrs[FaceRelation])();
         m_Device.api->popStackMemory();

@@ -230,16 +230,16 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double TimeStepWidth,
     real* TmpMem = (real*)(m_Device.api->getStackMemory(MAX_TMP_MEM * NUM_ELEMENTS));
 
     IntKrnl.power = TimeStepWidth;
-    IntKrnl.TmpMemManager.attachMem(TmpMem);
+    IntKrnl.linearAllocator.initialize(TmpMem);
     IntKrnl.execute0();
 
     for (unsigned Der = 1; Der < CONVERGENCE_ORDER; ++Der) {
-      DerivativesKrnl.TmpMemManager.attachMem(TmpMem);
+      DerivativesKrnl.linearAllocator.initialize(TmpMem);
       DerivativesKrnl.execute(Der);
 
       // update scalar for this derivative
       IntKrnl.power *= TimeStepWidth / real(Der + 1);
-      IntKrnl.TmpMemManager.attachMem(TmpMem);
+      IntKrnl.linearAllocator.initialize(TmpMem);
       IntKrnl.execute(Der);
     }
     m_Device.api->popStackMemory();
@@ -292,7 +292,7 @@ void seissol::kernels::Time::computeIntegralWithinWorkItem(double ExpansionPoint
 
     IntKrnl.power = FirstTerm - SecondTerm;
     IntKrnl.power /= Factorial;
-    IntKrnl.TmpMemManager.attachMem(TmpMem);
+    IntKrnl.linearAllocator.initialize(TmpMem);
     IntKrnl.execute(Der);
   }
   m_Device.api->popStackMemory();

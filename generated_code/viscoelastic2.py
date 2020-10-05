@@ -122,12 +122,12 @@ class ADERDG(ADERDGBase):
     generator.add('projectIniCond', [projectIniCondEla, projectIniCondAne])
     generator.add('evalAtQP', dofsQP['kp'] <= self.db.evalAtQP[self.t('kl')] * self.Q['lp'])
 
-  def addLocal(self, generator, platform):
+  def addLocal(self, generator, target):
     volumeSum = Add()
     for i in range(3):
       volumeSum += self.db.kDivM[i][self.t('kl')] * self.I['lq'] * self.db.star[i]['qp']
     volumeExt = (self.Qext['kp'] <= volumeSum)
-    generator.add('volumeExt', volumeExt, platform=platform)
+    generator.add('volumeExt', volumeExt, target=target)
 
     localFluxExt = lambda i: self.Qext['kp'] <= self.Qext['kp'] + self.db.rDivM[i][self.t('km')] * self.db.fMrT[i][self.t('ml')] * self.I['lq'] * self.AplusT['qp']
     localFluxExtPrefetch = lambda i: self.I if i == 0 else (self.Q if i == 1 else None)
@@ -135,28 +135,28 @@ class ADERDG(ADERDGBase):
                         simpleParameterSpace(4),
                         localFluxExt,
                         localFluxExtPrefetch,
-                        platform=platform)
+                        target=target)
 
     generator.add('local', [
       self.Qane['kpm'] <= self.Qane['kpm'] + self.w['m'] * self.Qext['kq'] * self.selectAne['qp'] + self.Iane['kpl'] * self.W['lm'],
       self.Q['kp'] <= self.Q['kp'] + self.Qext['kq'] * self.selectEla['qp'] + self.Iane['kqm'] * self.E['qmp']
-    ], platform=platform)
+    ], target=target)
 
-  def addNeighbor(self, generator, platform):
+  def addNeighbor(self, generator, target):
     neighbourFluxExt = lambda h,j,i: self.Qext['kp'] <= self.Qext['kp'] + self.db.rDivM[i][self.t('km')] * self.db.fP[h][self.t('mn')] * self.db.rT[j][self.t('nl')] * self.I['lq'] * self.AminusT['qp']
     neighbourFluxExtPrefetch = lambda h,j,i: self.I
     generator.addFamily('neighbourFluxExt',
                         simpleParameterSpace(3,4,4),
                         neighbourFluxExt,
                         neighbourFluxExtPrefetch,
-                        platform=platform)
+                        target=target)
 
     generator.add('neighbour', [
       self.Qane['kpm'] <= self.Qane['kpm'] + self.w['m'] * self.Qext['kq'] * self.selectAne['qp'],
       self.Q['kp'] <= self.Q['kp'] + self.Qext['kq'] * self.selectEla['qp']
-    ], platform=platform)
+    ], target=target)
 
-  def addTime(self, generator, platform):
+  def addTime(self, generator, target):
     qShape = (self.numberOf3DBasisFunctions(), self.numberOfQuantities())
     dQ = [OptionalDimTensor('dQ({})'.format(d), self.Q.optName(), self.Q.optSize(), self.Q.optPos(), qShape, alignStride=True) for d in range(self.order)]
     dQext = [OptionalDimTensor('dQext({})'.format(d), self.Q.optName(), self.Q.optSize(), self.Q.optPos(), self._qShapeExtended, alignStride=True) for d in range(self.order)]
@@ -177,12 +177,12 @@ class ADERDG(ADERDGBase):
       dQext[d]['kp'] <= derivative(d),
       dQ[d]['kp'] <= dQext[d]['kq'] * self.selectEla['qp'] + dQane[d-1]['kqm'] * self.E['qmp'],
       dQane[d]['kpm'] <= self.w['m'] * dQext[d]['kq'] * self.selectAne['qp'] + dQane[d-1]['kpl'] * self.W['lm']
-    ], platform=platform)
+    ], target=target)
     generator.addFamily('derivativeTaylorExpansion', simpleParameterSpace(self.order), lambda d: [
       derivativeTaylorExpansionEla(d),
       derivativeTaylorExpansionAne(d)
-    ], platform=platform)
+    ], target=target)
     generator.addFamily('derivativeTaylorExpansionEla',
                         simpleParameterSpace(self.order),
                         derivativeTaylorExpansionEla,
-                        platform=platform)
+                        target=target)

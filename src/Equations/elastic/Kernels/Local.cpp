@@ -152,7 +152,7 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t 
       VolKrnl.ExtraOffset_star(i) = StarOffset;
       StarOffset += tensor::star::size(i);
     }
-    VolKrnl.TmpMemManager.attachMem(TmpMem);
+    VolKrnl.linearAllocator.initialize(TmpMem);
     VolKrnl.execute();
   }
 
@@ -166,7 +166,7 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t 
       LocalFluxKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
       LocalFluxKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
       LocalFluxKrnl.AplusT = const_cast<const real **>(Entry.m_Container[*VariableID::AplusT]->getPointers());
-      LocalFluxKrnl.TmpMemManager.attachMem(TmpMem);
+      LocalFluxKrnl.linearAllocator.initialize(TmpMem);
       LocalFluxKrnl.execute(Face);
     }
   }

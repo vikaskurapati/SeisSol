@@ -43,7 +43,7 @@ from yateto.input import parseJSONMatrixFile
 from multSim import OptionalDimTensor
 from common import generate_kernename_prefix
 
-def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod, platforms):
+def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod, targets):
   if dynamicRuptureMethod == 'quadrature':
     numberOfPoints = (aderdg.order+1)**2
   elif dynamicRuptureMethod == 'cellaverage':
@@ -68,15 +68,15 @@ def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod, platforms):
 
   generator.add('rotateGodunovStateLocal',
                 godunovMatrix['qp'] <= aderdg.Tinv['kq'] * aderdg.QgodLocal['kp'],
-                platform='cpu')
+                target='cpu')
   generator.add('rotateGodunovStateNeighbor',
                 godunovMatrix['qp'] <= aderdg.Tinv['kq'] * aderdg.QgodNeighbor['kp'],
-                platform='cpu')
+                target='cpu')
 
   fluxScale = Scalar('fluxScale')
   generator.add('rotateFluxMatrix',
                 fluxSolver['qp'] <= fluxScale * aderdg.starMatrix(0)['qk'] * aderdg.T['pk'],
-                platform='cpu')
+                target='cpu')
 
   def godunovStateGenerator(i,h):
     target = godunovState['kp']
@@ -89,15 +89,15 @@ def addKernels(generator, aderdg, matricesDir, dynamicRuptureMethod, platforms):
                       simpleParameterSpace(4,4),
                       godunovStateGenerator,
                       godunovStatePrefetch,
-                      platform='cpu')
+                      target='cpu')
 
   nodalFluxGenerator = lambda i,h: aderdg.extendedQTensor()['kp'] <= aderdg.extendedQTensor()['kp'] + db.V3mTo2nTWDivM[i,h][aderdg.t('kl')] * godunovState['lq'] * fluxSolver['qp']
   nodalFluxPrefetch = lambda i,h: aderdg.I
 
-  for platform in platforms:
-    name_prefix = generate_kernename_prefix(platform)
+  for target in targets:
+    name_prefix = generate_kernename_prefix(target)
     generator.addFamily(f'{name_prefix}nodalFlux',
                         simpleParameterSpace(4,4),
                         nodalFluxGenerator,
                         nodalFluxPrefetch,
-                        platform=platform)
+                        target=target)

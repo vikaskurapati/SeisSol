@@ -70,29 +70,38 @@ cmdLineParser.add_argument('--PlasticityMethod')
 cmdLineParser.add_argument('--gemm_tools')
 cmdLineArgs = cmdLineParser.parse_args()
 
+gpu_platforms = ['nvidia']
+targets = ['gpu', 'cpu'] if cmdLineArgs.compute_arch[1:] in gpu_platforms else ['cpu']
+
 if cmdLineArgs.memLayout == 'auto':
   # TODO(Lukas) Don't hardcode this
   env = {
     'equations': cmdLineArgs.equations,
     'order': cmdLineArgs.order,
     'arch': cmdLineArgs.compute_arch,
-    'multipleSimulations': cmdLineArgs.multipleSimulations
+    'multipleSimulations': cmdLineArgs.multipleSimulations,
+    'targets': targets
   }
   mem_layout = memlayout.guessMemoryLayout(env)
 else:
   mem_layout = cmdLineArgs.memLayout
-  
 
-arch = useArchitectureIdentifiedBy(cmdLineArgs.host_arch, cmdLineArgs.compute_arch, cmdLineArgs.compute_sub_arch)
+
+host_arch = cmdLineArgs.host_arch
+if cmdLineArgs.compute_arch == 'none':
+    compute_arch = cmdLineArgs.host_arch
+    compute_sub_arch = None
+else:
+    compute_arch = cmdLineArgs.compute_arch
+    compute_sub_arch = cmdLineArgs.compute_sub_arch
+
+arch = useArchitectureIdentifiedBy(compute_arch, compute_sub_arch, host_arch)
 
 equationsSpec = importlib.util.find_spec(cmdLineArgs.equations)
 try:
   equations = equationsSpec.loader.load_module()
 except:
   raise RuntimeError('Could not find kernels for ' + cmdLineArgs.equations)
-
-gpu_platforms = ['nvidia']
-platforms = ['gpu', 'cpu'] if cmdLineArgs.compute_arch[1:] in gpu_platforms else ['cpu']
 
 adgArgs = inspect.getargspec(equations.ADERDG.__init__).args[1:]
 cmdArgsDict = vars(cmdLineArgs)
@@ -105,16 +114,16 @@ compiler = Generator(arch)
 
 # Equation-specific kernels
 adg.addInit(compiler)
-adg.addLocal(compiler, platforms)
-adg.addNeighbor(compiler, platforms)
-adg.addTime(compiler, platforms)
+adg.addLocal(compiler, targets)
+adg.addNeighbor(compiler, targets)
+adg.addTime(compiler, targets)
 
 # Common kernels
 DynamicRupture.addKernels(compiler,
                           adg,
                           cmdLineArgs.matricesDir,
                           cmdLineArgs.dynamicRuptureMethod,
-                          platforms)
+                          targets)
 
 Plasticity.addKernels(compiler, adg, cmdLineArgs.matricesDir, cmdLineArgs.PlasticityMethod)
 SurfaceDisplacement.addKernels(compiler, adg)

@@ -206,7 +206,10 @@ if ("${DEVICE_BACKEND}" STREQUAL "CUDA")
                   OUTPUT_VARIABLE GEMMFORGE_PATH)
 
   set(CMAKE_MODULE_PATH "${GEMMFORGE_PATH}" ${CMAKE_MODULE_PATH})
-  find_package(GemmForge REQUIRED)
+  execute_process(COMMAND python -c "import gemmforge; gemmforge.print_cmake_path()"
+          OUTPUT_VARIABLE GEMMFORGE_PATH)
+  set(CMAKE_PREFIX_PATH "${GEMMFORGE_PATH}" ${CMAKE_MODULE_PATH})
+  find_package(GemmForge 0.0.200 REQUIRED)
   set(DEVICE_SRC ${DEVICE_SRC} ${GemmForge_SOURCES})
 
   cuda_add_library(Seissol-device-lib STATIC ${DEVICE_SRC})

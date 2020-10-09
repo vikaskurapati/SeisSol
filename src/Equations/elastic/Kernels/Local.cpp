@@ -138,7 +138,7 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t 
     PointersTable &Entry = Table[Key];
 
     unsigned MaxNumElements = (Entry.m_Container[*VariableID::dofs])->getSize();
-    VolKrnl.NumElements = MaxNumElements;
+    VolKrnl.numElements = MaxNumElements;
 
     // volume kernel always contains more elements than any local one
     TmpMem = (real*)(m_Device.api->getStackMemory(MAX_TMP_MEM * MaxNumElements));
@@ -149,7 +149,7 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t 
     unsigned StarOffset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
       VolKrnl.star(i) = const_cast<const real **>((Entry.m_Container[*VariableID::star])->getPointers());
-      VolKrnl.ExtraOffset_star(i) = StarOffset;
+      VolKrnl.extraOffset_star(i) = StarOffset;
       StarOffset += tensor::star::size(i);
     }
     VolKrnl.linearAllocator.initialize(TmpMem);
@@ -162,7 +162,7 @@ void seissol::kernels::Local::computeIntegralWithinWorkItem(conditional_table_t 
 
     if (Table.find(Key) != Table.end()) {
       PointersTable &Entry = Table[Key];
-      LocalFluxKrnl.NumElements = Entry.m_Container[*VariableID::dofs]->getSize();
+      LocalFluxKrnl.numElements = Entry.m_Container[*VariableID::dofs]->getSize();
       LocalFluxKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
       LocalFluxKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
       LocalFluxKrnl.AplusT = const_cast<const real **>(Entry.m_Container[*VariableID::AplusT]->getPointers());

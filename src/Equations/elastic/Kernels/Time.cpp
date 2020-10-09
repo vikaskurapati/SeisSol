@@ -196,15 +196,15 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double TimeStepWidth,
     PointersTable &Entry = Table[Key];
 
     const auto NUM_ELEMENTS = (Entry.m_Container[*VariableID::dofs])->getSize();
-    DerivativesKrnl.NumElements = NUM_ELEMENTS;
-    IntKrnl.NumElements = NUM_ELEMENTS;
+    DerivativesKrnl.numElements = NUM_ELEMENTS;
+    IntKrnl.numElements = NUM_ELEMENTS;
 
     IntKrnl.I = (Entry.m_Container[*VariableID::idofs])->getPointers();
 
     unsigned StarOffset = 0;
     for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::star>(); ++i) {
       DerivativesKrnl.star(i) = const_cast<const real **>((Entry.m_Container[*VariableID::star])->getPointers());
-      DerivativesKrnl.ExtraOffset_star(i) = StarOffset;
+      DerivativesKrnl.extraOffset_star(i) = StarOffset;
       StarOffset += tensor::star::size(i);
     }
 
@@ -213,8 +213,8 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double TimeStepWidth,
       DerivativesKrnl.dQ(i) = (Entry.m_Container[*VariableID::derivatives])->getPointers();
       IntKrnl.dQ(i) = const_cast<const real **>((Entry.m_Container[*VariableID::derivatives])->getPointers());
 
-      DerivativesKrnl.ExtraOffset_dQ(i) = DerivativesOffset;
-      IntKrnl.ExtraOffset_dQ(i) = DerivativesOffset;
+      DerivativesKrnl.extraOffset_dQ(i) = DerivativesOffset;
+      IntKrnl.extraOffset_dQ(i) = DerivativesOffset;
 
       DerivativesOffset += tensor::dQ::size(i);
     }
@@ -223,7 +223,7 @@ void seissol::kernels::Time::computeAderWithinWorkItem(double TimeStepWidth,
     m_Device.api->streamBatchedData((Entry.m_Container[*VariableID::dofs])->getPointers(),
                                     (Entry.m_Container[*VariableID::derivatives])->getPointers(),
                                     tensor::Q::Size,
-                                    DerivativesKrnl.NumElements);
+                                    DerivativesKrnl.numElements);
 
     constexpr unsigned MAX_TMP_MEM = (IntKrnl.TmpMaxMemRequiredInBytes > DerivativesKrnl.TmpMaxMemRequiredInBytes) \
                                    ? IntKrnl.TmpMaxMemRequiredInBytes : DerivativesKrnl.TmpMaxMemRequiredInBytes;
@@ -272,7 +272,7 @@ void seissol::kernels::Time::computeIntegralWithinWorkItem(double ExpansionPoint
   real Factorial  = (real) 1;
 
   kernel::gpu_derivativeTaylorExpansion IntKrnl;
-  IntKrnl.NumElements = NumElements;
+  IntKrnl.numElements = NumElements;
   real* TmpMem = (real*)(m_Device.api->getStackMemory(IntKrnl.TmpMaxMemRequiredInBytes * NumElements));
 
   IntKrnl.I = TimeIntegratedDofs;
@@ -280,7 +280,7 @@ void seissol::kernels::Time::computeIntegralWithinWorkItem(double ExpansionPoint
   unsigned DerivativesOffset = 0;
   for (unsigned i = 0; i < yateto::numFamilyMembers<tensor::dQ>(); ++i) {
     IntKrnl.dQ(i) = TimeDerivatives;
-    IntKrnl.ExtraOffset_dQ(i) = DerivativesOffset;
+    IntKrnl.extraOffset_dQ(i) = DerivativesOffset;
     DerivativesOffset += tensor::dQ::size(i);
   }
 

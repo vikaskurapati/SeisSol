@@ -195,7 +195,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         PointersTable &Entry = Table[Key];
 
         const auto NUM_ELEMENTS = (Entry.m_Container[*VariableID::dofs])->getSize();
-        NeighFluxKrnl.NumElements = NUM_ELEMENTS;
+        NeighFluxKrnl.numElements = NUM_ELEMENTS;
 
         NeighFluxKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
         NeighFluxKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
@@ -219,7 +219,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         PointersTable &Entry = Table[Key];
 
         const auto NUM_ELEMENTS = (Entry.m_Container[*VariableID::dofs])->getSize();
-        LocalFluxKrnl.NumElements = NUM_ELEMENTS;
+        LocalFluxKrnl.numElements = NUM_ELEMENTS;
 
         LocalFluxKrnl.Q = (Entry.m_Container[*VariableID::dofs])->getPointers();
         LocalFluxKrnl.I = const_cast<const real **>((Entry.m_Container[*VariableID::idofs])->getPointers());
@@ -245,7 +245,7 @@ void seissol::kernels::Neighbor::computeNeighborsIntegralWithinWorkItem(conditio
         PointersTable &Entry = Table[Key];
 
         const auto NUM_ELEMENTS = (Entry.m_Container[*VariableID::dofs])->getSize();
-        DrKrnl.NumElements = NUM_ELEMENTS;
+        DrKrnl.numElements = NUM_ELEMENTS;
 
         DrKrnl.fluxSolver = const_cast<const real **>((Entry.m_Container[*VariableID::fluxSolver])->getPointers());
         DrKrnl.godunovState = const_cast<const real **>((Entry.m_Container[*VariableID::godunov])->getPointers());

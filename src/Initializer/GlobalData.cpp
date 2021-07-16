@@ -111,11 +111,13 @@ namespace seissol::initializers {
     void OnDevice::negateStiffnessMatrix(GlobalData &globalData) {
 #ifdef ACL_DEVICE
       device::DeviceInstance& device = device::DeviceInstance::getInstance();
+      auto defaultDeviceStream = device.api->getDefaultStream();
       for (unsigned transposedStiffness = 0; transposedStiffness < 3; ++transposedStiffness) {
         const real scaleFactor = -1.0;
         device.algorithms.scaleArray(const_cast<real*>(globalData.stiffnessMatricesTransposed(transposedStiffness)),
                                      scaleFactor,
-                                     init::kDivMT::size(transposedStiffness));
+                                     init::kDivMT::size(transposedStiffness),
+                                     defaultDeviceStream);
       }
 #endif // ACL_DEVICE
     }

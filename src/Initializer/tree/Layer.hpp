@@ -47,6 +47,12 @@
 #include <limits>
 #include <cstring>
 
+#ifdef ACL_DEVICE
+#include <Initializer/BasicTypedefs.hpp>
+#include <device.h>
+#include <unordered_map>
+#endif
+
 
 enum LayerType {
   Ghost    = (1 << 0),
@@ -64,6 +70,8 @@ namespace seissol {
     struct MemoryInfo;
     class Layer;
 #ifdef ACL_DEVICE
+    struct GraphKey;
+    struct GraphKeyHash;
     struct ScratchpadMemory;
 #endif
   }
@@ -85,7 +93,7 @@ struct seissol::initializers::Bucket {
 
 #ifdef ACL_DEVICE
 struct seissol::initializers::ScratchpadMemory : public seissol::initializers::Bucket{};
-#endif
+#endif  // ACL_DEVICE
 
 struct seissol::initializers::MemoryInfo {
   size_t bytes;
@@ -93,6 +101,28 @@ struct seissol::initializers::MemoryInfo {
   LayerMask mask;
   seissol::memory::Memkind memkind;
 };
+
+#ifdef ACL_DEVICE
+struct seissol::initializers::GraphKey {
+  GraphKey(ComputeGraphType userGraphType, double userTimeWidth) : graphType(userGraphType), timeWidth(userTimeWidth) {}
+
+  bool operator==(const GraphKey &other) const {
+    return ((graphType == other.graphType) && (timeWidth == other.timeWidth));
+  }
+
+  ComputeGraphType graphType{};
+  double timeWidth{};
+};
+
+struct seissol::initializers::GraphKeyHash {
+  std::size_t operator()(GraphKey const &key) const {
+    std::size_t result = 0;
+    recording::hashCombine(result, key.graphType);
+    recording::hashCombine(result, key.timeWidth);
+    return result;
+  }
+};
+#endif  // ACL_DEVICE
 
 class seissol::initializers::Layer : public seissol::initializers::Node {
 private:
@@ -106,6 +136,7 @@ private:
   void** m_scratchpads{};
   size_t* m_scratchpadSizes{};
   ConditionalBatchTableT m_conditionalBatchTable{};
+  std::unordered_map<GraphKey, device::DeviceGraphHandle, GraphKeyHash> m_computeGraphHandles{};
 #endif
 
 public:
@@ -266,6 +297,25 @@ public:
   const ConditionalBatchTableT& getCondBatchTable() const {
     return m_conditionalBatchTable;
   }
+
+  device::DeviceGraphHandle getDeviceComputeGraphHandle(GraphKey graphKey) {
+    if (m_computeGraphHandles.find(graphKey) != m_computeGraphHandles.end()) {
+      return m_computeGraphHandles[graphKey];
+    }
+    else {
+      return device::DeviceGraphHandle{};
+    }
+  }
+
+  void updateDeviceComputeGraphHandle(GraphKey graphKey,
+                                      device::DeviceGraphHandle graphHandle) {
+    assert(m_computeGraphHandles.find(graphKey) == m_computeGraphHandles.end()
+           && "an entry of hash table must be empty on write");
+    if (graphHandle.isInitialized()) {
+      m_computeGraphHandles[graphKey] = graphHandle;
+    }
+  }
+
 #endif // ACL_DEVICE
 };
 

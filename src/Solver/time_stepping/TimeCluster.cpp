@@ -291,9 +291,30 @@ void seissol::time_stepping::TimeCluster::computeDynamicRupture( seissol::initia
   m_loopStatistics->begin(m_regionComputeDynamicRupture);
 
   if (layerData.getNumberOfCells() > 0) {
-    // compute space time interpolation part
-    ConditionalBatchTableT &table = layerData.getCondBatchTable();
-    m_dynamicRuptureKernel.batchedSpaceTimeInterpolation(table);
+
+    ComputeGraphType graphType = ComputeGraphType::DynamicRuptureInterface;
+    auto computeGraphKey = initializers::GraphKey(graphType, m_timeStepWidth);
+    auto computeGraphHandle = layerData.getDeviceComputeGraphHandle(computeGraphKey);
+
+    if (!computeGraphHandle) {
+      device.api->streamBeginCapture();
+
+      // compute space time interpolation part
+      ConditionalBatchTableT &table = layerData.getCondBatchTable();
+      m_dynamicRuptureKernel.batchedSpaceTimeInterpolation(table);
+      assert(device.api->isCircularStreamsJoinedWithDefault() && "circular streams must be joined with the default stream");
+
+      device.api->streamEndCapture();
+
+      computeGraphHandle = device.api->getLastGraphHandle();
+      layerData.updateDeviceComputeGraphHandle(computeGraphKey, computeGraphHandle);
+      device.api->syncDefaultStreamWithHost();
+    }
+
+    if (computeGraphHandle.isInitialized()) {
+      device.api->launchGraph(computeGraphHandle);
+      device.api->syncGraph(computeGraphHandle);
+    }
 
     // compute friction part
     using namespace dr::pipeline;
@@ -325,7 +346,7 @@ void seissol::time_stepping::TimeCluster::computeDynamicRupture( seissol::initia
         constexpr size_t QInterpolatedSize = CONVERGENCE_ORDER * tensor::QInterpolated::size();
         const size_t upperStageOffset = (callCounter % DrPipeline::TailSize) * DrPipeline::DefaultBatchSize;
 
-        device.api->syncStreamFromCircularBuffer(copyFromStream);
+        device.api->syncStreamFromCircularBufferWithHost(copyFromStream);
         device.api->copyFromAsync(reinterpret_cast<real *>(&context.QInterpolatedPlusOnHost[upperStageOffset]),
                                   reinterpret_cast<real *>(&context.QInterpolatedPlusOnDevice[begin * QInterpolatedSize]),
                                   batchSize * QInterpolatedSize * sizeof(real),
@@ -338,7 +359,7 @@ void seissol::time_stepping::TimeCluster::computeDynamicRupture( seissol::initia
       }
 
       void finalize() override {
-        device.api->syncStreamFromCircularBuffer(copyFromStream);
+        device.api->syncStreamFromCircularBufferWithHost(copyFromStream);
       }
     private:
       void *copyFromStream{nullptr};
@@ -388,7 +409,7 @@ void seissol::time_stepping::TimeCluster::computeDynamicRupture( seissol::initia
         const size_t lowerStageOffset = (callCounter % DrPipeline::NumStages) * DrPipeline::DefaultBatchSize;
         const size_t imposedStateSize = tensor::QInterpolated::size() * batchSize * sizeof(real);
 
-        device.api->syncStreamFromCircularBuffer(copyBackStream);
+        device.api->syncStreamFromCircularBufferWithHost(copyBackStream);
         device.api->copyToAsync(reinterpret_cast<real *>(&context.devImposedStatePlus[begin]),
                                 reinterpret_cast<real *>(&context.imposedStatePlusOnHost[lowerStageOffset]),
                                 imposedStateSize,
@@ -401,7 +422,7 @@ void seissol::time_stepping::TimeCluster::computeDynamicRupture( seissol::initia
       }
 
       void finalize() override {
-        device.api->syncStreamFromCircularBuffer(copyBackStream);
+        device.api->syncStreamFromCircularBufferWithHost(copyBackStream);
       }
     private:
       void *copyBackStream{nullptr};
@@ -661,11 +682,22 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
 
   m_loopStatistics->begin(m_regionComputeLocalIntegration);
 
-  ConditionalBatchTableT& table = i_layerData.getCondBatchTable();
   kernels::LocalTmp tmp;
+  ConditionalBatchTableT& table = i_layerData.getCondBatchTable();
+  ComputeGraphType graphType = m_resetLtsBuffers ?
+      ComputeGraphType::LocalIntegralWithStreamedVelocities : ComputeGraphType::LocalIntegralWithAccumulatedVelocities;
+  auto computeGraphKey = initializers::GraphKey(graphType, m_timeStepWidth);
+  auto computeGraphHandle = i_layerData.getDeviceComputeGraphHandle(computeGraphKey);
 
-  m_timeKernel.computeBatchedAder(m_timeStepWidth, tmp, table);
-  m_localKernel.computeBatchedIntegral(table, tmp);
+  if (!computeGraphHandle) {
+    auto defaultDeviceStream = device.api->getDefaultStream();
+    device.api->streamBeginCapture();
+
+    m_timeKernel.computeBatchedAder(m_timeStepWidth, tmp, table);
+    assert(device.api->isCircularStreamsJoinedWithDefault() && "circular streams must be joined with the default stream");
+
+    m_localKernel.computeBatchedIntegral(table, tmp);
+    assert(device.api->isCircularStreamsJoinedWithDefault() && "circular streams must be joined with the default stream");
 
   for (unsigned face = 0; face < 4; ++face) {
     ConditionalKey key(*KernelNames::FaceDisplacements, *ComputationKind::None, face);
@@ -684,27 +716,39 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegration( seissol::init
       displacementKrnl.streamPtr = device.api->getDefaultStream();
       displacementKrnl.execute(face);
     }
-  }
+    }
 
   ConditionalKey key = ConditionalKey(*KernelNames::Time, *ComputationKind::WithLtsBuffers);
-  if (table.find(key) != table.end()) {
-    BatchTable &entry = table[key];
+    if (table.find(key) != table.end()) {
+      BatchTable &entry = table[key];
 
-    if (m_resetLtsBuffers) {
-      device.algorithms.streamBatchedData((entry.content[*EntityId::Idofs])->getPointers(),
-                                          (entry.content[*EntityId::Buffers])->getPointers(),
-                                          tensor::I::Size,
-                                          (entry.content[*EntityId::Idofs])->getSize());
+      if (m_resetLtsBuffers) {
+        device.algorithms.streamBatchedData((entry.content[*EntityId::Idofs])->getPointers(),
+                                            (entry.content[*EntityId::Buffers])->getPointers(),
+                                            tensor::I::Size,
+                                            (entry.content[*EntityId::Idofs])->getSize(),
+                                            defaultDeviceStream);
+      } else {
+        device.algorithms.accumulateBatchedData((entry.content[*EntityId::Idofs])->getPointers(),
+                                                (entry.content[*EntityId::Buffers])->getPointers(),
+                                                tensor::I::Size,
+                                                (entry.content[*EntityId::Idofs])->getSize(),
+                                                defaultDeviceStream);
+      }
     }
-    else {
-      device.algorithms.accumulateBatchedData((entry.content[*EntityId::Idofs])->getPointers(),
-                                              (entry.content[*EntityId::Buffers])->getPointers(),
-                                              tensor::I::Size,
-                                              (entry.content[*EntityId::Idofs])->getSize());
-    }
+
+    device.api->streamEndCapture();
+
+    computeGraphHandle = device.api->getLastGraphHandle();
+    i_layerData.updateDeviceComputeGraphHandle(computeGraphKey, computeGraphHandle);
+    device.api->syncDefaultStreamWithHost();
   }
 
-  device.api->synchDevice();
+  if (computeGraphHandle.isInitialized()) {
+    device.api->launchGraph(computeGraphHandle);
+    device.api->syncGraph(computeGraphHandle);
+  }
+
   m_loopStatistics->end(m_regionComputeLocalIntegration, i_layerData.getNumberOfCells());
   device.api->popLastProfilingMark();
 }
@@ -722,30 +766,52 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
 void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol::initializers::Layer&  i_layerData ) {
   device.api->putProfilingMark("computeNeighboring", device::ProfilingColors::Red);
   SCOREP_USER_REGION( "computeNeighboringIntegration", SCOREP_USER_REGION_TYPE_FUNCTION )
+
   m_loopStatistics->begin(m_regionComputeNeighboringIntegration);
-
   ConditionalBatchTableT &table = i_layerData.getCondBatchTable();
+  ComputeGraphType graphType = ComputeGraphType::NeighborIntegral;
+  auto computeGraphKey = initializers::GraphKey(graphType, m_timeStepWidth);
+  auto computeGraphHandle = i_layerData.getDeviceComputeGraphHandle(computeGraphKey);
 
-  seissol::kernels::TimeCommon::computeBatchedIntegrals(m_timeKernel,
-                                                        m_subTimeStart,
-                                                        m_timeStepWidth,
-                                                        table);
-  m_neighborKernel.computeBatchedNeighborsIntegral(table);
+  if (!computeGraphHandle) {
+    device.api->streamBeginCapture();
 
-  if (usePlasticity) {
-    PlasticityData* plasticity = i_layerData.var(m_lts->plasticity);
-    unsigned numAdjustedDofs = seissol::kernels::Plasticity::computePlasticityBatched(m_oneMinusIntegratingFactor,
-                                                                                      m_timeStepWidth,
-                                                                                      m_tv,
-                                                                                      m_globalDataOnDevice,
-                                                                                      table,
-                                                                                      plasticity);
+    seissol::kernels::TimeCommon::computeBatchedIntegrals(m_timeKernel,
+                                                          m_subTimeStart,
+                                                          m_timeStepWidth,
+                                                          table);
+    assert(device.api->isCircularStreamsJoinedWithDefault() && "circular streams must be joined with the default stream");
 
-    g_SeisSolNonZeroFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_nonZero[PlasticityCheck] + numAdjustedDofs * m_flops_nonZero[PlasticityYield];
-    g_SeisSolHardwareFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_hardware[PlasticityCheck] + numAdjustedDofs * m_flops_hardware[PlasticityYield];
+
+    m_neighborKernel.computeBatchedNeighborsIntegral(table);
+    assert(device.api->isCircularStreamsJoinedWithDefault() && "circular streams must be joined with the default stream");
+
+    if (usePlasticity) {
+      PlasticityData* plasticity = i_layerData.var(m_lts->plasticity);
+      unsigned numAdjustedDofs = seissol::kernels::Plasticity::computePlasticityBatched(m_oneMinusIntegratingFactor,
+                                                                                        m_timeStepWidth,
+                                                                                        m_tv,
+                                                                                        m_globalDataOnDevice,
+                                                                                        table,
+                                                                                        plasticity);
+      assert(device.api->isCircularStreamsJoinedWithDefault() && "circular streams must be joined with the default stream");
+
+      g_SeisSolNonZeroFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_nonZero[PlasticityCheck] + numAdjustedDofs * m_flops_nonZero[PlasticityYield];
+      g_SeisSolHardwareFlopsPlasticity += i_layerData.getNumberOfCells() * m_flops_hardware[PlasticityCheck] + numAdjustedDofs * m_flops_hardware[PlasticityYield];
+    }
+
+
+    device.api->streamEndCapture();
+    computeGraphHandle = device.api->getLastGraphHandle();
+    i_layerData.updateDeviceComputeGraphHandle(computeGraphKey, computeGraphHandle);
+    device.api->syncDefaultStreamWithHost();
   }
 
-  device.api->synchDevice();
+  if (computeGraphHandle.isInitialized()) {
+    device.api->launchGraph(computeGraphHandle);
+    device.api->syncGraph(computeGraphHandle);
+  }
+
   device.api->popLastProfilingMark();
   m_loopStatistics->end(m_regionComputeNeighboringIntegration, i_layerData.getNumberOfCells());
 }
@@ -1118,4 +1184,3 @@ void seissol::time_stepping::TimeCluster::startSendCopyLayer() {
   sendCopyLayer();
 }
 #endif
-

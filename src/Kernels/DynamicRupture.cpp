@@ -171,7 +171,7 @@ void seissol::kernels::DynamicRupture::batchedSpaceTimeInterpolation(Conditional
     for (size_t i = 0; i < counter; ++i) {
       this->device.api->popStackMemory();
     }
-    this->device.api->fastStreamsSync();
+    this->device.api->joinCircularStreamsToDefault();
     this->device.api->resetCircularStreamCounter();
   };
 
@@ -201,6 +201,7 @@ void seissol::kernels::DynamicRupture::batchedSpaceTimeInterpolation(Conditional
     }
 
     size_t streamCounter{0};
+    this->device.api->forkCircularStreamsFromDefault();
     for (unsigned side = 0; side < 4; ++side) {
       ConditionalKey plusSideKey(*KernelNames::DrSpaceMap, side);
       if (table.find(plusSideKey) != table.end()) {
@@ -244,7 +245,6 @@ void seissol::kernels::DynamicRupture::batchedSpaceTimeInterpolation(Conditional
     }
     resetDeviceCurrentState(streamCounter);
   }
-  device.api->synchDevice();
 #else
   assert(false && "no implementation provided");
 #endif

@@ -186,6 +186,10 @@ public:
         {
           device.api->setDevice(m_deviceId);
         }
+#pragma omp master
+        {
+          device.api->initialize();
+        }
       }
 #else
       device.api->setDevice(m_deviceId);

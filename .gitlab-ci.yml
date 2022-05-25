@@ -7,14 +7,14 @@ stages:
 ci_builder_pre:
     stage: pre_build
     tags:
-        - ci_testing_cc
+        - mini-seissol_ci
     variables:
         GIT_STRATEGY: clone
     before_script:
         - git branch -vva
         - echo $commit_author_name
     script:
-        - echo "checking availability of ci_testing_cc, getting any errors?"
+        - echo "checking availability of mini-seissol_ci, getting any errors?"
         - git --version
         - cat .gitmodules
         - git submodule set-url submodules/xdmfwriter https://github.com/TUM-I5/XdmfWriter.git
@@ -52,7 +52,7 @@ ci_builder_pre:
 ci_builder_build:
     stage: build
     tags:
-        - ci_testing_cc
+        - mini-seissol_ci
     needs:
         - job: ci_builder_pre
     before_script:

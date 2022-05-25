@@ -7,7 +7,7 @@ stages:
 ci_builder_pre:
     stage: pre_build
     tags:
-        - mini-seissol_ci
+        - huge_shell
     variables:
         GIT_STRATEGY: clone
     before_script:
@@ -52,7 +52,7 @@ ci_builder_pre:
 ci_builder_build:
     stage: build
     tags:
-        - mini-seissol_ci
+        - huge_shell
     needs:
         - job: ci_builder_pre
     before_script:

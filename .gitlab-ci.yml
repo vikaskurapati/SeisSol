@@ -14,7 +14,7 @@ ci_builder_pre:
         - git branch -vva
         - echo $commit_author_name
     script:
-        - echo "checking availability of ci_testing_cc"
+        - echo "checking availability of ci_testing_cc, getting any errors?"
         - git --version
         - cat .gitmodules
         - git submodule set-url submodules/xdmfwriter https://github.com/TUM-I5/XdmfWriter.git

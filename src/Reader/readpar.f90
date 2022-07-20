@@ -1012,9 +1012,7 @@ CONTAINS
              CONTINUE
            CASE(2,16)
              DISC%DynRup%inst_healing = inst_healing ! instantaneous healing switch (1: on, 0: off)
-             IF (EQN%FL.EQ.16) THEN
-               DISC%DynRup%t_0 = t_0 
-             ENDIF
+             DISC%DynRup%t_0 = t_0 
            CASE(6) ! bimaterial with LSW
              DISC%DynRup%v_star = v_star
              DISC%DynRup%L = L

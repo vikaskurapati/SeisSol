@@ -1,6 +1,6 @@
 #include "DynamicRupture/Output/OutputManager.hpp"
 
-#include <Eigen/Dense>
+#include <Eigen/Dense> // IWYU pragma: keep
 #include <ext/alloc_traits.h>
 #include <filesystem>
 #include <type_traits>

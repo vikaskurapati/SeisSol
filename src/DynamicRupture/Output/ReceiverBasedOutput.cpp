@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <math.h>
-#include <Eigen/Dense>
+#include <Eigen/Dense> // IWYU pragma: keep
 #include <algorithm>
 #include <memory>
 #include <tuple>

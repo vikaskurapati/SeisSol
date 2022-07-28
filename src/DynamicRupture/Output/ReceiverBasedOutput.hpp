@@ -2,7 +2,7 @@
 #define SEISSOL_DR_RECEIVER_BASED_OUTPUT_HPP
 
 #include <stddef.h>
-#include <Eigen/Dense>
+#include <Eigen/Dense> // IWYU pragma: keep
 #include <array>
 
 #include "DynamicRupture/Output/ParametersInitializer.hpp"
@@ -15,6 +15,7 @@
 #include "tensor.h"
 
 class MeshReader;
+
 namespace seissol {
 namespace initializers {
 class LTSTree;

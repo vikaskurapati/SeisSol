@@ -1,6 +1,6 @@
 #include <bits/types/struct_tm.h>
 #include <cxxabi.h>
-#include <Eigen/Dense>
+#include <Eigen/Dense> // IWYU pragma: keep
 #include <ctime>
 #include <filesystem>
 #include <iomanip>

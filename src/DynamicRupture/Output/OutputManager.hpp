@@ -2,7 +2,7 @@
 #define SEISSOL_DR_OUTPUT_MANAGER_HPP
 
 #include <stddef.h>
-#include <Eigen/Dense>
+#include <Eigen/Dense> // IWYU pragma: keep
 #include <iostream>
 #include <memory>
 #include <array>
@@ -15,6 +15,7 @@
 #include "Kernels/precision.hpp"
 
 class MeshReader;
+
 namespace YAML {
 class Node;
 }

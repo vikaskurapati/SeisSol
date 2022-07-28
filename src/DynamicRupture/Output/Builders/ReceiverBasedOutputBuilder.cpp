@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <ext/alloc_traits.h>
 #include <stddef.h>
-#include <Eigen/Dense>
+#include <Eigen/Dense> // IWYU pragma: keep
 #include <algorithm>
 #include <memory>
 #include <unordered_map>

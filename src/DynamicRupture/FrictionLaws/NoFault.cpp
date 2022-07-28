@@ -1,5 +1,18 @@
 #include "NoFault.h"
 
+#include "DynamicRupture/Typedefs.hpp"
+
+namespace seissol {
+namespace initializers {
+class Layer;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
+
 namespace seissol::dr::friction_law {
 void NoFault::copyLtsTreeToLocal(seissol::initializers::Layer& layerData,
                                  seissol::initializers::DynamicRupture* dynRup,

@@ -1,4 +1,11 @@
 #include "LinearSlipWeakening.h"
+
+#include <math.h>
+
+#include "DynamicRupture/Parameters.h"
+#include "init.h"
+#include "kernel.h"
+
 namespace seissol::dr::friction_law {
 
 void NoSpecialization::resampleSlipRate(

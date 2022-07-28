@@ -1,6 +1,10 @@
 #ifndef SEISSOL_DR_RECEIVER_BASED_OUTPUT_BUILDER_HPP
 #define SEISSOL_DR_RECEIVER_BASED_OUTPUT_BUILDER_HPP
 
+#include <array>
+#include <tuple>
+#include <type_traits>
+
 #include "DynamicRupture/Misc.h"
 #include "DynamicRupture/Output/DataTypes.hpp"
 #include "DynamicRupture/Output/OutputAux.hpp"
@@ -9,6 +13,8 @@
 #include "Model/common.hpp"
 #include "Numerical_aux/Transformation.h"
 #include "Parallel/MPI.h"
+
+class MeshReader;
 
 namespace seissol::dr::output {
 class ReceiverBasedOutputBuilder {

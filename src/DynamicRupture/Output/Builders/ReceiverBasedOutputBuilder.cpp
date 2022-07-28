@@ -1,5 +1,28 @@
 #include "DynamicRupture/Output/Builders/ReceiverBasedOutputBuilder.hpp"
 
+#include <assert.h>
+#include <ext/alloc_traits.h>
+#include <stddef.h>
+#include <Eigen/Dense>
+#include <algorithm>
+#include <memory>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
+#include "DynamicRupture/Misc.h"
+#include "DynamicRupture/Output/Geometry.hpp"
+#include "DynamicRupture/Output/OutputAux.hpp"
+#include "Geometry/MeshDefinition.h"
+#include "Geometry/MeshReader.h"
+#include "Geometry/MeshTools.h"
+#include "Kernels/precision.hpp"
+#include "Model/common.hpp"
+#include "Numerical_aux/Transformation.h"
+#include "Parallel/MPI.h"
+#include "init.h"
+#include "yateto/TensorView.h"
+
 namespace seissol::dr::output {
 void ReceiverBasedOutputBuilder::setMeshReader(const MeshReader* reader) {
   meshReader = reader;

@@ -1,10 +1,24 @@
 #ifndef SEISSOL_STF_H
 #define SEISSOL_STF_H
 
+#include <stddef.h>
+
 #include "DynamicRupture/Misc.h"
 #include "Initializer/DynamicRupture.h"
 #include "Numerical_aux/GaussianNucleationFunction.h"
 #include "Numerical_aux/RegularizedYoffe.h"
+#include "Kernels/precision.hpp"
+
+namespace seissol {
+namespace initializers {
+class Layer;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
 
 namespace seissol::dr::friction_law {
 class YoffeSTF {

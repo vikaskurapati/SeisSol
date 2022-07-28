@@ -2,9 +2,12 @@
 #define SEISSOL_TRIPLEFAULTFACEREFINER_HPP
 
 #include "FaultRefiners.hpp"
+
+#include <memory>
+#include <array>
+
 #include "DynamicRupture/Output/OutputAux.hpp"
 #include "utils/logger.h"
-#include <memory>
 
 namespace seissol::dr::output::refiner {
 RefinerType convertToType(int strategy) {

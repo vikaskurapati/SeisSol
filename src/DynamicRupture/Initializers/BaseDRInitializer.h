@@ -2,11 +2,35 @@
 #define SEISSOL_BASEDRINITIALIZER_H
 
 #include <yaml-cpp/yaml.h>
+#include <array>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "DynamicRupture/FrictionLaws/FrictionSolver.h"
 #include "DynamicRupture/Parameters.h"
 #include "Initializer/InputAux.hpp"
 #include "Initializer/ParameterDB.h"
+#include "DynamicRupture/Misc.h"
+#include "Initializer/tree/LTSInternalNode.hpp"
+#include "Initializer/tree/LTSTree.hpp"
+#include "Kernels/precision.hpp"
+
+namespace seissol {
+namespace dr {
+struct DRParameters;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+class FaultParameterDB;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
 
 namespace seissol::dr::initializers {
 /**

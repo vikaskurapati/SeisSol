@@ -1,11 +1,49 @@
 #include "DynamicRupture/Output/OutputManager.hpp"
+
+#include <Eigen/Dense>
+#include <ext/alloc_traits.h>
+#include <filesystem>
+#include <type_traits>
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
+
 #include "DynamicRupture/Output/ReceiverBasedOutput.hpp"
 #include "ResultWriter/common.hpp"
 #include "SeisSol.h"
-#include <filesystem>
-#include <fstream>
-#include <type_traits>
-#include <unordered_map>
+#include "DynamicRupture/Initializers/BaseDRInitializer.h"
+#include "DynamicRupture/Misc.h"
+#include "DynamicRupture/Output/OutputAux.hpp"
+#include "DynamicRupture/Output/ParametersInitializer.hpp"
+#include "Geometry/MeshReader.h"
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/tree/LTSInternalNode.hpp"
+#include "Initializer/tree/LTSTree.hpp"
+#include "Initializer/tree/Layer.hpp"
+#include "Initializer/tree/Node.hpp"
+#include "Initializer/typedefs.hpp"
+#include "Parallel/MPI.h"
+#include "ResultWriter/FaultWriter.h"
+#include "ResultWriter/FaultWriterExecutor.h"
+#include "utils/logger.h"
+
+namespace YAML {
+class Node;
+}
+namespace seissol {
+namespace initializers {
+class Lut;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct LTS;
+}
+} // namespace seissol
 
 struct NativeFormat {};
 struct WideFormat {};

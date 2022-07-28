@@ -1,6 +1,15 @@
 #include "LinearSlipWeakeningInitializer.h"
 
-#include "utils/logger.h"
+#include <algorithm>
+#include <limits>
+
+#include "DynamicRupture/Initializers/BaseDRInitializer.h"
+#include "DynamicRupture/Misc.h"
+#include "DynamicRupture/Parameters.h"
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/tree/LTSTree.hpp"
+#include "Initializer/tree/Layer.hpp"
+#include "Initializer/tree/Node.hpp"
 
 namespace seissol::dr::initializers {
 

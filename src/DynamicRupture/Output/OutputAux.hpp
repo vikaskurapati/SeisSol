@@ -1,9 +1,19 @@
 #ifndef SEISSOL_DR_OUTPUT_AUX_HPP
 #define SEISSOL_DR_OUTPUT_AUX_HPP
 
+#include <stddef.h>
+#include <memory>
+#include <array>
+#include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
+
 #include "DataTypes.hpp"
 #include "Geometry/MeshReader.h"
-#include <memory>
+#include "DynamicRupture/Output/Geometry.hpp"
+#include "Geometry/MeshDefinition.h"
+#include "Kernels/precision.hpp"
 
 namespace seissol {
 template <int N, typename T>

@@ -1,5 +1,11 @@
 #include "ThermalPressurization.h"
 
+#include <algorithm>
+
+#include "DynamicRupture/Parameters.h"
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/tree/Layer.hpp"
+
 namespace seissol::dr::friction_law {
 
 static const GridPoints<misc::numberOfTPGridPoints> tpGridPoints;

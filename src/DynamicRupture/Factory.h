@@ -4,11 +4,20 @@
 #include <iostream>
 #include <stdexcept>
 #include <tuple>
+#include <memory>
 
 #include "DynamicRupture/Initializers/Initializers.h"
 #include "FrictionLaws/FrictionSolver.h"
 #include "Initializer/DynamicRupture.h"
 #include "Output/Output.hpp"
+#include "DynamicRupture/Initializers/BaseDRInitializer.h"
+#include "DynamicRupture/Output/OutputManager.hpp"
+
+namespace seissol {
+namespace dr {
+struct DRParameters;
+}
+} // namespace seissol
 
 namespace seissol::dr::factory {
 struct Products {

@@ -1,7 +1,22 @@
 #ifndef SEISSOL_IMPOSEDSLIPINITIALIZER_H
 #define SEISSOL_IMPOSEDSLIPINITIALIZER_H
 
+#include <array>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 #include "BaseDRInitializer.h"
+#include "DynamicRupture/Misc.h"
+#include "Initializer/tree/LTSInternalNode.hpp"
+#include "Initializer/tree/LTSTree.hpp"
+#include "Kernels/precision.hpp"
+
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
 
 namespace seissol::dr::initializers {
 /**

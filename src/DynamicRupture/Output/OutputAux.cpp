@@ -1,14 +1,21 @@
-#include "Geometry/MeshTools.h"
-#include "Numerical_aux/BasisFunction.h"
-#include "Numerical_aux/Quadrature.h"
-#include "Numerical_aux/Transformation.h"
-#include "OutputAux.hpp"
+#include <bits/types/struct_tm.h>
+#include <cxxabi.h>
 #include <Eigen/Dense>
 #include <ctime>
 #include <filesystem>
 #include <iomanip>
 #include <limits>
-#include <unordered_map>
+#include <ostream>
+
+#include "Geometry/MeshTools.h"
+#include "Numerical_aux/BasisFunction.h"
+#include "Numerical_aux/Transformation.h"
+#include "OutputAux.hpp"
+#include "DynamicRupture/Output/DataTypes.hpp"
+#include "init.h"
+#include "tensor.h"
+#include "utils/logger.h"
+#include "yateto/TensorView.h"
 
 namespace seissol::dr {
 

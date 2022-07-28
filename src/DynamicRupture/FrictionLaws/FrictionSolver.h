@@ -1,11 +1,36 @@
 #ifndef SEISSOL_FRICTIONSOLVER_H
 #define SEISSOL_FRICTIONSOLVER_H
 
+#include <stddef.h>
+
 #include "DynamicRupture/Misc.h"
 #include "DynamicRupture/Parameters.h"
 #include "Initializer/DynamicRupture.h"
 #include "Kernels/DynamicRupture.h"
 #include "Numerical_aux/GaussianNucleationFunction.h"
+#include "Kernels/precision.hpp"
+#include "tensor.h"
+
+namespace seissol {
+namespace dr {
+struct DRParameters;
+}
+} // namespace seissol
+namespace seissol {
+namespace dr {
+struct ImpedancesAndEta;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+class Layer;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
 
 namespace seissol::dr::friction_law {
 /**

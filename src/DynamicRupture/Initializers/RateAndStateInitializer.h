@@ -1,7 +1,24 @@
 #ifndef SEISSOL_RATEANDSTATEINITIALIZER_H
 #define SEISSOL_RATEANDSTATEINITIALIZER_H
 
+#include <string>
+#include <unordered_map>
+#include <utility>
+
 #include "BaseDRInitializer.h"
+#include "Initializer/tree/LTSInternalNode.hpp"
+#include "Kernels/precision.hpp"
+
+namespace seissol {
+namespace initializers {
+class LTSTree;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
 
 namespace seissol::dr::initializers {
 

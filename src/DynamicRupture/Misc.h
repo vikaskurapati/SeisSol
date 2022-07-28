@@ -1,13 +1,19 @@
 #ifndef SEISSOL_DR_MISC_H
 #define SEISSOL_DR_MISC_H
 
-#include "Geometry/MeshDefinition.h"
-#include "Kernels/precision.hpp"
-
-#include <cmath>
 #include <generated_code/init.h>
+#include <cmath>
 #include <stdexcept>
 #include <tuple>
+#include <array>
+#include <cstddef>
+#include <initializer_list>
+#include <type_traits>
+#include <utility>
+
+#include "Geometry/MeshDefinition.h"
+#include "Kernels/precision.hpp"
+#include "tensor.h"
 
 namespace seissol::dr::misc {
 // Note: this can be moved to yateto headers

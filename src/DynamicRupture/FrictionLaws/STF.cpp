@@ -1,5 +1,10 @@
 #include "STF.h"
 
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/tree/Layer.hpp"
+#include "Numerical_aux/GaussianNucleationFunction.h"
+#include "Numerical_aux/RegularizedYoffe.h"
+
 namespace seissol::dr::friction_law {
 void YoffeSTF::copyLtsTreeToLocal(seissol::initializers::Layer& layerData,
                                   seissol::initializers::DynamicRupture* dynRup,

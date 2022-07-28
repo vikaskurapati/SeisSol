@@ -1,8 +1,22 @@
 #include "ImposedSlipRatesInitializer.h"
 
-#include "Model/common.hpp"
-#include "SeisSol.h"
 #include <utils/logger.h>
+#include <ext/alloc_traits.h>
+#include <math.h>
+#include <stddef.h>
+#include <algorithm>
+#include <utility>
+
+#include "SeisSol.h"
+#include "Geometry/MeshDefinition.h"
+#include "Geometry/MeshReader.h"
+#include "Geometry/MeshTools.h"
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/ParameterDB.h"
+#include "Initializer/tree/Layer.hpp"
+#include "Initializer/tree/Node.hpp"
+#include "Initializer/typedefs.hpp"
+#include "Parallel/MPI.h"
 
 namespace seissol::dr::initializers {
 void ImposedSlipRatesInitializer::initializeFault(seissol::initializers::DynamicRupture* dynRup,

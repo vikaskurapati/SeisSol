@@ -1,9 +1,23 @@
 #ifndef SEISSOL_LINEARSLIPWEAKENING_H
 #define SEISSOL_LINEARSLIPWEAKENING_H
 
-#include "BaseFrictionLaw.h"
+#include <algorithm>
+#include <array>
+#include <iterator>
 
+#include "BaseFrictionLaw.h"
 #include "utils/logger.h"
+#include "DynamicRupture/Misc.h"
+#include "DynamicRupture/Typedefs.hpp"
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/tree/Layer.hpp"
+#include "Kernels/precision.hpp"
+
+namespace seissol {
+namespace dr {
+struct DRParameters;
+}
+} // namespace seissol
 
 namespace seissol::dr::friction_law {
 

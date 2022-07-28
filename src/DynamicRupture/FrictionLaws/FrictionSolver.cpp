@@ -1,5 +1,10 @@
 #include "FrictionSolver.h"
 
+#include "DynamicRupture/Parameters.h"
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/tree/Layer.hpp"
+#include "Numerical_aux/GaussianNucleationFunction.h"
+
 namespace seissol::dr::friction_law {
 
 void FrictionSolver::computeDeltaT(double timePoints[CONVERGENCE_ORDER]) {

@@ -1,10 +1,34 @@
-#include "DynamicRupture/Output/OutputAux.hpp"
+#include <assert.h>
+#include <math.h>
+#include <Eigen/Dense>
+#include <algorithm>
+#include <memory>
+#include <tuple>
+#include <utility>
+#include <vector>
+
 #include "Initializer/tree/Layer.hpp"
 #include "Numerical_aux/BasisFunction.h"
 #include "ReceiverBasedOutput.hpp"
 #include "generated_code/kernel.h"
 #include "generated_code/tensor.h"
-#include <unordered_map>
+#include "DynamicRupture/Misc.h"
+#include "DynamicRupture/Typedefs.hpp"
+#include "Geometry/MeshDefinition.h"
+#include "Geometry/MeshReader.h"
+#include "Geometry/MeshTools.h"
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/LTS.h"
+#include "Initializer/tree/Lut.hpp"
+#include "Model/common_datastructures.hpp"
+#include "init.h"
+#include "yateto/TensorView.h"
+
+namespace seissol {
+namespace initializers {
+class LTSTree;
+}
+} // namespace seissol
 
 namespace seissol::dr::output {
 void ReceiverBasedOutput::setLtsData(seissol::initializers::LTSTree* userWpTree,

@@ -1,6 +1,15 @@
 #include "RateAndStateInitializer.h"
 
+#include <math.h>
+#include <tuple>
+
 #include "DynamicRupture/Misc.h"
+#include "DynamicRupture/Initializers/BaseDRInitializer.h"
+#include "DynamicRupture/Parameters.h"
+#include "Initializer/DynamicRupture.h"
+#include "Initializer/tree/LTSTree.hpp"
+#include "Initializer/tree/Layer.hpp"
+#include "Initializer/tree/Node.hpp"
 
 namespace seissol::dr::initializers {
 void RateAndStateInitializer::initializeFault(seissol::initializers::DynamicRupture* dynRup,

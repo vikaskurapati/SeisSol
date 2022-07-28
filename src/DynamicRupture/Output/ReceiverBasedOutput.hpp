@@ -1,11 +1,50 @@
 #ifndef SEISSOL_DR_RECEIVER_BASED_OUTPUT_HPP
 #define SEISSOL_DR_RECEIVER_BASED_OUTPUT_HPP
 
+#include <stddef.h>
+#include <Eigen/Dense>
+#include <array>
+
 #include "DynamicRupture/Output/ParametersInitializer.hpp"
 #include "Geometry/MeshReader.h"
 #include "Initializer/DynamicRupture.h"
 #include "Initializer/LTS.h"
 #include "Initializer/tree/Lut.hpp"
+#include "DynamicRupture/Output/DataTypes.hpp"
+#include "Kernels/precision.hpp"
+#include "tensor.h"
+
+class MeshReader;
+namespace seissol {
+namespace initializers {
+class LTSTree;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+class Layer;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+class Lut;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct LTS;
+}
+} // namespace seissol
+namespace seissol {
+namespace model {
+struct IsotropicWaveSpeeds;
+}
+} // namespace seissol
 
 namespace seissol::dr::output {
 class ReceiverBasedOutput {

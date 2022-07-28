@@ -1,12 +1,30 @@
 #ifndef SEISSOL_THERMALPRESSURIZATION_H
 #define SEISSOL_THERMALPRESSURIZATION_H
 
+#include <math.h>
+#include <stddef.h>
 #include <array>
 
 #include "DynamicRupture/Misc.h"
 #include "DynamicRupture/Parameters.h"
 #include "Initializer/DynamicRupture.h"
 #include "Kernels/precision.hpp"
+
+namespace seissol {
+namespace dr {
+struct DRParameters;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+class Layer;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
 
 namespace seissol::dr::friction_law {
 

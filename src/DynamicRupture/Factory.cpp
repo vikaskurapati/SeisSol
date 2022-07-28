@@ -1,8 +1,30 @@
 #include "Factory.h"
 
-#include "FrictionLaws/FrictionLaws.h"
+#include <math.h>
+
 #include "FrictionLaws/ThermalPressurization/NoTP.h"
 #include "FrictionLaws/ThermalPressurization/ThermalPressurization.h"
+#include "DynamicRupture/FrictionLaws/AgingLaw.h"
+#include "DynamicRupture/FrictionLaws/FastVelocityWeakeningLaw.h"
+#include "DynamicRupture/FrictionLaws/FrictionSolver.h"
+#include "DynamicRupture/FrictionLaws/ImposedSlipRates.h"
+#include "DynamicRupture/FrictionLaws/LinearSlipWeakening.h"
+#include "DynamicRupture/FrictionLaws/NoFault.h"
+#include "DynamicRupture/FrictionLaws/STF.h"
+#include "DynamicRupture/FrictionLaws/SlipLaw.h"
+#include "DynamicRupture/Initializers/ImposedSlipRatesInitializer.h"
+#include "DynamicRupture/Initializers/LinearSlipWeakeningInitializer.h"
+#include "DynamicRupture/Initializers/NoFaultInitializer.h"
+#include "DynamicRupture/Initializers/RateAndStateInitializer.h"
+#include "DynamicRupture/Output/ImposedSlipRates.hpp"
+#include "DynamicRupture/Output/LinearSlipWeakening.hpp"
+#include "DynamicRupture/Output/LinearSlipWeakeningBimaterial.hpp"
+#include "DynamicRupture/Output/NoFault.hpp"
+#include "DynamicRupture/Output/RateAndState.hpp"
+#include "DynamicRupture/Output/RateAndStateThermalPressurization.hpp"
+#include "DynamicRupture/Parameters.h"
+#include "DynamicRupture/Typedefs.hpp"
+#include "utils/logger.h"
 
 #ifdef ACL_DEVICE_OFFLOAD
 namespace friction_law_impl = seissol::dr::friction_law::gpu;

@@ -1,7 +1,32 @@
 #ifndef SEISSOL_NOFAULT_H
 #define SEISSOL_NOFAULT_H
 
+#include <array>
+
 #include "BaseFrictionLaw.h"
+#include "DynamicRupture/Misc.h"
+#include "Kernels/precision.hpp"
+
+namespace seissol {
+namespace dr {
+struct FaultStresses;
+}
+} // namespace seissol
+namespace seissol {
+namespace dr {
+struct TractionResults;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+class Layer;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
 
 namespace seissol::dr::friction_law {
 /**

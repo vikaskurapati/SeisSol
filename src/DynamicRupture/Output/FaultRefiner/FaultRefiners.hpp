@@ -1,14 +1,19 @@
 #ifndef SEISSOL_DR_OUTPUT_REFINERS_HPP
 #define SEISSOL_DR_OUTPUT_REFINERS_HPP
 
-#include "DynamicRupture/Output/DataTypes.hpp"
+#include <stddef.h>
 #include <memory>
 #include <tuple>
+#include <utility>
+
+#include "DynamicRupture/Output/DataTypes.hpp"
+#include "DynamicRupture/Output/Geometry.hpp"
 
 namespace seissol::dr::output::refiner {
 RefinerType convertToType(int strategy);
 
 class FaultRefiner;
+
 std::unique_ptr<FaultRefiner> get(RefinerType strategy);
 
 class FaultRefiner {

@@ -1,11 +1,43 @@
 #ifndef SEISSOL_DR_OUTPUT_MANAGER_HPP
 #define SEISSOL_DR_OUTPUT_MANAGER_HPP
 
+#include <stddef.h>
+#include <Eigen/Dense>
+#include <iostream>
+#include <memory>
+#include <array>
+
 #include "DynamicRupture/Output/Builders/ElementWiseBuilder.hpp"
 #include "DynamicRupture/Output/Builders/PickPointBuilder.hpp"
 #include "DynamicRupture/Output/ReceiverBasedOutput.hpp"
-#include <iostream>
-#include <memory>
+#include "DynamicRupture/Output/DataTypes.hpp"
+#include "DynamicRupture/Output/Geometry.hpp"
+#include "Kernels/precision.hpp"
+
+class MeshReader;
+namespace YAML {
+class Node;
+}
+namespace seissol {
+namespace initializers {
+class LTSTree;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+class Lut;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct DynamicRupture;
+}
+} // namespace seissol
+namespace seissol {
+namespace initializers {
+struct LTS;
+}
+} // namespace seissol
 
 namespace seissol::dr::output {
 class OutputManager {

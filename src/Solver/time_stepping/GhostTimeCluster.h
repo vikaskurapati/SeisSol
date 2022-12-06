@@ -12,15 +12,21 @@ class GhostTimeCluster : public AbstractTimeCluster {
   const int globalClusterId;
   const int otherGlobalClusterId;
   const MeshStructure* meshStructure;
-  std::list<MPI_Request*> sendQueue;
-  std::list<MPI_Request*> receiveQueue;
+  std::list<unsigned int> sendQueue;
+  std::list<unsigned int> receiveQueue;
 
   double lastSendTime = -1.0;
 
   void sendCopyLayer();
   void receiveGhostLayer();
 
-  static bool testQueue(std::list<MPI_Request*>& queue);
+  using CallbackType = void (*)(const MeshStructure* meshStructure, unsigned int region);
+  bool testQueue(MPI_Request* requests,
+                 std::list<unsigned int>& queue,
+                 CallbackType postprocess = nullptr);
+
+  static void postprocessReceive(const MeshStructure* meshStructure, unsigned int region);
+
   bool testForCopyLayerSends();
   bool testForGhostLayerReceives();
 

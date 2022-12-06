@@ -293,6 +293,20 @@ void seissol::initializers::MemoryManager::initializeCommunicationStructure() {
       l_offset += m_meshStructure[tc].numberOfCopyRegionCells[l_region];
     }
   }
+
+#ifdef ACL_DEVICE
+  for (unsigned tc = 0; tc < m_ltsTree.numChildren(); ++tc) {
+    for (unsigned int region = 0; region < m_meshStructure[tc].numberOfRegions; ++region) {
+      const size_t currentGhostRegionSize = m_meshStructure[tc].ghostRegionSizes[region] * sizeof(real);
+      auto* ghostDeviceMemory = m_memoryAllocator.allocateMemory(currentGhostRegionSize, ALIGNMENT, memory::DeviceGlobalMemory);
+      m_meshStructure[tc].deviceGhostRegions[region] = static_cast<real*>(ghostDeviceMemory);
+
+      const size_t currentCopyRegionSize =  m_meshStructure[tc].copyRegionSizes[region] * sizeof(real);
+      auto* copyDeviceMemory = m_memoryAllocator.allocateMemory(currentCopyRegionSize, ALIGNMENT, memory::DeviceGlobalMemory);
+      m_meshStructure[tc].deviceCopyRegions[region] = static_cast<real*>(copyDeviceMemory);
+    }
+  }
+#endif // ACL_DEVICE
 }
 #endif
 

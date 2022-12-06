@@ -3,22 +3,41 @@
 
 #include "GhostTimeCluster.h"
 
+#ifdef ACL_DEVICE
+#include "device.h"
+#endif // ACL_DEVICE
+
+
 namespace seissol::time_stepping {
 void GhostTimeCluster::sendCopyLayer(){
   SCOREP_USER_REGION( "sendCopyLayer", SCOREP_USER_REGION_TYPE_FUNCTION )
   assert(ct.correctionTime > lastSendTime);
+
+#ifdef ACL_DEVICE
+  device::DeviceInstance& device = device::DeviceInstance::getInstance();
+#endif
+
   lastSendTime = ct.correctionTime;
   for (unsigned int region = 0; region < meshStructure->numberOfRegions; ++region) {
     if (meshStructure->neighboringClusters[region][1] == static_cast<int>(otherGlobalClusterId)) {
-     MPI_Isend(meshStructure->copyRegions[region],
-                static_cast<int>(meshStructure->copyRegionSizes[region]),
+      const auto messageSize = static_cast<int>(meshStructure->copyRegionSizes[region]);
+#ifdef ACL_DEVICE
+      device.api->copyBetween(meshStructure->deviceCopyRegions[region],
+                              meshStructure->copyRegions[region],
+                              messageSize * sizeof(real));
+      real* sendBuffer = meshStructure->deviceCopyRegions[region];
+#else
+      real* sendBuffer = meshStructure->copyRegions[region];
+#endif
+
+      MPI_Isend(sendBuffer,
+                messageSize,
                 MPI_C_REAL,
                 meshStructure->neighboringClusters[region][0],
                 timeData + meshStructure->sendIdentifiers[region],
                 seissol::MPI::mpi.comm(),
-                meshStructure->sendRequests + region
-               );
-      sendQueue.push_back(meshStructure->sendRequests + region);
+                meshStructure->sendRequests + region);
+      sendQueue.push_back(region);
     }
   }
 } void GhostTimeCluster::receiveGhostLayer(){
@@ -26,41 +45,64 @@ void GhostTimeCluster::sendCopyLayer(){
   assert(ct.predictionTime > lastSendTime);
   for (unsigned int region = 0; region < meshStructure->numberOfRegions; ++region) {
     if (meshStructure->neighboringClusters[region][1] == static_cast<int>(otherGlobalClusterId) ) {
-      MPI_Irecv(meshStructure->ghostRegions[region],
+#ifdef ACL_DEVICE
+      real* receiveBuffer = meshStructure->deviceGhostRegions[region];
+#else
+      real* receiveBuffer = meshStructure->ghostRegions[region];
+#endif
+      MPI_Irecv(receiveBuffer,
                 static_cast<int>(meshStructure->ghostRegionSizes[region]),
                 MPI_C_REAL,
                 meshStructure->neighboringClusters[region][0],
                 timeData + meshStructure->receiveIdentifiers[region],
                 seissol::MPI::mpi.comm(),
-                meshStructure->receiveRequests + region
-               );
-      receiveQueue.push_back(meshStructure->receiveRequests + region );
+                meshStructure->receiveRequests + region);
+      receiveQueue.push_back(region);
     }
   }
 }
 
+void GhostTimeCluster::postprocessReceive(const MeshStructure* meshStructure, unsigned int region) {
+#ifdef ACL_DEVICE
+  device::DeviceInstance& device = device::DeviceInstance::getInstance();
 
-bool GhostTimeCluster::testQueue(std::list<MPI_Request*>& queue) {
-  for (auto request = queue.begin(); request != queue.end(); ) {
+  const auto messageSize = static_cast<int>(meshStructure->ghostRegionSizes[region]);
+  device.api->copyBetween(meshStructure->ghostRegions[region],
+                          meshStructure->deviceGhostRegions[region],
+                          messageSize * sizeof(real));
+#endif // ACL_DEVICE
+}
+
+bool GhostTimeCluster::testQueue(MPI_Request* requests,
+                                 std::list<unsigned int>& regions,
+                                 CallbackType postprocess) {
+  for (auto region = regions.begin(); region != regions.end();) {
+    MPI_Request *regionRequest = &requests[*region];
     int testSuccess = 0;
-    MPI_Test(*request, &testSuccess, MPI_STATUS_IGNORE);
+    MPI_Test(regionRequest, &testSuccess, MPI_STATUS_IGNORE);
     if (testSuccess) {
-      request = queue.erase(request);
+      if (postprocess) {
+        postprocess(meshStructure, *region);
+      }
+      region = regions.erase(region);
     } else {
-      ++request;
+      ++region;
     }
   }
-  return queue.empty();
+  return regions.empty();
 }
+
 bool GhostTimeCluster::testForGhostLayerReceives(){
   SCOREP_USER_REGION( "testForGhostLayerReceives", SCOREP_USER_REGION_TYPE_FUNCTION )
-  return testQueue(receiveQueue);
+  return testQueue(meshStructure->receiveRequests,
+                   receiveQueue,
+                   GhostTimeCluster::postprocessReceive);
 }
 
 
 bool GhostTimeCluster::testForCopyLayerSends(){
   SCOREP_USER_REGION( "testForCopyLayerSends", SCOREP_USER_REGION_TYPE_FUNCTION )
-  return testQueue(sendQueue);
+  return testQueue(meshStructure->sendRequests, sendQueue);
 }
 
 ActResult GhostTimeCluster::act() {

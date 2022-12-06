@@ -56,6 +56,7 @@
 #include <DynamicRupture/Misc.h>
 
 #include <cstddef>
+#include <vector>
 
 // cross-cluster time stepping information
 struct TimeStepping {
@@ -142,6 +143,10 @@ struct MeshStructure {
    */
   real** ghostRegions;
 
+#ifdef ACL_DEVICE
+  std::vector<real*> deviceGhostRegions;
+#endif // ACL_DEVICE
+
   /*
    * Sizes of the ghost regions (in reals).
    */
@@ -168,6 +173,10 @@ struct MeshStructure {
    *           The pointers only point to communcation related chunks.
    */
   real** copyRegions;
+
+#ifdef ACL_DEVICE
+  std::vector<real*> deviceCopyRegions;
+#endif
 
   /*
    * Sizes of the copy regions (in reals).

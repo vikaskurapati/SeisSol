@@ -501,6 +501,7 @@ int LtsWeights::computeClusterIdsAndEnforceMaximumDifferenceCached(double curWig
 std::vector<int> LtsWeights::computeClusterIds(double curWiggleFactor) {
   const auto &cells = m_mesh->cells();
   std::vector<int> clusterIds(cells.size(), 0);
+#pragma omp parallel for schedule(static)
   for (unsigned cell = 0; cell < cells.size(); ++cell) {
     clusterIds[cell] = getCluster(m_details.timeSteps[cell],
                                   m_details.globalMinTimeStep, curWiggleFactor,
@@ -562,6 +563,11 @@ int LtsWeights::enforceMaximumDifferenceLocal(int maxDifference) {
   std::unordered_map<int, int> localFaceIdToLocalCellId;
 #endif // USE_MPI
 
+  if (clusterIdsBuffer.size() != m_clusterIds.size()) {
+    clusterIdsBuffer.resize(m_clusterIds.size());
+  }
+
+#pragma parallel for schedule(static) reduce(+:numberOfReductions)
   for (unsigned cell = 0; cell < cells.size(); ++cell) {
     int timeCluster = m_clusterIds[cell];
 
@@ -592,14 +598,19 @@ int LtsWeights::enforceMaximumDifferenceLocal(int maxDifference) {
         }
 #ifdef USE_MPI
         else {
-          rankToSharedFaces[face.shared()[0]].push_back(faceids[f]);
-          localFaceIdToLocalCellId[faceids[f]] = cell;
+#pragma omp critical
+          {
+            rankToSharedFaces[face.shared()[0]].push_back(faceids[f]);
+            localFaceIdToLocalCellId[faceids[f]] = cell;
+          }
         }
 #endif // USE_MPI
       }
     }
-    m_clusterIds[cell] = timeCluster;
+    clusterIdsBuffer[cell] = timeCluster;
   }
+
+  m_clusterIds.swap(clusterIdsBuffer);
 
 #ifdef USE_MPI
   FaceSorter faceSorter(faces);
@@ -631,7 +642,7 @@ int LtsWeights::enforceMaximumDifferenceLocal(int maxDifference) {
 
   exchange = rankToSharedFaces.begin();
   for (unsigned ex = 0; ex < numExchanges; ++ex) {
-    auto exchangeSize = exchange->second.size();
+    const auto exchangeSize = exchange->second.size();
     for (unsigned n = 0; n < exchangeSize; ++n) {
       int difference = maxDifference;
       int otherTimeCluster = ghost[ex][n];

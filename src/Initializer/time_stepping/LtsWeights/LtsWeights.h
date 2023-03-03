@@ -134,6 +134,7 @@ protected:
   int m_ncon{std::numeric_limits<int>::infinity()};
   const PUML::TETPUML * m_mesh{nullptr};
   std::vector<int> m_clusterIds{};
+  std::vector<int> clusterIdsBuffer{}; // used to enforce max. difference
   const LtsParameters* ltsParameters;
   double wiggleFactor = 1.0;
   std::map<double, decltype(m_clusterIds)> clusteringCache; // Maps wiggle factor to clustering

@@ -76,6 +76,7 @@ double computeLocalCostOfClustering(const std::vector<int>& clusterIds,
   assert(clusterIds.size() == cellCosts.size());
 
   double cost = 0.0;
+#pragma omp parallel for schedule(static) reduction(+:cost)
   for (auto i = 0U; i < clusterIds.size(); ++i) {
     const auto cluster = clusterIds[i];
     const auto cellCost = cellCosts[i];
@@ -105,10 +106,10 @@ double computeGlobalCostOfClustering(const std::vector<int>& clusterIds,
 std::vector<int> enforceMaxClusterId(const std::vector<int>& clusterIds, int maxClusterId) {
   auto newClusterIds = clusterIds;
   assert(maxClusterId >= 0);
-  std::for_each(newClusterIds.begin(), newClusterIds.end(), [maxClusterId](auto& clusterId) {
-    clusterId = std::min(clusterId, maxClusterId);
-  });
-
+#pragma omp parallel for schedule(static)
+  for (auto i = 0u; i < clusterIds.size(); ++i) {
+    newClusterIds[i] = std::min(clusterIds[i], maxClusterId);
+  }
   return newClusterIds;
 }
 
@@ -567,7 +568,7 @@ int LtsWeights::enforceMaximumDifferenceLocal(int maxDifference) {
     clusterIdsBuffer.resize(m_clusterIds.size());
   }
 
-#pragma parallel for schedule(static) reduce(+:numberOfReductions)
+#pragma omp parallel for schedule(static) reduction(+:numberOfReductions)
   for (unsigned cell = 0; cell < cells.size(); ++cell) {
     int timeCluster = m_clusterIds[cell];
 

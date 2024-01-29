@@ -11,7 +11,7 @@ FreqCentral=0.5
 FreqRatio=100
 GravitationalAcceleration = 9.81 ! value of gravitational acceleration
 !ITM Parameters
-ITMToggle = 1 ! 1 is on, 0 is off
+ITMEnable = 1 ! 1 is on, 0 is off
 ITMStartingtime = 2.0 ! Time when ITM is turned on
 ITMTime = 0.01 !Time duration for which ITM is on
 ITMVelocityscalingfactor = 2 ! Scaling factor
@@ -33,6 +33,7 @@ cICType = 'Zero'                  ! Initial Condition
 !The following parameters are only needed for the travelling wave IC:
 origin = 0 0 0.5             ! Origin of the wave 
 kVec = 6.283 0 0             ! Gives direction of wave propagation, the wavelength of the travelling wave is 2*pi / norm(kVec)
+k = 6.283 ! Wave number to be used for the travelling acoustic wave with ITM test case. Not to be used in other scenarios
 ampField = 2 0 0 0 0 0 0 1 0 ! Amplification of the different wave modes
 /
 

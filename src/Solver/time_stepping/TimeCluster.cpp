@@ -597,6 +597,7 @@ void seissol::time_stepping::TimeCluster::computeNeighboringIntegration( seissol
   }
 
   if (usePlasticity) {
+    updateRelaxTime();
     PlasticityData* plasticity = i_layerData.var(m_lts->plasticity);
     unsigned numAdjustedDofs = seissol::kernels::Plasticity::computePlasticityBatched(m_oneMinusIntegratingFactor,
                                                                                       timeStepWidth,
@@ -645,10 +646,6 @@ void seissol::time_stepping::TimeCluster::computeLocalIntegrationFlops(seissol::
       }
     }
   }
-}
-
-seissol::time_stepping::ClusterTimes& seissol::time_stepping::TimeCluster::getClusterTimes() {
-  return ct;
 }
 
 void seissol::time_stepping::TimeCluster::computeNeighborIntegrationFlops(

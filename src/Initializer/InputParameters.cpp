@@ -168,21 +168,31 @@ static void readModel(ParameterReader& baseReader, SeisSolParameters& seissolPar
   seissolParams.model.tv = reader.readWithDefault("tv", 0.1);
   seissolParams.model.useCellHomogenizedMaterial =
       reader.readWithDefault("usecellhomogenizedmaterial", true);
-  seissolParams.itmParameters.ITMStartingTime = reader.readWithDefault("itmstartingtime", 0.0);
-  seissolParams.itmParameters.ITMTime = reader.readWithDefault("itmtime", 0.0);
-  seissolParams.itmParameters.ITMToggle = reader.readWithDefault("itmtoggle", bool(0));
-  seissolParams.itmParameters.ITMVelocityScalingFactor =
-      reader.readWithDefault("itmvelocityscalingfactor", 1.0);
-  seissolParams.itmParameters.reflectionType = reader.readWithDefault("itmreflectiontype", 1);
-
-  if (seissolParams.itmParameters.ITMTime < 0.0) {
-    logError() << "ITM Time is less than zero. It should be positive!\n";
-  }
-  if (seissolParams.itmParameters.ITMVelocityScalingFactor < 0.0) {
-    logError() << "ITM Velocity Scaling Factor is less than zero. It should be positive!\n";
-  }
-  if (seissolParams.itmParameters.ITMStartingTime < 0.0) {
-    logError() << "ITM Starting Time can not be less than zero\n";
+  seissolParams.itmParameters.ITMToggle = reader.readWithDefault("itmenable", bool(0));
+  if (seissolParams.itmParameters.ITMToggle) {
+    seissolParams.itmParameters.ITMStartingTime = reader.readWithDefault("itmstartingtime", 0.0);
+    seissolParams.itmParameters.ITMTime = reader.readWithDefault("itmtime", 0.0);
+    seissolParams.itmParameters.ITMVelocityScalingFactor =
+        reader.readWithDefault("itmvelocityscalingfactor", 1.0);
+    seissolParams.itmParameters.reflectionType =
+        reader.readWithDefaultEnum("itmreflectiontype",
+                                   ReflectionType::bothwaves,
+                                   {ReflectionType::bothwaves,
+                                    ReflectionType::bothwaves_velocity,
+                                    ReflectionType::pwave,
+                                    ReflectionType::swave});
+    if (seissolParams.itmParameters.ITMTime <= 0.0) {
+      logError() << "ITM Time is not positive. It should be positive!";
+    }
+    if (seissolParams.itmParameters.ITMVelocityScalingFactor < 0.0) {
+      logError() << "ITM Velocity Scaling Factor is less than zero. It should be positive!";
+    }
+    if (seissolParams.itmParameters.ITMStartingTime < 0.0) {
+      logError() << "ITM Starting Time can not be less than zero";
+    }
+  } else {
+    reader.markUnused(
+        "itmstartingtime", "itmtime", "itmvelocityscalingfactor", "itmreflectiontype");
   }
 
   if (isModelViscoelastic()) {
@@ -383,7 +393,6 @@ static void readInitialization(ParameterReader& baseReader, SeisSolParameters& s
   seissolParams.initialization.origin =
       seissol::initializers::convertStringToArray<double, 3>(originString);
   const auto kVecString = reader.readWithDefault("kvec", std::string("0.0 0.0 0.0"));
-  seissolParams.initialization.k = reader.readWithDefault("k", 0.0);
   seissolParams.initialization.kVec =
       seissol::initializers::convertStringToArray<double, 3>(kVecString);
   std::string defaultAmpFieldString;
@@ -396,6 +405,7 @@ static void readInitialization(ParameterReader& baseReader, SeisSolParameters& s
   seissolParams.initialization.magnitude = reader.readWithDefault("magnitude", 0.0);
   seissolParams.initialization.width =
       reader.readWithDefault("width", std::numeric_limits<double>::infinity());
+  seissolParams.initialization.k = reader.readWithDefault("k", 0.0);
 
   reader.warnUnknown();
 }

@@ -43,6 +43,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 #include <fty/fty.hpp>
+#include "Monitoring/Unit.hpp"
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -91,6 +92,8 @@ bool seissol::SeisSol::init(int argc, char* argv[]) {
   logInfo(rank) << "Using MPI with #ranks:" << MPI::mpi.size();
   // TODO (Ravil, David): switch to reading MPI options from the parameter-file.
   MPI::mpi.setDataTransferModeFromEnv();
+
+  printPersistentMpiInfo(MPI::mpi);
 #endif
 #ifdef _OPENMP
   pinning.checkEnvVariables();
@@ -109,7 +112,7 @@ bool seissol::SeisSol::init(int argc, char* argv[]) {
       logError()
           << "There are no free CPUs left. Make sure to leave one for the communication thread. If "
              "you want to run SeisSol without a communication thread (and instead use polling), "
-             "then try running with the environment variable \"SEISSOL_COMMTHREAD=false\". ";
+             "then try running with the environment variable \"SEISSOL_COMMTHREAD=0\". ";
     }
   }
 #endif // _OPENMP
@@ -120,17 +123,21 @@ bool seissol::SeisSol::init(int argc, char* argv[]) {
   if (getrlimit(RLIMIT_STACK, &rlim) == 0) {
     const auto rlimInKb = rlim.rlim_cur / 1024;
     // Softlimit (rlim_cur) is enforced by the kernel.
-    // This limit is pretty arbitrarily set at 2GB.
-    const auto reasonableStackLimit = 2097152; // [kb]
+    // This limit is pretty arbitrarily set to 2GiB.
+    constexpr auto reasonableStackLimitInKb = 0x200'000ULL;                    // [kiB] (2 GiB)
+    constexpr auto reasonableStackLimit = reasonableStackLimitInKb * 0x400ULL; // [B] (2 GiB)
     if (rlim.rlim_cur == RLIM_INFINITY) {
       logInfo(rank) << "The stack size ulimit is unlimited.";
     } else {
-      logInfo(rank) << "The stack size ulimit is " << rlimInKb << "[kb].";
+      logInfo(rank) << "The stack size ulimit is" << rlimInKb
+                    << "[kiB] ( =" << UnitByte.formatPrefix(rlim.rlim_cur).c_str() << ").";
     }
-    if (rlimInKb < reasonableStackLimit) {
+    if (rlim.rlim_cur < reasonableStackLimit) {
       logWarning(rank)
-          << "Stack size of" << rlimInKb << "[kb] is lower than recommended minimum of"
-          << reasonableStackLimit << "[kb]."
+          << "Stack size of" << rlimInKb
+          << "[kiB] ( =" << UnitByte.formatPrefix(rlim.rlim_cur).c_str()
+          << ") is lower than recommended minimum of" << reasonableStackLimitInKb
+          << "[kiB] ( =" << UnitByte.formatPrefix(reasonableStackLimit).c_str() << ")."
           << "You can increase the stack size by running the command: ulimit -Ss unlimited.";
     }
   } else {

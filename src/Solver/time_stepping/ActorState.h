@@ -1,6 +1,7 @@
 #ifndef SEISSOL_ACTORSTATE_H
 #define SEISSOL_ACTORSTATE_H
 
+#include <memory>
 #include <mutex>
 #include <queue>
 #include <variant>
@@ -78,7 +79,15 @@ struct ClusterTimes {
   [[nodiscard]] long computeStepsUntilSyncTime(double oldSyncTime,
                                                double newSyncTime) const;
 
-  [[nodiscard]] double& getTimeStepSize();
+//  [[nodiscard]] double& getTimeStepSize();
+
+  double getTimeStepSize() const {
+    return maxTimeStepSize;
+  }
+
+  void setTimeStepSize(double newTimeStepSize) {
+    maxTimeStepSize = newTimeStepSize;
+  }
 
 };
 

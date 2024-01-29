@@ -17,10 +17,11 @@ public:
                            int timeStepRate,
                            int globalTimeClusterId,
                            int otherGlobalTimeClusterId,
-                           const MeshStructure* meshStructure);
-    ClusterTimes& getClusterTimes();
-    std::vector<seissol::time_stepping::NeighborCluster>* getNeighborClusters();
-
+                           const MeshStructure* meshStructure,
+                           bool persistent);
+    void finalize() override;
+private:
+  bool persistent;
 };
 } // namespace seissol::time_stepping
 

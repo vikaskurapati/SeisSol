@@ -34,17 +34,23 @@
 
 ---
 
-### 🔄 Phase 2: YATeTo Common Infrastructure (IN PROGRESS)
-**Current task:** `yateto-triton-common`
+### ✅ Phase 2: YATeTo Common Infrastructure (COMPLETED)
+**Status:** Done - Commit [hash]
 
-**Next steps:**
-1. Write tests for triton_common.py (TDD approach)
-2. Create `submodules/yateto/yateto/codegen/triton_common.py` with:
-   - TritonKernelArgument class (similar to TinytcKernelArgument)
-   - TritonWrapper class for C++ wrapper generation
-   - AOT compilation helpers (triton.compile() → .cubin/.so files)
-   - Tensor descriptor helpers
-   - File management for compiled kernels
+**What was done:**
+- Created test suite: `submodules/yateto/tests/codegen/test_triton_common.py` (18 tests)
+- Implemented `submodules/yateto/yateto/codegen/triton_common.py` with:
+  - TritonKernelArgument / TritonScalarKernelArgument classes
+  - TritonWrapper class for C++ wrapper generation
+  - compile_triton_kernel() for AOT compilation
+  - make_triton_kernel_name() for kernel naming
+- All tests passing (18/18)
+
+**Key implementation details:**
+- Wrappers use CUDA Driver API to load pre-compiled .so/.cubin files
+- No source code embedded in C++ (unlike tinytc's runtime JIT)
+- Supports arbitrary alpha/beta values
+- Hash-based wrapper names for uniqueness
 
 ---
 

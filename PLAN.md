@@ -163,4 +163,19 @@ If this session crashes, next agent should:
 
 ---
 
-**Last updated:** 2026-04-01T13:01:32Z (Phase 2 start)
+### 🔄 Phase 3: YATeTo GEMM Generator (IN PROGRESS)
+**Current task:** `yateto-triton-gemm`
+
+**Next steps:**
+1. Write tests for GEMM generation (TDD approach)
+2. Create `submodules/yateto/yateto/codegen/gemm/triton.py` with:
+   - Triton GEMM kernel source code generation
+   - Handle transA/transB configurations
+   - Handle alpha/beta scaling
+   - Batched operations support
+   - Various matrix sizes
+   - Integration with AOT compilation
+
+---
+
+**Last updated:** 2026-04-01T13:26:00Z (Phase 3 start - triton-common complete)

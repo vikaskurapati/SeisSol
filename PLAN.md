@@ -175,17 +175,30 @@ If this session crashes, next agent should:
 
 ---
 
-### 🔄 Phase 4: YATeTo CopyScaleAdd Generator (IN PROGRESS)
-**Context:** SeisSol requires auxiliary routines (Copy, Scale, Add) for the proxy app. Triton was initially only generating GEMMs, which caused compilation to fail when TensorForge was removed. We are implementing a pure Triton CSA generator to achieve full autonomy from other generators.
+### 🔄 Phase 4: YATeTo CopyScaleAdd Generator + Pure Triton Codegen (IN PROGRESS)
+**Context:** SeisSol requires auxiliary routines (Copy, Scale, Add) for the proxy app. Triton was initially only generating GEMMs, which caused compilation to fail when TensorForge was removed. We are implementing pure Triton code generation for both GEMM and CSA paths to achieve full autonomy from TensorForge/GemmForge during GPU code generation.
 
 **What's done so far:**
 - ✅ Created `yateto/codegen/copyscaleadd/triton.py` with `CopyScaleAddTriton` generator.
 - ✅ Updated `yateto/codegen/copyscaleadd/factory.py` to route GPU CSA requests to Triton when active.
 - ✅ Fixed `TritonWrapper` and `TritonWriter` argument mismatch issues.
+- ✅ Improved Triton AOT kernel discovery logic in `triton_common.py` to detect modern Triton `@triton.jit` functions more robustly.
+- ✅ Confirmed the active SeisSol codegen path uses `codegen/yateto/...`, not only `submodules/yateto/...`.
 
 **Current Blockers:**
-- ❌ **Kernel Discovery Error:** "No @triton.jit function found in kernel" during AOT compilation on the cluster.
-  - *Status:* Debugging the `compile.py` script's ability to find the JIT function in the temporary module.
+- ❌ **GEMM kernel-name mismatch during AOT compilation.**
+  - The generated Triton module exports a short GEMM kernel name such as:
+    - `gemm_nn_k_9_m_48_n_9`
+  - But `TritonWriter` asks `compile_triton_kernel()` to compile the longer wrapper/routine name such as:
+    - `gemm_nn_addra_pointer_based_addrb_pointer_based_addrc_strided_alpha_1_0_beta_0_0_k_9_lda_64_ldb_9_ldc_48_m_48_n_9`
+  - Resulting error:
+    - `No @triton.jit function found in kernel named ...`
+  - Root cause:
+    - `tritonGemmGen()` generates a default kernel name before `GemmGen.generate()` computes the final `routine_name`.
+  - Required fix:
+    - In `codegen/yateto/codegen/gemm/gemmgen.py`, compute `routine_name` first and call:
+      - `tritonGemmGen(self._arch, gemm, kernel_name=routine_name)`
+    - Apply the same fix to `submodules/yateto/yateto/codegen/gemm/gemmgen.py` if that path is used by tests or future synchronization.
 
 **Next steps:**
 1. Fix the kernel discovery logic in `triton_common.py`.
@@ -194,4 +207,4 @@ If this session crashes, next agent should:
 
 ---
 
-**Last updated:** 2026-05-08 (Updated Phase 4 status and debugging blockers)
+**Last updated:** 2026-05-08 (Updated Phase 4 with GEMM kernel-name mismatch blocker after Triton kernel discovery debugging)

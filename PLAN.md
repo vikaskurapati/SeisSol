@@ -166,16 +166,22 @@ If this session crashes, next agent should:
 ### 🔄 Phase 3: YATeTo GEMM Generator (IN PROGRESS)
 **Current task:** `yateto-triton-gemm`
 
+**What's done so far (2026-05-08):**
+- ✅ Created `triton_common.py` infrastructure (Phases 1-2)
+- ✅ Added `TritonWriter` class to `cache.py` for kernel compilation and linking
+- ✅ Created `codegen/gemm/triton.py` with `tritonGemmGen()` function:
+  - Generates Triton kernel source code
+  - Handles all transpose configurations (transA, transB)
+  - Supports alpha/beta scaling
+  - Supports batched operations (pointer_based, strided, none addressing)
+  - Handles various matrix sizes (m, n, k, ld parameters)
+
 **Next steps:**
-1. Write tests for GEMM generation (TDD approach)
-2. Create `submodules/yateto/yateto/codegen/gemm/triton.py` with:
-   - Triton GEMM kernel source code generation
-   - Handle transA/transB configurations
-   - Handle alpha/beta scaling
-   - Batched operations support
-   - Various matrix sizes
-   - Integration with AOT compilation
+1. Create GEMM integration tests (currently no tests exist for Triton GEMM generation)
+2. Integrate into GemmGen.generate() method to handle Triton backend
+3. Test with matmul example
+4. Verify cache integration
 
 ---
 
-**Last updated:** 2026-04-01T13:26:00Z (Phase 3 start - triton-common complete)
+**Last updated:** 2026-05-08T13:50:00Z (GEMM source generation complete)

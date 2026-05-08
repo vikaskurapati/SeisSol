@@ -100,6 +100,19 @@ foreach(component ${_GEMM_TOOLS_LIST})
         set(DEVICE_SRC ${DEVICE_SRC} ${TensorForge_SOURCES})
         set(DEVICE_INCLUDE_DIRS ${DEVICE_INCLUDE_DIRS} ${TensorForge_INCLUDE_DIRS})
 
+    elseif ("${component}" STREQUAL "Triton")
+        # Ensure Triton Python module is available, but do not fail if not
+        execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import triton"
+                        RESULT_VARIABLE TRITON_FOUND ERROR_QUIET)
+        if (NOT TRITON_FOUND EQUAL 0)
+            message(WARNING "Python Triton module not found! Kernel compilation will be faked for Triton backend.")
+        endif()
+        # CUDA Driver API is used by the generated wrapper. We add cuda to libraries if using CUDA.
+        if (DEVICE_BACKEND STREQUAL "cuda")
+            find_package(CUDAToolkit)
+            set(GemmTools_LIBRARIES ${GemmTools_LIBRARIES} CUDA::cuda_driver)
+        endif()
+
     else()
         message(FATAL_ERROR "Gemm Tools do not have a requested component, i.e. ${component}. \
                 Please, refer to the documentation")

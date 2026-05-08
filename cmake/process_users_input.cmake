@@ -123,7 +123,7 @@ set(GEMM_TOOLS_OPTIONS "auto" "none"
 set_property(CACHE GEMM_TOOLS_LIST PROPERTY STRINGS ${GEMM_TOOLS_OPTIONS})
 
 set(DEVICE_CODEGEN "auto" CACHE STRING "GPU code generators")
-set(DEVICE_CODEGEN_OPTIONS "auto" "gemmforge-chainforge" "tensorforge" "tinytc")
+set(DEVICE_CODEGEN_OPTIONS "auto" "gemmforge-chainforge" "tensorforge" "tinytc" "triton")
 set_property(CACHE DEVICE_CODEGEN PROPERTY STRINGS ${DEVICE_CODEGEN_OPTIONS})
 
 option(NEW_BINARY_NAMING "Use the updated binary naming scheme" OFF)
@@ -326,6 +326,19 @@ if (NOT ${DEVICE_BACKEND} STREQUAL "none")
                 message(STATUS "GPUs are enabled; GemmForge (+ChainForge) was found, but is ignored due to a different code generator taking precedence.")
             endif()
         endif()
+        
+        # Triton
+        if ((AUTO_DEVICE_CODEGEN_BACKEND STREQUAL "none") OR (AUTO_DEVICE_CODEGEN_BACKEND STREQUAL "triton"))
+            execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import triton; print(triton.__version__)"
+                            OUTPUT_VARIABLE TRITON_VERSION ERROR_QUIET)
+            if (TRITON_VERSION)
+                message(STATUS "GPUs are enabled, adding Triton")
+                list(APPEND AUTO_DEVICE_CODEGEN "triton")
+                set(AUTO_DEVICE_CODEGEN_BACKEND "triton")
+            else()
+                message(STATUS "GPUs are enabled; Triton python module is not found, but we will fake compilation if triton backend is explicitly chosen. Auto-detection won't select it by default.")
+            endif()
+        endif()
     else()
         set(AUTO_DEVICE_CODEGEN ${DEVICE_CODEGEN})
     endif()
@@ -341,6 +354,10 @@ if (NOT ${DEVICE_BACKEND} STREQUAL "none")
     # TODO: make obsolete
     if ("gemmforge-chainforge" IN_LIST AUTO_DEVICE_CODEGEN)
         list(APPEND AUTO_GEMM_TOOLS_LIST "GemmForge")
+    endif()
+    # TODO: make obsolete
+    if ("triton" IN_LIST AUTO_DEVICE_CODEGEN)
+        list(APPEND AUTO_GEMM_TOOLS_LIST "Triton")
     endif()
 
     set(WITH_GPU ON)

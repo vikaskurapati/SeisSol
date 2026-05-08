@@ -176,15 +176,22 @@ If this session crashes, next agent should:
 ---
 
 ### 🔄 Phase 4: YATeTo CopyScaleAdd Generator (IN PROGRESS)
-**Context:** SeisSol requires auxiliary routines (Copy, Scale, Add) for the proxy app. Triton was initially only generating GEMMs, which caused compilation to fail with `NotImplementedError: no implementation found for gpu target` because TensorForge/GemmForge was missing. To completely eliminate TensorForge and use a pure Triton backend, we need a Triton generator for CopyScaleAdd.
+**Context:** SeisSol requires auxiliary routines (Copy, Scale, Add) for the proxy app. Triton was initially only generating GEMMs, which caused compilation to fail when TensorForge was removed. We are implementing a pure Triton CSA generator to achieve full autonomy from other generators.
+
+**What's done so far:**
+- ✅ Created `yateto/codegen/copyscaleadd/triton.py` with `CopyScaleAddTriton` generator.
+- ✅ Updated `yateto/codegen/copyscaleadd/factory.py` to route GPU CSA requests to Triton when active.
+- ✅ Fixed `TritonWrapper` and `TritonWriter` argument mismatch issues.
+
+**Current Blockers:**
+- ❌ **Kernel Discovery Error:** "No @triton.jit function found in kernel" during AOT compilation on the cluster.
+  - *Status:* Debugging the `compile.py` script's ability to find the JIT function in the temporary module.
 
 **Next steps:**
-1. Implement `yateto-triton-csa` - Create a Triton generator for `CopyScaleAdd` operations.
-   - Support `alpha * A + beta * B` element-wise operations.
-   - Implement Python generator emitting `@triton.jit` kernels for CSA.
-2. Update `yateto/codegen/copyscaleadd/factory.py` to route to the Triton CSA generator when `Triton` is the active GEMM tool.
-3. Test proxy app compilation on GPU backend.
+1. Fix the kernel discovery logic in `triton_common.py`.
+2. Successfully compile `seissol-proxy` on the cluster with pure Triton backend.
+3. Verify proxy app execution and benchmark.
 
 ---
 
-**Last updated:** 2026-05-08 (Added Phase 4 for pure Triton GPU code generation)
+**Last updated:** 2026-05-08 (Updated Phase 4 status and debugging blockers)

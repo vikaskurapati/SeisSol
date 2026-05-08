@@ -157,31 +157,34 @@ If this session crashes, next agent should:
 4. Continue with current `in_progress` task or next `pending` task with no deps
 
 **Current context:**
-- Working on `yateto-triton-common` - creating common infrastructure
-- Need to write tests first, then implement
-- Reference tinytc_common pattern in `yateto/codegen/common.py`
+- Phase 3 (GEMM & Cache Integration) is complete.
+- Working on Phase 4: `yateto-triton-csa` - generating CopyScaleAdd operations in Triton to fully replace TensorForge.
 
 ---
 
-### 🔄 Phase 3: YATeTo GEMM Generator (IN PROGRESS)
-**Current task:** `yateto-triton-gemm`
-
-**What's done so far (2026-05-08):**
+### ✅ Phase 3: YATeTo GEMM Generator & Testing (DONE)
+**What's done so far:**
 - ✅ Created `triton_common.py` infrastructure (Phases 1-2)
 - ✅ Added `TritonWriter` class to `cache.py` for kernel compilation and linking
-- ✅ Created `codegen/gemm/triton.py` with `tritonGemmGen()` function:
-  - Generates Triton kernel source code
-  - Handles all transpose configurations (transA, transB)
-  - Supports alpha/beta scaling
-  - Supports batched operations (pointer_based, strided, none addressing)
-  - Handles various matrix sizes (m, n, k, ld parameters)
-
-**Next steps:**
-1. Create GEMM integration tests (currently no tests exist for Triton GEMM generation)
-2. Integrate into GemmGen.generate() method to handle Triton backend
-3. Test with matmul example
-4. Verify cache integration
+- ✅ Created `codegen/gemm/triton.py` with `tritonGemmGen()` function
+- ✅ Created GEMM integration tests in `test_triton_gemm.py`
+- ✅ Integrated into `GemmGen.generate()` method to handle Triton backend
+- ✅ Tested cache integration and fallback mechanisms
+- ✅ Added Triton to `DefaultGeneratorCollection` in `gemm_configuration.py`
+- ✅ CMake Integration in SeisSol (`FindGemmTools.cmake` & `process_users_input.cmake`)
 
 ---
 
-**Last updated:** 2026-05-08T13:50:00Z (GEMM source generation complete)
+### 🔄 Phase 4: YATeTo CopyScaleAdd Generator (IN PROGRESS)
+**Context:** SeisSol requires auxiliary routines (Copy, Scale, Add) for the proxy app. Triton was initially only generating GEMMs, which caused compilation to fail with `NotImplementedError: no implementation found for gpu target` because TensorForge/GemmForge was missing. To completely eliminate TensorForge and use a pure Triton backend, we need a Triton generator for CopyScaleAdd.
+
+**Next steps:**
+1. Implement `yateto-triton-csa` - Create a Triton generator for `CopyScaleAdd` operations.
+   - Support `alpha * A + beta * B` element-wise operations.
+   - Implement Python generator emitting `@triton.jit` kernels for CSA.
+2. Update `yateto/codegen/copyscaleadd/factory.py` to route to the Triton CSA generator when `Triton` is the active GEMM tool.
+3. Test proxy app compilation on GPU backend.
+
+---
+
+**Last updated:** 2026-05-08 (Added Phase 4 for pure Triton GPU code generation)

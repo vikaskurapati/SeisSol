@@ -219,6 +219,11 @@ If this session crashes, next agent should:
   - Added kernel source filepath as a compile source candidate (in addition to AST and callable candidates).
   - Stopped converting backend-parsed compile options into `dict`; now passes parsed option objects directly.
   - Added fallback retry without `options=` when option-bearing compile calls fail at runtime.
+- Fixed Triton ASTSource signature inference for YATeTo pointer-based operands:
+  - Pointer-based tensors are passed as pointer arrays from C++ (`real**`).
+  - Generated Triton kernels load per-batch base pointers via `tl.load(A+pid)` / `tl.load(A + batch_idx)`.
+  - `_guess_signature()` now emits `**fp32` / `**fp64` for those operands instead of `*fp32` / `*fp64`.
+  - This addresses cluster Triton failures where pointer-array operands were typed as real pointers and AST compilation failed around nested `tl.load(...)` calls.
 - ✅ Added regression tests:
   - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
   - `tests/codegen/test_triton_gemm.py` basic/transposed expectations updated for explicit accumulation + masked static-range path
@@ -263,4 +268,4 @@ ctest --output-on-failure -R "^Proxy:"
 
 ---
 
-**Last updated:** 2026-05-11 (Patched Triton compile compatibility: filepath source fallback + option-object handling + no-options retry)
+**Last updated:** 2026-05-11 (Patched Triton ASTSource signature inference for pointer-based `real**` operands)

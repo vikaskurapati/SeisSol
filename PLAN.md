@@ -12,6 +12,8 @@
 - No GPU on dev machine (compilation checks only, performance on cluster)
 - Avoid modifying ChainForge/GemmForge/TensorForge
 - Write tests for all changes (YATeTo and SeisSol)
+- Workspace execution policy: do **not** run test/build/benchmark commands in this workspace; only write code here and provide commands for execution on the target GPU environment.
+- Process policy: after each major code change, update this `PLAN.md` with what changed and the next execution commands.
 
 ---
 
@@ -230,6 +232,30 @@ If this session crashes, next agent should:
 2. Re-run SeisSol code generation + build for `DEVICE_CODEGEN=triton`.
 3. Verify `seissol-proxy` runs, then proceed to benchmarking.
 
+**Execution commands (run on target GPU environment only):**
+```bash
+# 1) YATeTo Triton unit tests
+cd submodules/yateto
+python3 tests/backends/test_triton_backend.py -v
+python3 tests/codegen/test_triton_common.py -v
+python3 tests/codegen/test_triton_gemm.py -v
+
+# 2) SeisSol configure + build with Triton codegen
+cd /path/to/SeisSol-triton
+mkdir -p build-triton && cd build-triton
+cmake -DORDER=4 -DEQUATIONS=elastic -DPRECISION=double \
+      -DDEVICE_BACKEND=cuda -DDEVICE_ARCH=sm_90 \
+      -DDEVICE_CODEGEN=triton -DTESTING=ON -DTESTING_GENERATED=ON ..
+make -j $(nproc)
+
+# 3) Proxy sanity checks
+ctest --output-on-failure -R "^Proxy:"
+```
+
+**Recovery continuation note (this session):**
+- Re-applied Triton GEMM code generation path using power-of-two `tl.arange` tiles, explicit boundary masks, and `tl.static_range` K-loop accumulation.
+- Updated `tests/codegen/test_triton_gemm.py` assertions and added a non-power-of-two regression test.
+
 ---
 
-**Last updated:** 2026-05-11 (Added power-of-two masked GEMM generation with `tl.static_range` for Triton frontend compatibility)
+**Last updated:** 2026-05-11 (Resumed after crash; re-applied masked `tl.static_range` GEMM path and refreshed execution commands)

@@ -184,27 +184,23 @@ If this session crashes, next agent should:
 - ✅ Fixed `TritonWrapper` and `TritonWriter` argument mismatch issues.
 - ✅ Improved Triton AOT kernel discovery logic in `triton_common.py` to detect modern Triton `@triton.jit` functions more robustly.
 - ✅ Confirmed the active SeisSol codegen path uses `codegen/yateto/...`, not only `submodules/yateto/...`.
+- ✅ Fixed Python import compatibility in `copyscaleadd/factory.py` (`import importlib.util`).
+- ✅ Added Triton compile API compatibility in `triton_common.py`:
+  - Tries `kernel_fn.compile(...)` when available.
+  - Falls back to `triton.compile(...)` and `triton.compiler.compile(...)`.
+  - Handles multiple compiled artifact shapes (`asm` dict, direct attrs, returned file path).
+- ✅ Added regression tests:
+  - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
+  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks`
 
 **Current Blockers:**
-- ❌ **GEMM kernel-name mismatch during AOT compilation.**
-  - The generated Triton module exports a short GEMM kernel name such as:
-    - `gemm_nn_k_9_m_48_n_9`
-  - But `TritonWriter` asks `compile_triton_kernel()` to compile the longer wrapper/routine name such as:
-    - `gemm_nn_addra_pointer_based_addrb_pointer_based_addrc_strided_alpha_1_0_beta_0_0_k_9_lda_64_ldb_9_ldc_48_m_48_n_9`
-  - Resulting error:
-    - `No @triton.jit function found in kernel named ...`
-  - Root cause:
-    - `tritonGemmGen()` generates a default kernel name before `GemmGen.generate()` computes the final `routine_name`.
-  - Required fix:
-    - In `codegen/yateto/codegen/gemm/gemmgen.py`, compute `routine_name` first and call:
-      - `tritonGemmGen(self._arch, gemm, kernel_name=routine_name)`
-    - Apply the same fix to `submodules/yateto/yateto/codegen/gemm/gemmgen.py` if that path is used by tests or future synchronization.
+- ⚠️ Cluster validation still pending for full SeisSol proxy build with Triton-only device codegen.
 
 **Next steps:**
-1. Fix the kernel discovery logic in `triton_common.py`.
-2. Successfully compile `seissol-proxy` on the cluster with pure Triton backend.
-3. Verify proxy app execution and benchmark.
+1. Re-run YATeTo Triton tests on cluster Python.
+2. Re-run SeisSol code generation + build for `DEVICE_CODEGEN=triton`.
+3. Verify `seissol-proxy` runs, then proceed to benchmarking.
 
 ---
 
-**Last updated:** 2026-05-08 (Updated Phase 4 with GEMM kernel-name mismatch blocker after Triton kernel discovery debugging)
+**Last updated:** 2026-05-11 (Added Triton compile API compatibility fix for clusters where `JITFunction.compile` is not available)

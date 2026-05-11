@@ -189,9 +189,13 @@ If this session crashes, next agent should:
   - Tries `kernel_fn.compile(...)` when available.
   - Falls back to `triton.compile(...)` and `triton.compiler.compile(...)`.
   - Handles multiple compiled artifact shapes (`asm` dict, direct attrs, returned file path).
+- ✅ Added Triton target compatibility for newer APIs that require `GPUTarget` objects:
+  - Detects available `GPUTarget` classes from Triton backend modules.
+  - Builds target candidates from backend/arch variants (e.g. CUDA `sm_90`/`90`/`sm90`).
+  - Retries compilation across target candidates for `kernel_fn.compile`, `triton.compile`, and `triton.compiler.compile`.
 - ✅ Added regression tests:
   - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
-  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks`
+  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (now also checks `GPUTarget` support)
 
 **Current Blockers:**
 - ⚠️ Cluster validation still pending for full SeisSol proxy build with Triton-only device codegen.
@@ -203,4 +207,4 @@ If this session crashes, next agent should:
 
 ---
 
-**Last updated:** 2026-05-11 (Added Triton compile API compatibility fix for clusters where `JITFunction.compile` is not available)
+**Last updated:** 2026-05-11 (Added Triton `GPUTarget` compatibility for clusters where string targets are rejected)

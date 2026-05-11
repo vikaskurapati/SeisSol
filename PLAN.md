@@ -240,8 +240,9 @@ python3 tests/backends/test_triton_backend.py -v
 python3 tests/codegen/test_triton_common.py -v
 python3 tests/codegen/test_triton_gemm.py -v
 
-# 2) SeisSol configure + build with Triton codegen
+# 2) SeisSol clean configure + build with Triton codegen
 cd /path/to/SeisSol-triton
+rm -rf build-triton
 mkdir -p build-triton && cd build-triton
 cmake -DORDER=4 -DEQUATIONS=elastic -DPRECISION=double \
       -DDEVICE_BACKEND=cuda -DDEVICE_ARCH=sm_90 \
@@ -253,9 +254,9 @@ ctest --output-on-failure -R "^Proxy:"
 ```
 
 **Recovery continuation note (this session):**
-- Re-applied Triton GEMM code generation path using power-of-two `tl.arange` tiles, explicit boundary masks, and `tl.static_range` K-loop accumulation.
-- Updated `tests/codegen/test_triton_gemm.py` assertions and added a non-power-of-two regression test.
+- Replaced Triton GEMM vector outer-product path (`tl.arange` + broadcasted 2D accumulation) with fully scalar nested `tl.static_range` loops (`i/j/kk`) to avoid Triton frontend AST lowering issues observed on cluster (`CompilationError ... <ast.Call object ...>`).
+- Updated `tests/codegen/test_triton_gemm.py` expectations for scalar `tl.static_range` GEMM generation and added regression assertions to ensure vector/broadcast constructs are not reintroduced.
 
 ---
 
-**Last updated:** 2026-05-11 (Resumed after crash; re-applied masked `tl.static_range` GEMM path and refreshed execution commands)
+**Last updated:** 2026-05-11 (Patched GEMM generator for Triton AST compatibility and updated clean rerun commands)

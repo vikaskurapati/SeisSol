@@ -198,14 +198,19 @@ If this session crashes, next agent should:
   - Keeps module-based discovery as fallback.
   - Ensures constructed targets are of the exact class expected by the active Triton compile API.
 - ✅ Added source-shape compatibility for Triton compile APIs that reject JITFunction objects:
-  - Tries compile sources in this order: JITFunction, underlying Python function, JIT `src`, kernel file path, and `path:function` form.
+  - Tries compile sources in this order: JITFunction, underlying Python function, kernel file path, and `path:function` form.
   - This addresses Triton variants that require compile source to be AST/filepath instead of callable objects.
 - ✅ Added AST-based compilation fallback for Triton versions that require AST/filepath input:
   - Discovers `ASTSource` from Triton modules and compile-function globals.
   - Builds `ASTSource` candidates from kernel function + inferred signature.
   - Prioritizes AST candidates before raw callable/filepath fallbacks.
+- ✅ Reworked Triton GEMM kernel generation to avoid `tl.dot`:
+  - Uses explicit outer-product accumulation (`for kk in range(K): acc += a_vec[:,None] * b_vec[None,:]`).
+  - Preserves transposed and non-transposed addressing modes.
+  - Targets broader compatibility with Triton compiler variants that rejected previous `tl.dot` lowering.
 - ✅ Added regression tests:
   - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
+  - `tests/codegen/test_triton_gemm.py` basic/transposed expectations updated for explicit accumulation path
   - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (checks `GPUTarget`, `__globals__`, source-path hooks, and `ASTSource` fallback hooks)
 
 **Current Blockers:**
@@ -218,4 +223,4 @@ If this session crashes, next agent should:
 
 ---
 
-**Last updated:** 2026-05-11 (Added `ASTSource` fallback path for Triton compile APIs that reject non-AST inputs)
+**Last updated:** 2026-05-11 (Reworked Triton GEMM kernel body to avoid `tl.dot` and improve compiler compatibility)

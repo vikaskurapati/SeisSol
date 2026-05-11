@@ -211,14 +211,14 @@ If this session crashes, next agent should:
   - Prefers JITFunction-backed AST sources (with `cache_key`) over plain Python functions.
   - Calls `create_binder()` when available before AST compilation.
   - Passes backend-parsed compile options (`num_warps`, `num_stages`) when supported.
-- ✅ Reworked Triton GEMM kernel generation to avoid `tl.dot`:
-  - Uses explicit outer-product accumulation (`for kk in tl.static_range(0, K): acc += a_vec[:,None] * b_vec[None,:]`).
+- ✅ Reworked Triton GEMM kernel generation to avoid `tl.dot` and vector AST lowering fragility:
+  - Uses scalar nested `tl.static_range` loops over `i/j/kk`.
   - Preserves transposed and non-transposed addressing modes.
-  - Targets broader compatibility with Triton compiler variants that rejected previous `tl.dot` lowering.
-- ✅ Hardened Triton GEMM kernel shape handling for compiler compatibility:
-  - Uses power-of-two tile extents for `tl.arange`.
-  - Applies explicit masks for load/store on non-power-of-two matrix dimensions.
-  - Uses `tl.static_range` for compile-time K-loop unrolling.
+  - Avoids broadcasted vector outer-product constructs that caused frontend `CompilationError(... <ast.Call ...>)` on cluster Triton.
+- ✅ Hardened Triton compile compatibility path for strict AST/filepath Triton variants:
+  - Added kernel source filepath as a compile source candidate (in addition to AST and callable candidates).
+  - Stopped converting backend-parsed compile options into `dict`; now passes parsed option objects directly.
+  - Added fallback retry without `options=` when option-bearing compile calls fail at runtime.
 - ✅ Added regression tests:
   - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
   - `tests/codegen/test_triton_gemm.py` basic/transposed expectations updated for explicit accumulation + masked static-range path
@@ -256,7 +256,11 @@ ctest --output-on-failure -R "^Proxy:"
 **Recovery continuation note (this session):**
 - Replaced Triton GEMM vector outer-product path (`tl.arange` + broadcasted 2D accumulation) with fully scalar nested `tl.static_range` loops (`i/j/kk`) to avoid Triton frontend AST lowering issues observed on cluster (`CompilationError ... <ast.Call object ...>`).
 - Updated `tests/codegen/test_triton_gemm.py` expectations for scalar `tl.static_range` GEMM generation and added regression assertions to ensure vector/broadcast constructs are not reintroduced.
+- Updated `triton_common.py` compile compatibility to support this Triton runtime more robustly:
+  - filepath source fallback enabled,
+  - parsed backend options preserved as objects (no `dict` conversion),
+  - retry without `options` on option-path failures.
 
 ---
 
-**Last updated:** 2026-05-11 (Patched GEMM generator for Triton AST compatibility and updated clean rerun commands)
+**Last updated:** 2026-05-11 (Patched Triton compile compatibility: filepath source fallback + option-object handling + no-options retry)

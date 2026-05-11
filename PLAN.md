@@ -198,19 +198,28 @@ If this session crashes, next agent should:
   - Keeps module-based discovery as fallback.
   - Ensures constructed targets are of the exact class expected by the active Triton compile API.
 - ✅ Added source-shape compatibility for Triton compile APIs that reject JITFunction objects:
-  - Tries compile sources in this order: JITFunction, underlying Python function, kernel file path, and `path:function` form.
+  - Tries compile sources in this order: ASTSource candidates first, then JITFunction and underlying Python function.
   - This addresses Triton variants that require compile source to be AST/filepath instead of callable objects.
 - ✅ Added AST-based compilation fallback for Triton versions that require AST/filepath input:
   - Discovers `ASTSource` from Triton modules and compile-function globals.
   - Builds `ASTSource` candidates from kernel function + inferred signature.
   - Prioritizes AST candidates before raw callable/filepath fallbacks.
+- ✅ Corrected ASTSource construction for modern Triton compiler expectations:
+  - Uses **name-based signature maps** (`arg_name -> type`) instead of positional/non-string keys.
+  - Prefers JITFunction-backed AST sources (with `cache_key`) over plain Python functions.
+  - Calls `create_binder()` when available before AST compilation.
+  - Passes backend-parsed compile options (`num_warps`, `num_stages`) when supported.
 - ✅ Reworked Triton GEMM kernel generation to avoid `tl.dot`:
-  - Uses explicit outer-product accumulation (`for kk in range(K): acc += a_vec[:,None] * b_vec[None,:]`).
+  - Uses explicit outer-product accumulation (`for kk in tl.static_range(0, K): acc += a_vec[:,None] * b_vec[None,:]`).
   - Preserves transposed and non-transposed addressing modes.
   - Targets broader compatibility with Triton compiler variants that rejected previous `tl.dot` lowering.
+- ✅ Hardened Triton GEMM kernel shape handling for compiler compatibility:
+  - Uses power-of-two tile extents for `tl.arange`.
+  - Applies explicit masks for load/store on non-power-of-two matrix dimensions.
+  - Uses `tl.static_range` for compile-time K-loop unrolling.
 - ✅ Added regression tests:
   - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
-  - `tests/codegen/test_triton_gemm.py` basic/transposed expectations updated for explicit accumulation path
+  - `tests/codegen/test_triton_gemm.py` basic/transposed expectations updated for explicit accumulation + masked static-range path
   - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (checks `GPUTarget`, `__globals__`, source-path hooks, and `ASTSource` fallback hooks)
 
 **Current Blockers:**
@@ -223,4 +232,4 @@ If this session crashes, next agent should:
 
 ---
 
-**Last updated:** 2026-05-11 (Reworked Triton GEMM kernel body to avoid `tl.dot` and improve compiler compatibility)
+**Last updated:** 2026-05-11 (Added power-of-two masked GEMM generation with `tl.static_range` for Triton frontend compatibility)

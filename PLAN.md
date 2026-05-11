@@ -193,9 +193,13 @@ If this session crashes, next agent should:
   - Detects available `GPUTarget` classes from Triton backend modules.
   - Builds target candidates from backend/arch variants (e.g. CUDA `sm_90`/`90`/`sm90`).
   - Retries compilation across target candidates for `kernel_fn.compile`, `triton.compile`, and `triton.compiler.compile`.
+- ✅ Hardened `GPUTarget` discovery for Triton versions where compile functions check against an internal class:
+  - Extracts `GPUTarget` directly from `triton.compile.__globals__` and `triton.compiler.compile.__globals__`.
+  - Keeps module-based discovery as fallback.
+  - Ensures constructed targets are of the exact class expected by the active Triton compile API.
 - ✅ Added regression tests:
   - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
-  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (now also checks `GPUTarget` support)
+  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (checks `GPUTarget` + `__globals__` discovery path)
 
 **Current Blockers:**
 - ⚠️ Cluster validation still pending for full SeisSol proxy build with Triton-only device codegen.
@@ -207,4 +211,4 @@ If this session crashes, next agent should:
 
 ---
 
-**Last updated:** 2026-05-11 (Added Triton `GPUTarget` compatibility for clusters where string targets are rejected)
+**Last updated:** 2026-05-11 (Added exact-class `GPUTarget` discovery for Triton builds that reject mismatched target class instances)

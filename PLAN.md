@@ -200,9 +200,13 @@ If this session crashes, next agent should:
 - ✅ Added source-shape compatibility for Triton compile APIs that reject JITFunction objects:
   - Tries compile sources in this order: JITFunction, underlying Python function, JIT `src`, kernel file path, and `path:function` form.
   - This addresses Triton variants that require compile source to be AST/filepath instead of callable objects.
+- ✅ Added AST-based compilation fallback for Triton versions that require AST/filepath input:
+  - Discovers `ASTSource` from Triton modules and compile-function globals.
+  - Builds `ASTSource` candidates from kernel function + inferred signature.
+  - Prioritizes AST candidates before raw callable/filepath fallbacks.
 - ✅ Added regression tests:
   - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
-  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (checks `GPUTarget`, `__globals__`, and source-path compatibility hooks)
+  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (checks `GPUTarget`, `__globals__`, source-path hooks, and `ASTSource` fallback hooks)
 
 **Current Blockers:**
 - ⚠️ Cluster validation still pending for full SeisSol proxy build with Triton-only device codegen.
@@ -214,4 +218,4 @@ If this session crashes, next agent should:
 
 ---
 
-**Last updated:** 2026-05-11 (Added source-shape compatibility for Triton compile APIs that require AST/filepath input)
+**Last updated:** 2026-05-11 (Added `ASTSource` fallback path for Triton compile APIs that reject non-AST inputs)

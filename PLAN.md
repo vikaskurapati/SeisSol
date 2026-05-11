@@ -266,6 +266,21 @@ ctest --output-on-failure -R "^Proxy:"
   - parsed backend options preserved as objects (no `dict` conversion),
   - retry without `options` on option-path failures.
 
+### Phase: Triton AOT Compilation & Runtime Integration
+**Status:** Compilation and Kernel Loading Successful. Math Verification Pending.
+
+**What was fixed today:**
+- **AST/MLIR Pointer Bug:** Updated `_guess_signature()` in `triton_common.py` to treat `real**` operand arrays as `*u64` memory addresses, followed by explicit `.to(tl.pointer_type(...))` casts inside the kernel. This resolved the MLIR `isIntOrFloat()` assertion failures.
+- **PTX Assembler OOM:** Swapped `tl.static_range` for standard `range()` in `gemms/triton.py` to emit proper loops instead of massive unrolled PTX binaries, allowing successful assembly on the head node.
+- **C++ Wrapper Variable Mismatch:** Corrected `NUM_ELEMENTS_NAME` to use camelCase (`numElements`) in `triton_common.py` to match the SeisSol backend expectations.
+- **Kernel Load Exceptions:** Forced the AOT wrapper to use the `.cubin` extension in `copyscaleadd/triton.py` so the runtime module loader dynamically links the correct GPU binaries.
+- **Triton Accumulator Drop:** Updated the GEMM loop in `gemm/triton.py` to explicitly re-assign the loop-carried accumulator (`acc = acc + a_val * b_val`) instead of using in-place mutation, which Triton was silently dropping.
+
+**Next Steps:**
+- **Debug Math Divergence:** 243 YATeTo assertions are failing in `ctest` with precision/math mismatches. The kernels run, but output incorrect values.
+- **Verify Stride Logic:** Audit `gemm/triton.py` to ensure matrix strides (`LDA`, `LDB`, `LDC`) and linear indexing perfectly map to the expected memory layout.
+- **Review Vectorization Masks:** Check the `mask` boundaries in `copyscaleadd/triton.py` to ensure trailing elements aren't being incorrectly truncated or writing garbage data to memory.
+
 ---
 
 **Last updated:** 2026-05-11 (Patched Triton ASTSource signature inference for pointer-based `real**` operands)

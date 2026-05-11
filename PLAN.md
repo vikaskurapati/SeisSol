@@ -197,9 +197,12 @@ If this session crashes, next agent should:
   - Extracts `GPUTarget` directly from `triton.compile.__globals__` and `triton.compiler.compile.__globals__`.
   - Keeps module-based discovery as fallback.
   - Ensures constructed targets are of the exact class expected by the active Triton compile API.
+- ✅ Added source-shape compatibility for Triton compile APIs that reject JITFunction objects:
+  - Tries compile sources in this order: JITFunction, underlying Python function, JIT `src`, kernel file path, and `path:function` form.
+  - This addresses Triton variants that require compile source to be AST/filepath instead of callable objects.
 - ✅ Added regression tests:
   - `tests/codegen/test_triton_gemm.py::test_gemm_gen_custom_kernel_name`
-  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (checks `GPUTarget` + `__globals__` discovery path)
+  - `tests/codegen/test_triton_common.py::test_compile_kernel_contains_api_compat_fallbacks` (checks `GPUTarget`, `__globals__`, and source-path compatibility hooks)
 
 **Current Blockers:**
 - ⚠️ Cluster validation still pending for full SeisSol proxy build with Triton-only device codegen.
@@ -211,4 +214,4 @@ If this session crashes, next agent should:
 
 ---
 
-**Last updated:** 2026-05-11 (Added exact-class `GPUTarget` discovery for Triton builds that reject mismatched target class instances)
+**Last updated:** 2026-05-11 (Added source-shape compatibility for Triton compile APIs that require AST/filepath input)
